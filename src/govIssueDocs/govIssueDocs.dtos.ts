@@ -2,7 +2,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { IsNotEmpty, IsString } from 'class-validator';
 import { ActorRefDTO, ActorRefRequestDTO } from "../actors/actorRef.dto";
 
-export class GovermentIdDTO extends ActorRefDTO {
+export class GovIssueDocDTO extends ActorRefDTO {
     governmentIdId: string;
     documentIdentifier: string;
     issuerCountryCode: string;
@@ -10,7 +10,7 @@ export class GovermentIdDTO extends ActorRefDTO {
     idNumber: string;
 }
 
-export class NewGovernmentIdRequestDTO extends ActorRefRequestDTO {
+export class NewGovIssueDocRequestDTO extends ActorRefRequestDTO {
     @ApiProperty({
         description: 'document base64 string',
     })

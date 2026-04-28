@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable, InternalServerErrorException, Logger, NotFoundException } from "@nestjs/common";
-import { Provider, SocialProfile } from "./socialProfile.entity";
+import { SocialProvider, SocialProfile } from "./socialProfile.entity";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from 'typeorm';
 import { SocialProfileDTO } from "./socialProfiles.dtos";
@@ -17,7 +17,7 @@ export class SocialProfilesService extends ActorRefService {
         super()
     }
 
-    async createSocialProfile(actorType: ActorType, actorId: string, provider: Provider, providerHandle: string, url?: string, providerUserId?: string): Promise<SocialProfileDTO> {
+    async createSocialProfile(actorType: ActorType, actorId: string, provider: SocialProvider, providerHandle: string, url?: string, providerUserId?: string): Promise<SocialProfileDTO> {
         if (!await this.checkSocialProfileUnique(provider, providerHandle)) {
             throw new BadRequestException("Social profile with the same provider and provider handle already exists");
         }
@@ -75,7 +75,7 @@ export class SocialProfilesService extends ActorRefService {
             });
     }
 
-    private async checkSocialProfileUnique(provider: Provider, providerHandle: string): Promise<boolean> {
+    private async checkSocialProfileUnique(provider: SocialProvider, providerHandle: string): Promise<boolean> {
         return await this.socialProfileRepository.findOne({
             where: { providerHandle: providerHandle, provider: provider }
         })
@@ -97,7 +97,7 @@ export class SocialProfilesService extends ActorRefService {
         socialProfileDTO.updatedAt = socialProfile.updatedAt;
         socialProfileDTO.actorType = socialProfile.actorType
         socialProfileDTO.actorId = socialProfile.actorId;
-        socialProfileDTO.provider = socialProfile.provider;
+        socialProfileDTO.socialProvider = socialProfile.provider;
         socialProfileDTO.url = socialProfile.url;
         socialProfileDTO.providerUserId = socialProfile.providerUserId;
         socialProfileDTO.providerHandle = socialProfile.providerHandle;

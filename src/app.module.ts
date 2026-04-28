@@ -3,13 +3,13 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Candidate } from './candidates/candidate.entity';
 import { Resume } from './resumes/resume.entity';
-import { GovernmentId } from './govermentIds/govermentId.entity';
+import { GovIssueDoc } from './govIssueDocs/govIssueDoc.entity';
 import { SocialProfile } from './socialProfiles/socialProfile.entity';
 import { Certification } from './certifications/certification.entity';
 import { CandidatesModule } from './candidates/candidates.module';
 import { SocialProfilesModule } from './socialProfiles/socialProfiles.module';
 import { CertificationsModule } from './certifications/certifications.module';
-import { GovermentIdsModule } from './govermentIds/govermentIds.module';
+import { GovIssueDocsModule } from './govIssueDocs/govIssueDocs.module';
 import { ResumesModule } from './resumes/resumes.module';
 
 @Module({
@@ -27,7 +27,7 @@ import { ResumesModule } from './resumes/resumes.module';
       entities: [
         Candidate,
         Resume,
-        GovernmentId,
+        GovIssueDoc,
         SocialProfile,
         Certification
       ],
@@ -37,7 +37,7 @@ import { ResumesModule } from './resumes/resumes.module';
     CandidatesModule,
     SocialProfilesModule,
     CertificationsModule,
-    GovermentIdsModule,
+    GovIssueDocsModule,
     ResumesModule
   ]
 })

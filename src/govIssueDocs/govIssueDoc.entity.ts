@@ -2,7 +2,7 @@ import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateCol
 import { ActorRef } from "../actors/actorRef.entity";
 
 @Entity()
-export class GovernmentId extends ActorRef {
+export class GovIssueDoc extends ActorRef {
     @PrimaryGeneratedColumn('uuid')
     resumeId: string;
 

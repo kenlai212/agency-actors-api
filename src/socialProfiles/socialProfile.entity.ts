@@ -1,6 +1,7 @@
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { ActorRef } from "../actors/actorRef.entity";
-export enum Provider {
+
+export enum SocialProvider {
     INSTAGRAM = 'Instagram',
     LINKEDIN = 'LinkedIn',
     GITHUB = 'GitHub',
@@ -17,9 +18,9 @@ export class SocialProfile extends ActorRef {
     @Column({
         nullable: false,
         type: "enum",
-        enum: Provider
+        enum: SocialProvider
     })
-    provider: Provider
+    provider: SocialProvider
 
     @Column({
         nullable: true,
