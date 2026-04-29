@@ -17,7 +17,7 @@ async function bootstrap() {
   const config = new DocumentBuilder()
     .setTitle(process.env.APP_TITLE || '')
     .addServer(process.env.SWAGGER_SERVER_PREFIX || '')
-    .setDescription('Manulife Recruitment Orchestration API')
+    .setDescription(process.env.DESCRIPTION || '')
     .setVersion(process.env.VERSION || '0.0.0')
     .addTag('recruitment-orchestration')
     .addBearerAuth()

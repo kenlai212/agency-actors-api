@@ -2,22 +2,62 @@ import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { IsNotEmpty, IsString, MaxLength, IsEmail, IsOptional } from 'class-validator';
 
 export class CandidateDTO {
+    @ApiProperty({
+        description: 'Target Candidate ID',
+        example: "96e4e28e-2404-4a4f-b69a-6b0709559596"
+    })
     candidateId: string;
-    name: string;
+
+    @ApiProperty({
+        description: 'Candidate fullname',
+        example: "John Smith"
+    })
+    fullName: string;
+
+    @ApiProperty({
+        description: 'Candidate emailAddress',
+        example: "john.smith@test.com"
+    })
     emailAddress: string;
+
+    @ApiProperty({
+        description: 'Candidate phoneNumber',
+        example: "+852 1234 5678"
+    })
     phoneNumber: string;
-    resumeUrl: string;
+
+    @ApiProperty({
+        description: 'Candidate creation datetime',
+        example: "YYYY-MM-DDTHH:mm:ss.sssZ"
+    })
     createdAt: Date;
+
+    @ApiProperty({
+        description: 'Candidate last update datetime',
+        example: "YYYY-MM-DDTHH:mm:ss.sssZ"
+    })
     updatedAt: Date;
 
-    constructor(name: string) {
-        this.name = name;
+    constructor(fullName: string) {
+        this.fullName = fullName;
     }
+}
+
+export class findCustomerRequestDTO {
+    @ApiProperty({
+        description: 'Target Candidate ID',
+        example: "96e4e28e-2404-4a4f-b69a-6b0709559596"
+    })
+    @IsNotEmpty()
+    @IsString()
+    @MaxLength(36)
+    candidateId: string;
 }
 
 export class NewCandidateRequestDTO {
     @ApiProperty({
-        description: 'The ID of the requestor',
+        description: 'Full Name of the Candidate',
+        example: "John Smith"
     })
     @IsNotEmpty()
     @IsString()
@@ -25,14 +65,16 @@ export class NewCandidateRequestDTO {
     name: string;
 
     @ApiPropertyOptional({
-        description: 'The email of the candidate',
+        description: 'Email Address of the Candidate',
+        example: "john.smith@test.com"
     })
     @IsEmail()
     @IsOptional()
     emailAddress: string;
 
     @ApiPropertyOptional({
-        description: 'The phone number of the candidate',
+        description: 'Phone Number of the Candidate, can include country and region codes as well',
+        example: "+852 1234 5673"
     })
     @IsString()
     @IsOptional()
@@ -41,7 +83,8 @@ export class NewCandidateRequestDTO {
 
 export class UpdateCandidateRequestDTO {
     @ApiProperty({
-        description: 'The ID of the requestor',
+        description: 'Candidate ID',
+        example: "96e4e28e-2404-4a4f-b69a-6b0709559596"
     })
     @IsNotEmpty()
     @IsString()
@@ -49,21 +92,24 @@ export class UpdateCandidateRequestDTO {
     candidateId: string;
 
     @ApiPropertyOptional({
-        description: 'The full name of the candidate',
+        description: 'Full Name of the Candidate',
+        example: "John Smith"
     })
     @IsString()
     @IsOptional()
     fullName!: string;
 
     @ApiPropertyOptional({
-        description: 'The email of the candidate',
+        description: 'Email Address of the Candidate',
+        example: "john.smith@test.com"
     })
     @IsEmail()
     @IsOptional()
     emailAddress!: string;
 
     @ApiPropertyOptional({
-        description: 'The phone number of the candidate',
+        description: 'Phone Number of the Candidate, can include country and region codes as well',
+        example: "+852 1234 5673"
     })
     @IsString()
     @IsOptional()

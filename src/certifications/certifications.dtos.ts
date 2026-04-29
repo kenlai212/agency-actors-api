@@ -4,7 +4,13 @@ import { ActorRef } from "../actors/actorRef.entity";
 import { ActorRefRequestDTO } from "../actors/actorRef.dto";
 
 export class CertificationDTO extends ActorRef {
+    @ApiProperty({
+        description: 'Cerfication record ID',
+        example: "96e4e28e-2404-4a4f-b69a-6b0709559596"
+    })
     certificationId: string;
+
+
     authority: string;
     certificateName: string;
     certificateNumber: string;
