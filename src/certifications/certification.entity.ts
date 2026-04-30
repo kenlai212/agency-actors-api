@@ -7,37 +7,31 @@ export class Certification extends ActorAttribute {
     certificationId: string;
 
     @Column({
-        nullable: false,
+        nullable: true,
         type: "varchar",
         length: 255
     })
-    authority: string;
+    authority!: string;
 
     @Column({
-        nullable: false,
+        nullable: true,
         type: "varchar",
         length: 255
     })
-    certificateName: string;
+    certificateName!: string;
 
     @Column({
-        nullable: false,
+        nullable: true,
         type: "varchar",
         length: 255
     })
-    certificateNumber: string;
+    certificateNumber!: string;
 
     @Column({
         nullable: true,
         type: "timestamp"
     })
-    startDate!: Date;
-
-    @Column({
-        nullable: false,
-        type: "timestamp"
-    })
-    endDate: Date;
+    issueDate!: Date;
 
     @Column({
         nullable: true,

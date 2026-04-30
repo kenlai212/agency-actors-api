@@ -19,7 +19,7 @@ export class CertificationsService extends ActorAttributeService {
         super();
     }
 
-    async createCertification(actorType: ActorType, actorId: string, authority: string, certificateName: string, certificateNumber: string, startDate: Date, endDate: Date): Promise<CertificationDTO> {
+    async createCertification(actorType: ActorType, actorId: string, authority?: string, certificateName?: string, certificateNumber?: string, issueDate?: Date): Promise<CertificationDTO> {
         let certification = new Certification();
         certification.actorType = actorType;
 
@@ -36,8 +36,7 @@ export class CertificationsService extends ActorAttributeService {
         certification.certificateName = certificateName;
 
         certification.certificateNumber = certificateNumber;
-        certification.startDate = startDate;
-        certification.endDate = endDate;
+        certification.issueDate = issueDate;
 
         await this.certificationRepository.save(certification)
             .catch((error) => {
@@ -45,11 +44,20 @@ export class CertificationsService extends ActorAttributeService {
                 throw new InternalServerErrorException("createCertification() not available");
             });
 
-        return this.certificationToDTO(certification);
+        return this.entityToDTO(certification);
     }
 
-    async findCertifications(actorType: ActorType, actorId: string): Promise<Array<CertificationDTO>> {
-        const certifications = await this.certificationRepository.find({ where: { actorId, actorType } })
+    async findCertifications(certificationId?: string, actorType?: ActorType, actorId?: string): Promise<Array<CertificationDTO>> {
+        if (!certificationId && !actorType && !actorId)
+            throw new BadRequestException(`Must provide at lease one of certificationId, actorType, actorId`);
+
+        let whereClause = {}
+        if (certificationId)
+            whereClause = { ...whereClause, certificationId }
+        else
+            whereClause = { ...whereClause, actorId, actorType }
+
+        const certifications = await this.certificationRepository.find({ where: whereClause })
             .catch((error) => {
                 this.logger.error(error);
                 throw new InternalServerErrorException("findCertifications() not available");
@@ -57,13 +65,13 @@ export class CertificationsService extends ActorAttributeService {
 
         let certificationDTOs: Array<CertificationDTO> = [];
         for (const certification of certifications) {
-            certificationDTOs.push(this.certificationToDTO(certification));
+            certificationDTOs.push(this.entityToDTO(certification));
         }
 
         return certificationDTOs;
     }
 
-    async deleteCertification(certificationId: string): Promise<void> {
+    async deleteCertification(certificationId: string): Promise<string> {
         const certification = await this.certificationRepository.findOne({ where: { certificationId } })
             .catch((error) => {
                 this.logger.error(error);
@@ -79,6 +87,10 @@ export class CertificationsService extends ActorAttributeService {
                 this.logger.error(error);
                 throw new InternalServerErrorException("deleteCertification() not available");
             });
+
+        const msg = `Successfully deleted ${certificationId}`;
+        this.logger.log(msg);
+        return msg
     }
 
     async uploadLicense(certificationId: string, documentBase64: string): Promise<CertificationDTO> {
@@ -105,7 +117,7 @@ export class CertificationsService extends ActorAttributeService {
                 throw new InternalServerErrorException("uploadLicense() not available");
             });
 
-        let certificationDTO = this.certificationToDTO(certification);
+        let certificationDTO = this.entityToDTO(certification);
         certificationDTO.documentIdentifier = documentUrl;
 
         return certificationDTO;
@@ -115,7 +127,7 @@ export class CertificationsService extends ActorAttributeService {
         return "https://example.com/document/12345";
     }
 
-    private certificationToDTO(certification: Certification): CertificationDTO {
+    private entityToDTO(certification: Certification): CertificationDTO {
         const certificationDTO = new CertificationDTO();
         certificationDTO.certificationId = certification.certificationId;
         certificationDTO.ownerActorType = certification.actorType;
@@ -123,8 +135,7 @@ export class CertificationsService extends ActorAttributeService {
         certificationDTO.authority = certification.authority;
         certificationDTO.certificateName = certification.certificateName;
         certificationDTO.certificateNumber = certification.certificateNumber;
-        certificationDTO.startDate = certification.startDate;
-        certificationDTO.endDate = certification.endDate;
+        certificationDTO.issueDate = certification.issueDate;
         return certificationDTO;
     }
 }

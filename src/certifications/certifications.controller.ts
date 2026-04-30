@@ -1,14 +1,23 @@
 import { Body, Controller, Delete, Get, NotFoundException, Param, Post, Query } from "@nestjs/common";
-import { CertificationDTO, FindCertificationsRequestDTO, NewCertificationRequestDTO, UploadLicenseRequestDTO } from "./certifications.dtos";
+import { CertificationDTO, NewCertificationRequestDTO, SearchCertificationsRequestDTO, UploadLicenseRequestDTO } from "./certifications.dtos";
 import { CertificationsService } from "./certifications.service";
+import { ApiOkResponse, ApiOperation } from "@nestjs/swagger";
 
-@Controller()
+@Controller("/certifications")
 export class CertificationsController {
     constructor(
         private readonly certificationsService: CertificationsService
     ) { }
 
-    @Post("/certification")
+    @Post("/")
+    @ApiOperation({
+        summary: 'Create new Certification.',
+        description: `New Certification must tie to an actor.`
+    })
+    @ApiOkResponse({
+        description: 'Successfully POST response CertificationDTO.',
+        type: CertificationDTO,
+    })
     async newCertification(@Body() body: NewCertificationRequestDTO): Promise<CertificationDTO> {
         return this.certificationsService.createCertification(
             body.actorType,
@@ -16,14 +25,21 @@ export class CertificationsController {
             body.authority,
             body.certificateName,
             body.certificateNumber,
-            body.startDate,
-            body.endDate
+            body.issueDate
         );
     }
 
-    @Get("/certification")
-    async getCertificationsByCandidateId(@Query() query: FindCertificationsRequestDTO): Promise<Array<CertificationDTO>> {
-        const certifications = await this.certificationsService.findCertifications(query.actorType, query.actorId);
+    @Get("/")
+    @ApiOperation({
+        summary: 'Search Certification.',
+        description: `Can search using Certification ID, or Actor Type + Actor ID`
+    })
+    @ApiOkResponse({
+        description: 'Successfully POST response CandidateDTO.',
+        type: CertificationDTO,
+    })
+    async searchCertifications(@Query() query: SearchCertificationsRequestDTO): Promise<Array<CertificationDTO>> {
+        const certifications = await this.certificationsService.findCertifications(query.certificationId, query.actorType, query.actorId);
 
         if (certifications.length === 0) {
             throw new NotFoundException("No certifications found for actor ID: " + query.actorId);
@@ -32,12 +48,28 @@ export class CertificationsController {
         return certifications;
     }
 
-    @Delete("/certification/:certificationId")
-    async deleteCertificationById(@Query('certificationId') certificationId: string): Promise<void> {
-        await this.certificationsService.deleteCertification(certificationId);
+    @Delete("/:certificationId")
+    @ApiOperation({
+        summary: 'Delete Certification.',
+        description: `Delete target Certification ID, this should trigger deletion of the document also`
+    })
+    @ApiOkResponse({
+        description: 'Successfully Delete response successful message.',
+        type: CertificationDTO,
+    })
+    async deleteCertificationById(@Param('certificationId') certificationId: string): Promise<string> {
+        return await this.certificationsService.deleteCertification(certificationId);
     }
 
-    @Post("/certification/upload-license")
+    @Post("/upload-document")
+    @ApiOperation({
+        summary: 'Upload the document image of the Certification',
+        description: `This is store the document image to the document repository. The document identifier will be tag to the certification`
+    })
+    @ApiOkResponse({
+        description: 'Successfully POST will response a CertificationDTO with documentIdentifier.',
+        type: CertificationDTO,
+    })
     async uploadLicense(@Body() body: UploadLicenseRequestDTO): Promise<CertificationDTO> {
         return await this.certificationsService.uploadLicense(body.certificationId, body.documentBase64);
     }

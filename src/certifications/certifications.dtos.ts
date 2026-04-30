@@ -9,12 +9,14 @@ export class CertificationDTO extends ActorAttributeDTO {
     })
     certificationId: string;
 
-
-    authority: string;
-    certificateName: string;
-    certificateNumber: string;
-    startDate!: Date;
-    endDate: Date;
+    @ApiProperty({
+        description: 'Cerfication record ID',
+        example: "96e4e28e-2404-4a4f-b69a-6b0709559596"
+    })
+    authority!: string;
+    certificateName!: string;
+    certificateNumber!: string;
+    issueDate!: Date;
     documentIdentifier!: string;
 }
 
@@ -44,23 +46,17 @@ export class NewCertificationRequestDTO extends ActorAttributeRequestDTO {
     certificateNumber: string;
 
     @ApiProperty({
-        description: 'The start date of the certification',
+        description: 'The issue date of the certification',
     })
     @IsNotEmpty()
     @IsString()
-    startDate!: Date;
-
-    @ApiProperty({
-        description: 'The end date of the certification',
-    })
-    @IsNotEmpty()
-    @IsString()
-    endDate: Date;
+    issueDate: Date;
 }
 
 export class UploadLicenseRequestDTO {
     @ApiProperty({
-        description: 'The ID of the certification',
+        description: 'The ID of the Certification',
+        example: `96e4e28e-2404-4a4f-b69a-6b0709559596`
     })
     @IsNotEmpty()
     @IsString()
@@ -75,4 +71,13 @@ export class UploadLicenseRequestDTO {
     documentBase64: string;
 }
 
-export class FindCertificationsRequestDTO extends ActorAttributeRequestDTO { }
+export class SearchCertificationsRequestDTO extends ActorAttributeRequestDTO {
+    @ApiProperty({
+        description: `The ID of the Certification`,
+        example: `96e4e28e-2404-4a4f-b69a-6b0709559596`
+    })
+    @IsNotEmpty()
+    @IsString()
+    @MaxLength(36)
+    certificationId: string;
+}
