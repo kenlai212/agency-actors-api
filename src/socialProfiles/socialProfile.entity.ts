@@ -1,5 +1,5 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
-import { ActorRef } from "../actors/actorRef.entity";
+import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { ActorAttribute } from "../actors/actorAttribute.entity";
 
 export enum SocialProvider {
     INSTAGRAM = 'Instagram',
@@ -11,7 +11,7 @@ export enum SocialProvider {
 }
 
 @Entity()
-export class SocialProfile extends ActorRef {
+export class SocialProfile extends ActorAttribute {
     @PrimaryGeneratedColumn('uuid')
     socialProfileId: string
 

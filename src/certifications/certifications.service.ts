@@ -3,13 +3,12 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from 'typeorm';
 import { Certification } from "./certification.entity";
 import { CertificationDTO } from "./certifications.dtos";
-import { CandidatesService } from "../candidates/candidates.service";
 import { AuthoritiesService } from "./authoritries.service";
-import { ActorType } from "../actors/actorRef.entity";
-import { ActorRefService } from "../actors/actorRef.service";
+import { ActorAttributeService } from "../actors/actorAttribute.service";
+import { ActorType } from "../actors/actorAttribute.entity";
 
 @Injectable()
-export class CertificationsService extends ActorRefService {
+export class CertificationsService extends ActorAttributeService {
     private readonly logger: Logger = new Logger('CertificationsService')
 
     constructor(
@@ -119,8 +118,8 @@ export class CertificationsService extends ActorRefService {
     private certificationToDTO(certification: Certification): CertificationDTO {
         const certificationDTO = new CertificationDTO();
         certificationDTO.certificationId = certification.certificationId;
-        certificationDTO.actorType = certification.actorType;
-        certificationDTO.actorId = certification.actorId;
+        certificationDTO.ownerActorType = certification.actorType;
+        certificationDTO.ownerActorId = certification.actorId;
         certificationDTO.authority = certification.authority;
         certificationDTO.certificateName = certification.certificateName;
         certificationDTO.certificateNumber = certification.certificateNumber;

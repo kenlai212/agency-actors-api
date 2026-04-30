@@ -1,5 +1,11 @@
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
+export enum Gender {
+    MALE = 'male',
+    FEMALE = 'female',
+    OTHER = 'other'
+}
+
 @Entity()
 export class AgencyActor {
     @CreateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP(6)" })
@@ -29,5 +35,25 @@ export class AgencyActor {
         length: 64,
         unique: true
     })
-    phoneNumber: string;
+    mobilePhoneNumber: string;
+
+    @Column({
+        nullable: true,
+        type: "date",
+        default: null
+    })
+    dob!: Date;
+
+    @Column({
+        nullable: true,
+        type: "enum",
+        enum: Gender,
+        default: null
+    })
+    gender!: Gender;
+
+    countryOfResidence: string;
+    nationality: string;
+    residencyStatus: string;
+    homePhoneNumber: string;
 }

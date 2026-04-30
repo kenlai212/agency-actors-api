@@ -1,8 +1,8 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
-import { ActorRef } from "../actors/actorRef.entity";
+import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { ActorAttribute } from "../actors/actorAttribute.entity";
 
 @Entity()
-export class GovIssueDoc extends ActorRef {
+export class GovIssueDoc extends ActorAttribute {
     @PrimaryGeneratedColumn('uuid')
     resumeId: string;
 

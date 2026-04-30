@@ -3,11 +3,11 @@ import { ResumeDTO } from "./resumes.dtos";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Resume } from "./resume.entity";
 import { Repository } from "typeorm";
-import { ActorType } from "../actors/actorRef.entity";
-import { ActorRefService } from "../actors/actorRef.service";
+import { ActorAttributeService } from "../actors/actorAttribute.service";
+import { ActorType } from "../actors/actorAttribute.entity";
 
 @Injectable()
-export class ResumesService extends ActorRefService {
+export class ResumesService extends ActorAttributeService {
     private readonly logger: Logger = new Logger('ResumeService')
 
     constructor(
@@ -81,8 +81,8 @@ export class ResumesService extends ActorRefService {
     private resumeToDTO(resume: Resume) {
         let resumeDTO = new ResumeDTO();
         resumeDTO.resumeId = resume.resumeId;
-        resumeDTO.actorType = resume.actorType;
-        resumeDTO.actorId = resume.actorId;
+        resumeDTO.ownerActorType = resume.actorType;
+        resumeDTO.ownerActorId = resume.actorId;
         resumeDTO.documentIdentifier = resume.documentIdentifier;
 
         return resumeDTO;

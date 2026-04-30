@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, UpdateDateColumn } from "typeorm";
 
 export enum ActorType {
     AGENT = 'AGENT',
@@ -6,7 +6,7 @@ export enum ActorType {
 }
 
 @Entity()
-export class ActorRef {
+export class ActorAttribute {
 
     @CreateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP(6)" })
     createdAt: Date;

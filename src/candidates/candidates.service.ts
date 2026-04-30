@@ -13,11 +13,11 @@ export class CandidatesService {
         private readonly candidateRepository: Repository<Candidate>,
     ) { }
 
-    async createCandidate(fullName: string, emailAddress?: string, phoneNumber?: string): Promise<CandidateDTO> {
+    async createCandidate(fullName: string, emailAddress?: string, mobilePhoneNumber?: string): Promise<CandidateDTO> {
         let candidate = new Candidate();
         candidate.fullName = fullName;
 
-        await this.checkEmailOrPhoneExists(emailAddress, phoneNumber)
+        await this.checkEmailOrPhoneExists(emailAddress, mobilePhoneNumber)
             .then((exists) => {
                 if (exists) {
                     throw new BadRequestException("Email address or phone number already exists");
@@ -27,8 +27,8 @@ export class CandidatesService {
         if (emailAddress) {
             candidate.emailAddress = emailAddress;
         }
-        if (phoneNumber) {
-            candidate.phoneNumber = phoneNumber;
+        if (mobilePhoneNumber) {
+            candidate.mobilePhoneNumber = mobilePhoneNumber;
         }
 
         await this.candidateRepository.save(candidate)
@@ -40,7 +40,7 @@ export class CandidatesService {
         return this.candidateEntityToDTO(candidate);
     }
 
-    async updateCandidate(candidateId: string, fullName?: string, emailAddress?: string, phoneNumber?: string): Promise<CandidateDTO> {
+    async updateCandidate(candidateId: string, fullName?: string, emailAddress?: string, mobilePhoneNumber?: string): Promise<CandidateDTO> {
         let candidate = await this.candidateRepository.findOne({ where: { candidateId } })
             .catch((error) => {
                 this.logger.error(error);
@@ -51,11 +51,11 @@ export class CandidatesService {
             throw new InternalServerErrorException("Candidate not found");
         }
 
-        if (!fullName && !emailAddress && !phoneNumber) {
+        if (!fullName && !emailAddress && !mobilePhoneNumber) {
             throw new BadRequestException("No fields to update");
         }
 
-        await this.checkEmailOrPhoneExists(emailAddress, phoneNumber)
+        await this.checkEmailOrPhoneExists(emailAddress, mobilePhoneNumber)
             .then((exists) => {
                 if (exists) {
                     throw new BadRequestException("Email address or phone number already exists");
@@ -70,8 +70,8 @@ export class CandidatesService {
             candidate.emailAddress = emailAddress;
         }
 
-        if (phoneNumber) {
-            candidate.phoneNumber = phoneNumber;
+        if (mobilePhoneNumber) {
+            candidate.mobilePhoneNumber = mobilePhoneNumber;
         }
 
         candidate.updatedAt = new Date();
@@ -129,15 +129,15 @@ export class CandidatesService {
             throw new BadRequestException(`Invalid canadiateId : ${candidateId}`)
     }
 
-    private async checkEmailOrPhoneExists(emailAddress?: string, phoneNumber?: string): Promise<boolean> {
-        if (!emailAddress && !phoneNumber) {
+    private async checkEmailOrPhoneExists(emailAddress?: string, mobilePhoneNumber?: string): Promise<boolean> {
+        if (!emailAddress && !mobilePhoneNumber) {
             return false;
         }
 
         const existingCandidate = await this.candidateRepository.findOne({
             where: [
                 { emailAddress },
-                { phoneNumber }
+                { mobilePhoneNumber }
             ]
         });
 
@@ -145,10 +145,13 @@ export class CandidatesService {
     }
 
     private candidateEntityToDTO(candidate: Candidate): CandidateDTO {
-        let dto = new CandidateDTO(candidate.fullName);
+        let dto = new CandidateDTO();
+        dto.fullName = candidate.fullName;
         dto.candidateId = candidate.candidateId;
         dto.emailAddress = candidate.emailAddress;
-        dto.phoneNumber = candidate.phoneNumber;
+        dto.mobilePhoneNumber = candidate.mobilePhoneNumber;
+        dto.gender = candidate.gender;
+        dto.dob = candidate.dob;
         dto.createdAt = candidate.createdAt;
         dto.updatedAt = candidate.updatedAt;
         return dto;

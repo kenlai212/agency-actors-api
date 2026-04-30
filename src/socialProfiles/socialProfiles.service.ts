@@ -3,11 +3,11 @@ import { SocialProvider, SocialProfile } from "./socialProfile.entity";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from 'typeorm';
 import { SocialProfileDTO } from "./socialProfiles.dtos";
-import { ActorType } from "../actors/actorRef.entity";
-import { ActorRefService } from "../actors/actorRef.service";
+import { ActorType } from "../actors/actorAttribute.entity";
+import { ActorAttributeService } from "../actors/actorAttribute.service";
 
 @Injectable()
-export class SocialProfilesService extends ActorRefService {
+export class SocialProfilesService extends ActorAttributeService {
     private readonly logger: Logger = new Logger('SocialProfilesService')
 
     constructor(
@@ -95,8 +95,8 @@ export class SocialProfilesService extends ActorRefService {
         socialProfileDTO.id = socialProfile.socialProfileId;
         socialProfileDTO.createdAt = socialProfile.createdAt;
         socialProfileDTO.updatedAt = socialProfile.updatedAt;
-        socialProfileDTO.actorType = socialProfile.actorType
-        socialProfileDTO.actorId = socialProfile.actorId;
+        socialProfileDTO.ownerActorType = socialProfile.actorType
+        socialProfileDTO.ownerActorId = socialProfile.actorId;
         socialProfileDTO.socialProvider = socialProfile.provider;
         socialProfileDTO.url = socialProfile.url;
         socialProfileDTO.providerUserId = socialProfile.providerUserId;

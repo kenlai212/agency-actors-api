@@ -1,9 +1,9 @@
 import { BadRequestException, Inject, Injectable, Logger } from "@nestjs/common";
-import { ActorType } from "./actorRef.entity";
+import { ActorType } from "./actorAttribute.entity";
 import { CandidatesService } from "../candidates/candidates.service";
 
 @Injectable()
-export class ActorRefService {
+export class ActorAttributeService {
     @Inject(CandidatesService) protected readonly candidatesService: CandidatesService;
 
     protected async validateActor(actorType: ActorType, actorId: string) {

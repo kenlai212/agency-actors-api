@@ -1,46 +1,14 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
-import { IsNotEmpty, IsString, MaxLength, IsEmail, IsOptional } from 'class-validator';
+import { IsNotEmpty, IsString, MaxLength, IsEmail, IsOptional, IsDate } from 'class-validator';
+import { ActorDTO } from "../actors/actor.dto";
+import { Gender } from "../actors/actor.entity";
 
-export class CandidateDTO {
+export class CandidateDTO extends ActorDTO {
     @ApiProperty({
         description: 'Target Candidate ID',
         example: "96e4e28e-2404-4a4f-b69a-6b0709559596"
     })
     candidateId: string;
-
-    @ApiProperty({
-        description: 'Candidate fullname',
-        example: "John Smith"
-    })
-    fullName: string;
-
-    @ApiProperty({
-        description: 'Candidate emailAddress',
-        example: "john.smith@test.com"
-    })
-    emailAddress: string;
-
-    @ApiProperty({
-        description: 'Candidate phoneNumber',
-        example: "+852 1234 5678"
-    })
-    phoneNumber: string;
-
-    @ApiProperty({
-        description: 'Candidate creation datetime',
-        example: "YYYY-MM-DDTHH:mm:ss.sssZ"
-    })
-    createdAt: Date;
-
-    @ApiProperty({
-        description: 'Candidate last update datetime',
-        example: "YYYY-MM-DDTHH:mm:ss.sssZ"
-    })
-    updatedAt: Date;
-
-    constructor(fullName: string) {
-        this.fullName = fullName;
-    }
 }
 
 export class findCustomerRequestDTO {
@@ -79,6 +47,22 @@ export class NewCandidateRequestDTO {
     @IsString()
     @IsOptional()
     phoneNumber: string;
+
+    @ApiPropertyOptional({
+        description: 'Gender of the Candidate',
+        example: `${Gender.FEMALE}`,
+        enum: Gender
+    })
+    @IsOptional()
+    gender: Gender;
+
+    @ApiPropertyOptional({
+        description: 'Date of Birth for the Candidate',
+        example: `YYYY-MM-DD`
+    })
+    @IsDate()
+    @IsOptional()
+    dob: Date;
 }
 
 export class UpdateCandidateRequestDTO {
