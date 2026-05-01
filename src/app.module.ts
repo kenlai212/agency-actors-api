@@ -12,6 +12,7 @@ import { CertificationsModule } from './certifications/certifications.module';
 import { GovIssueDocsModule } from './govIssueDocs/govIssueDocs.module';
 import { ResumesModule } from './resumes/resumes.module';
 import { EducationsModule } from './educations/educations.module';
+import { EmploymentsModule } from './employments/employments.module';
 
 @Module({
   imports: [
@@ -36,11 +37,12 @@ import { EducationsModule } from './educations/educations.module';
       logging: process.env.DB_LOGGING === 'true' ? ['error', 'warn', 'info', 'log'] : false,
     }),
     CandidatesModule,
-    SocialProfilesModule,
-    CertificationsModule,
+    EducationsModule,
+    EmploymentsModule,
     GovIssueDocsModule,
     ResumesModule,
-    EducationsModule
+    SocialProfilesModule,
+    CertificationsModule,
   ]
 })
 export class AppModule { }
