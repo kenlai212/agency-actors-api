@@ -11,6 +11,7 @@ import { SocialProfilesModule } from './socialProfiles/socialProfiles.module';
 import { CertificationsModule } from './certifications/certifications.module';
 import { GovIssueDocsModule } from './govIssueDocs/govIssueDocs.module';
 import { ResumesModule } from './resumes/resumes.module';
+import { EducationsModule } from './educations/educations.module';
 
 @Module({
   imports: [
@@ -38,7 +39,8 @@ import { ResumesModule } from './resumes/resumes.module';
     SocialProfilesModule,
     CertificationsModule,
     GovIssueDocsModule,
-    ResumesModule
+    ResumesModule,
+    EducationsModule
   ]
 })
 export class AppModule { }

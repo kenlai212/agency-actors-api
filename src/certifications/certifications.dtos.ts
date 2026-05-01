@@ -53,7 +53,7 @@ export class NewCertificationRequestDTO extends ActorAttributeRequestDTO {
     issueDate: Date;
 }
 
-export class UploadLicenseRequestDTO {
+export class UploadDocumentRequestDTO {
     @ApiProperty({
         description: 'The ID of the Certification',
         example: `96e4e28e-2404-4a4f-b69a-6b0709559596`

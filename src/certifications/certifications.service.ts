@@ -93,11 +93,11 @@ export class CertificationsService extends ActorAttributeService {
         return msg
     }
 
-    async uploadLicense(certificationId: string, documentBase64: string): Promise<CertificationDTO> {
+    async uploadDocument(certificationId: string, documentBase64: string): Promise<CertificationDTO> {
         const certification = await this.certificationRepository.findOne({ where: { certificationId } })
             .catch((error) => {
                 this.logger.error(error);
-                throw new InternalServerErrorException("uploadLicense() not available");
+                throw new InternalServerErrorException("uploadDocument() not available");
             });
 
         if (!certification) {
@@ -114,7 +114,7 @@ export class CertificationsService extends ActorAttributeService {
         await this.certificationRepository.save(certification)
             .catch((error) => {
                 this.logger.error(error);
-                throw new InternalServerErrorException("uploadLicense() not available");
+                throw new InternalServerErrorException("uploadDocument() not available");
             });
 
         let certificationDTO = this.entityToDTO(certification);

@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, NotFoundException, Param, Post, Query } from "@nestjs/common";
-import { CertificationDTO, NewCertificationRequestDTO, SearchCertificationsRequestDTO, UploadLicenseRequestDTO } from "./certifications.dtos";
+import { CertificationDTO, NewCertificationRequestDTO, SearchCertificationsRequestDTO, UploadDocumentRequestDTO } from "./certifications.dtos";
 import { CertificationsService } from "./certifications.service";
 import { ApiOkResponse, ApiOperation } from "@nestjs/swagger";
 
@@ -70,7 +70,7 @@ export class CertificationsController {
         description: 'Successfully POST will response a CertificationDTO with documentIdentifier.',
         type: CertificationDTO,
     })
-    async uploadLicense(@Body() body: UploadLicenseRequestDTO): Promise<CertificationDTO> {
-        return await this.certificationsService.uploadLicense(body.certificationId, body.documentBase64);
+    async uploadDocument(@Body() body: UploadDocumentRequestDTO): Promise<CertificationDTO> {
+        return await this.certificationsService.uploadDocument(body.certificationId, body.documentBase64);
     }
 }
