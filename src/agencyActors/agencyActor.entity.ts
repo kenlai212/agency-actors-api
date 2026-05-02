@@ -6,10 +6,17 @@ export enum Gender {
     OTHER = 'other'
 }
 
-export enum ActorType {
+export enum AgencyActorType {
     CANDIDATE,
     AGENT,
     BROKEN
+}
+
+export enum Country {
+    HK,
+    CH,
+    SG,
+    JP
 }
 
 @Entity()
@@ -26,9 +33,9 @@ export class AgencyActor {
     @Column({
         nullable: false,
         type: "enum",
-        enum: ActorType
+        enum: AgencyActorType
     })
-    actorType: ActorType;
+    agencyActorType: AgencyActorType;
 
     @Column({
         nullable: false,
@@ -52,8 +59,26 @@ export class AgencyActor {
     })
     gender!: Gender;
 
-    countryOfResidence: string;
+    @Column({
+        nullable: true,
+        type: "enum",
+        enum: Country,
+        default: null
+    })
+    countryOfResidence: Country;
+
+    @Column({
+        nullable: true,
+        type: "enum",
+        enum: Country,
+        default: null
+    })
     nationality: string;
+
+    @Column({
+        nullable: true,
+        type: "varchar",
+        length: 64
+    })
     residencyStatus: string;
-    homePhoneNumber: string;
 }

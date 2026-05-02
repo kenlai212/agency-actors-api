@@ -1,8 +1,8 @@
 import { BadRequestException, Injectable, InternalServerErrorException, Logger, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { ActorType, AgencyActor } from "./agencyActor.entity";
+import { AgencyActorType, AgencyActor } from "./agencyActor.entity";
 import { Repository } from "typeorm";
-import { AgencyActorDTO } from "./agencyActors.dto";
+import { AgencyActorDTO, NewAgencyActorRequestDTO } from "./agencyActors.dto";
 
 @Injectable()
 export class AgencyActorsService {
@@ -13,9 +13,15 @@ export class AgencyActorsService {
         private readonly agencyActorRepository: Repository<AgencyActor>,
     ) { }
 
-    async createAgencyActor(fullName: string): Promise<AgencyActorDTO> {
+    async createAgencyActor(dto: NewAgencyActorRequestDTO): Promise<AgencyActorDTO> {
         let agencyActor = new AgencyActor();
-        agencyActor.fullName = fullName;
+        agencyActor.fullName = dto.fullName;
+
+        agencyActor.dob = dto.dob;
+        agencyActor.gender = dto.gender;
+        agencyActor.nationality = dto.nationality;
+        agencyActor.countryOfResidence = dto.countryOfResidence;
+        agencyActor.agencyActorType = dto.agencyActorType;
 
         await this.agencyActorRepository.save(agencyActor)
             .catch((error) => {
@@ -26,8 +32,8 @@ export class AgencyActorsService {
         return this.entityToDTO(agencyActor);
     }
 
-    async findAgencyActor(actorType: ActorType, actorId: string): Promise<AgencyActorDTO> {
-        let agencyActor = await this.agencyActorRepository.findOne({ where: { actorId, actorType } })
+    async findAgencyActor(agencyActorType: AgencyActorType, actorId: string): Promise<AgencyActorDTO> {
+        let agencyActor = await this.agencyActorRepository.findOne({ where: { actorId, agencyActorType } })
             .catch((error) => {
                 this.logger.error(error);
                 throw new InternalServerErrorException("getCandidateById() not available");
@@ -77,7 +83,7 @@ export class AgencyActorsService {
     private entityToDTO(entity: AgencyActor): AgencyActorDTO {
         let dto = new AgencyActorDTO();
         dto.actorId = entity.actorId;
-        dto.actorType = entity.actorType;
+        dto.agencyActorType = entity.agencyActorType;
         dto.fullName = entity.fullName;
         dto.gender = entity.gender;
         dto.dob = entity.dob;

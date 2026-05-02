@@ -1,6 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { IsNotEmpty, IsString, MaxLength, IsEmail, IsOptional, IsDate } from 'class-validator';
-import { ActorType, Gender } from "./agencyActor.entity";
+import { AgencyActorType, Country, Gender } from "./agencyActor.entity";
 
 export class AgencyActorDTO {
     @ApiProperty({
@@ -11,9 +11,10 @@ export class AgencyActorDTO {
 
     @ApiProperty({
         description: 'Agency Actor Type',
-        example: "96e4e28e-2404-4a4f-b69a-6b0709559596"
+        enum: AgencyActorType,
+        enumName: "AgencyActorType"
     })
-    actorType: ActorType;
+    agencyActorType: AgencyActorType;
 
     @ApiProperty({
         description: 'Actor fullname',
@@ -22,62 +23,65 @@ export class AgencyActorDTO {
     fullName: string;
 
     @ApiProperty({
-        description: 'Actor emailAddress',
-        example: "john.smith@test.com"
-    })
-    emailAddress: string;
-
-    @ApiProperty({
-        description: 'Actor phoneNumber',
-        example: "+852 1234 5678"
-    })
-    mobilePhoneNumber: string;
-
-    @ApiProperty({
-        description: `Actor Gender, can be MALE, FEMALE, OTHER`,
+        description: `Actor's Gender, can be MALE, FEMALE, OTHER`,
         enum: Gender,
         enumName: "Gender"
     })
     gender: Gender;
 
     @ApiProperty({
-        description: `Candidate Date of Birth, `,
+        description: `Actor's Date of Birth, `,
         example: "YYYY-MM-DD"
     })
     dob: Date;
 
     @ApiProperty({
-        description: 'Candidate creation datetime',
+        description: 'Record creation datetime',
         example: "YYYY-MM-DDTHH:mm:ss.sssZ"
     })
     createdAt: Date;
 
     @ApiProperty({
-        description: 'Candidate last update datetime',
+        description: 'Record last update datetime',
         example: "YYYY-MM-DDTHH:mm:ss.sssZ"
     })
     updatedAt: Date;
 
-    countryOfResidence: string;
-    nationality: string;
+    @ApiProperty({
+        description: `Actor's country of resistence`,
+        example: "HK"
+    })
+    countryOfResidence: Country;
+
+    @ApiProperty({
+        description: `Actor's Nationality`,
+        example: "HK"
+    })
+    nationality: Country;
     residencyStatus: string;
-    homePhoneNumber: string;
 }
 
 export class FindAgencyActorRequestDTO {
-    actorType: ActorType;
+    agencyActorType: AgencyActorType;
     actorId: string;
 }
 
 export class NewAgencyActorRequestDTO {
     @ApiProperty({
-        description: 'Full Name of the Candidate',
+        description: `Agency Actor Type`,
+        example: AgencyActorType.CANDIDATE
+    })
+    @IsNotEmpty()
+    agencyActorType: AgencyActorType;
+
+    @ApiProperty({
+        description: `Actor's Full Name`,
         example: "John Smith"
     })
     @IsNotEmpty()
     @IsString()
     @MaxLength(36)
-    name: string;
+    fullName: string;
 
     @ApiPropertyOptional({
         description: 'Gender of the Candidate',
@@ -94,4 +98,22 @@ export class NewAgencyActorRequestDTO {
     @IsDate()
     @IsOptional()
     dob: Date;
+
+    @ApiPropertyOptional({
+        description: `Actor's country of residence`,
+        example: `${Country.HK}`,
+        enum: Country
+    })
+    @IsOptional()
+    countryOfResidence: Country;
+
+    @ApiPropertyOptional({
+        description: `Actor's country of residence`,
+        example: `${Country.HK}`,
+        enum: Country
+    })
+    @IsOptional()
+    nationality: string;
+
+    residencyStatus: string;
 }
