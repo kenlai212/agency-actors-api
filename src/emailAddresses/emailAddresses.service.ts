@@ -16,7 +16,7 @@ export class EmailAdddressesService extends ActorAssetsService {
         super();
     }
 
-    async createNewEmailAddress(actorId: string, addressString: string, isPrimary?: boolean): Promise<EmailAddressDTO> {
+    async createNewEmailAddress(actorId: string, addressString: string): Promise<EmailAddressDTO> {
         let emailAddressEntity = new EmailAddress();
 
         await this.validateActor(actorId);
@@ -29,13 +29,8 @@ export class EmailAdddressesService extends ActorAssetsService {
                 throw new InternalServerErrorException("createNewEmailAddress() not available");
             });
         if (!actorOtherEmailAddresses)
-            //If none, set this one to primary.
-            emailAddressEntity.isPrimary = true;
-        else if (isPrimary) {
-            //If actor has other emailAddress, set this one to primary.
-            emailAddressEntity.isPrimary = true;
-            //todo: unset the other existing primay address
-        }
+            //If none, set this one to 'locked'.
+            emailAddressEntity.isLocked = true;
 
         await this.validateUniqueEmailAddress(addressString);
 
@@ -65,7 +60,7 @@ export class EmailAdddressesService extends ActorAssetsService {
         dto.createdAt = entity.createdAt;
         dto.updatedAt = entity.updatedAt;
         dto.addressString = entity.addressString;
-        dto.isPrimary = entity.isPrimary;
+        dto.isLocked = entity.isLocked;
 
         return dto;
     }

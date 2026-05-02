@@ -10,7 +10,7 @@ export class EmailAddressDTO extends ActorAssetDTO {
     addressString: string;
 
     @ApiProperty({})
-    isPrimary: boolean;
+    isLocked: boolean;
 }
 
 export class CreateNewEmailAddressRequestDTO extends ActorAssetRequestDTO {
@@ -20,18 +20,11 @@ export class CreateNewEmailAddressRequestDTO extends ActorAssetRequestDTO {
     })
     @IsEmail()
     addressString: string;
-
-    @ApiPropertyOptional({
-        description: 'Set this as default Email Address for the Actor',
-        example: true
-    })
-    @IsBoolean()
-    isPrimary!: boolean;
 }
 
 export class SearchEmailAddressesRequestDTO extends ActorAssetRequestDTO { }
 
-export class SetDefaultEmailAddressRequestDTO extends ActorAssetRequestDTO {
+export class SetLockEmailAddressRequestDTO extends ActorAssetRequestDTO {
     @ApiProperty({})
     addressString: string;
 }

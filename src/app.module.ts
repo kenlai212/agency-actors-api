@@ -15,6 +15,9 @@ import { AgencyActor } from './agencyActors/agencyActor.entity';
 import { AgencyActorsModule } from './agencyActors/agencyActors.module';
 import { EmailAddressesModule } from './emailAddresses/emailAddresses.module';
 import { EmailAddress } from './emailAddresses/emailAddress.entity';
+import { PhoneNumberDTO } from './phoneNumbers/phoneNumbers.dtos';
+import { phoneNumbersModule } from './phoneNumbers/phoneNumbers.module';
+import { PhoneNumber } from './phoneNumbers/phoneNumber.entity';
 
 @Module({
   imports: [
@@ -31,6 +34,7 @@ import { EmailAddress } from './emailAddresses/emailAddress.entity';
       entities: [
         AgencyActor,
         EmailAddress,
+        PhoneNumber,
         Resume,
         GovIssueDoc,
         SocialProfile,
@@ -41,6 +45,7 @@ import { EmailAddress } from './emailAddresses/emailAddress.entity';
     }),
     AgencyActorsModule,
     EmailAddressesModule,
+    phoneNumbersModule,
     EducationsModule,
     EmploymentsModule,
     GovIssueDocsModule,
