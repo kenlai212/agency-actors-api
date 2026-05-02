@@ -8,10 +8,10 @@ export enum PhoneType {
 }
 
 export enum CountryCode {
-    "+852",
-    "+86",
-    "+65",
-    "+81"
+    HK = "+852",
+    CH = "+86",
+    SG = "+65",
+    JP = "+81"
 }
 
 @Entity()
@@ -28,8 +28,8 @@ export class PhoneNumber extends ActorAsset {
 
     @Column({
         nullable: false,
-        type: "string",
-        length: 32,
+        type: "varchar",
+        length: 64,
     })
-    phoneNumber: string;
+    numberString: string;
 }

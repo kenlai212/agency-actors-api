@@ -1,21 +1,45 @@
 import { Body, Controller, Delete, Get, Post, Query } from "@nestjs/common";
 import { CreatePhoneNumberDTO, PhoneNumberDTO, SearchPhoneNumberDTO } from "./phoneNumbers.dtos";
+import { ApiOkResponse, ApiOperation } from "@nestjs/swagger";
 
 @Controller("/phone-numbers")
 export class PhoneNumbersController {
     constructor() { }
 
     @Post("/")
+    @ApiOperation({
+        summary: 'Create new Phone Number for an Actor',
+        description: `Actor can have multiple phone numbers`
+    })
+    @ApiOkResponse({
+        description: 'Successfully POST response PhoneNumberDTO.',
+        type: PhoneNumberDTO,
+    })
     async createPhoneNumber(@Body() body: CreatePhoneNumberDTO): Promise<PhoneNumberDTO> {
         return new PhoneNumberDTO
     }
 
     @Get("/")
+    @ApiOperation({
+        summary: 'Search Phone Numbers belonging to an Actor',
+        description: `If actorId is provided, the search will be limited to that Actor, if the phone number is provided, the search will be limited to the phone number record`
+    })
+    @ApiOkResponse({
+        description: 'Successfully GET response array PhoneNumberDTO.',
+        type: PhoneNumberDTO,
+    })
     async searchPhoneNumbers(@Query() query: SearchPhoneNumberDTO): Promise<PhoneNumberDTO[]> {
         return [];
     }
 
     @Delete("/:phoneNumberId")
+    @ApiOperation({
+        summary: 'Delete Phone Numbers belonging to an Actor'
+    })
+    @ApiOkResponse({
+        description: 'DELETE response a successfull message',
+        type: PhoneNumberDTO,
+    })
     async deletePhoneNumber(): Promise<string> {
         return "Phone number deleted";
     }
