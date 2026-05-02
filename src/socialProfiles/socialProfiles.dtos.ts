@@ -1,9 +1,9 @@
 import { SocialProvider } from "./socialProfile.entity";
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { IsNotEmpty, IsString, MaxLength, IsOptional } from 'class-validator';
-import { ActorAttributeDTO, ActorAttributeRequestDTO } from "../actors/actorAttribute.dto";
+import { ActorAssetDTO, ActorAssetRequestDTO } from "../actorAssets/actorAssets.dtos";
 
-export class SocialProfileDTO extends ActorAttributeDTO {
+export class SocialProfileDTO extends ActorAssetDTO {
     id: string
     socialProvider: SocialProvider
     url: string
@@ -11,7 +11,7 @@ export class SocialProfileDTO extends ActorAttributeDTO {
     providerHandle: string
 }
 
-export class PostSocialProfileRequestDTO extends ActorAttributeRequestDTO {
+export class PostSocialProfileRequestDTO extends ActorAssetRequestDTO {
     @ApiProperty({
         description: 'provider of the social profile, e.g. LinkedIn, GitHub, etc.',
         enum: SocialProvider,
@@ -47,7 +47,7 @@ export class PostSocialProfileRequestDTO extends ActorAttributeRequestDTO {
     providerUserId!: string
 }
 
-export class GetSocialProfilesRequestDTO extends ActorAttributeRequestDTO {
+export class GetSocialProfilesRequestDTO extends ActorAssetRequestDTO {
     @ApiPropertyOptional({
         description: 'The provider of the social profile',
         enum: SocialProvider,

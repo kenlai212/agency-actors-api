@@ -1,9 +1,9 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { IsNotEmpty, IsString, MaxLength, IsEmail, IsOptional, IsDate } from 'class-validator';
-import { ActorDTO } from "../actors/actor.dto";
-import { Gender } from "../actors/actor.entity";
+import { AgencyActorDTO } from "../agencyActors/agencyActors.dto";
+import { Gender } from "../agencyActors/agencyActor.entity";
 
-export class CandidateDTO extends ActorDTO {
+export class CandidateDTO extends AgencyActorDTO {
     @ApiProperty({
         description: 'Target Candidate ID',
         example: "96e4e28e-2404-4a4f-b69a-6b0709559596"

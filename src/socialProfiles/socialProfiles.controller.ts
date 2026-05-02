@@ -13,7 +13,6 @@ export class SocialProfilesController {
     @Get("/social-profiles")
     async getCandidateById(@Query() query: GetSocialProfilesRequestDTO): Promise<Array<SocialProfileDTO>> {
         return await this.socialProfilesService.findSocialProfiles(
-            query.actorType,
             query.actorId,
             query.provider,
             query.providerHandle
@@ -23,7 +22,6 @@ export class SocialProfilesController {
     @Post("/social-profile")
     async newCandidate(@Body() requestBody: PostSocialProfileRequestDTO): Promise<SocialProfileDTO> {
         return await this.socialProfilesService.createSocialProfile(
-            requestBody.actorType,
             requestBody.actorId,
             requestBody.provider,
             requestBody.providerHandle,

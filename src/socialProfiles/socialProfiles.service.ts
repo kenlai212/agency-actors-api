@@ -3,11 +3,10 @@ import { SocialProvider, SocialProfile } from "./socialProfile.entity";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from 'typeorm';
 import { SocialProfileDTO } from "./socialProfiles.dtos";
-import { ActorType } from "../actors/actorAttribute.entity";
-import { ActorAttributeService } from "../actors/actorAttribute.service";
+import { ActorAssetsService } from "../actorAssets/actorAssets.service";
 
 @Injectable()
-export class SocialProfilesService extends ActorAttributeService {
+export class SocialProfilesService extends ActorAssetsService {
     private readonly logger: Logger = new Logger('SocialProfilesService')
 
     constructor(
@@ -17,15 +16,14 @@ export class SocialProfilesService extends ActorAttributeService {
         super()
     }
 
-    async createSocialProfile(actorType: ActorType, actorId: string, provider: SocialProvider, providerHandle: string, url?: string, providerUserId?: string): Promise<SocialProfileDTO> {
+    async createSocialProfile(actorId: string, provider: SocialProvider, providerHandle: string, url?: string, providerUserId?: string): Promise<SocialProfileDTO> {
         if (!await this.checkSocialProfileUnique(provider, providerHandle)) {
             throw new BadRequestException("Social profile with the same provider and provider handle already exists");
         }
 
         let socialProfile = new SocialProfile();
 
-        await this.validateActor(actorType, actorId);
-        socialProfile.actorType = actorType;
+        await this.validateActor(actorId);
         socialProfile.actorId = actorId;
 
         socialProfile.provider = provider;
@@ -44,17 +42,16 @@ export class SocialProfilesService extends ActorAttributeService {
                 throw new InternalServerErrorException("createSocialProfile() not available");
             });
 
-        return this.socialProfileEntityToDTO(socialProfile);
+        return this.entityToDTO(socialProfile);
     }
 
-    async findSocialProfiles(actorType: ActorType, actorId: string, provider?: string, providerHandle?: string): Promise<Array<SocialProfileDTO>> {
-        if (!actorId && !actorType && !provider && !providerHandle) {
-            throw new BadRequestException("At least one of candidateId, provider or providerHandle must be provided");
+    async findSocialProfiles(actorId: string, provider?: string, providerHandle?: string): Promise<Array<SocialProfileDTO>> {
+        if (!actorId && !provider && !providerHandle) {
+            throw new BadRequestException("At least one of actorId, provider or providerHandle must be provided");
         }
 
         let whereClause: any = {};
-        if (actorType && actorId) {
-            whereClause.actorType = actorType;
+        if (actorId) {
             whereClause.actorId = actorId;
         }
 
@@ -64,7 +61,7 @@ export class SocialProfilesService extends ActorAttributeService {
         }
 
         const socialProfiles = await this.socialProfileRepository.find({ where: whereClause });
-        return socialProfiles.map((sp) => this.socialProfileEntityToDTO(sp));
+        return socialProfiles.map((sp) => this.entityToDTO(sp));
     }
 
     async deleteSocialProfile(socialProfileId: string): Promise<void> {
@@ -90,12 +87,11 @@ export class SocialProfilesService extends ActorAttributeService {
 
     }
 
-    private socialProfileEntityToDTO(socialProfile: SocialProfile): SocialProfileDTO {
+    private entityToDTO(socialProfile: SocialProfile): SocialProfileDTO {
         let socialProfileDTO = new SocialProfileDTO();
         socialProfileDTO.id = socialProfile.socialProfileId;
         socialProfileDTO.createdAt = socialProfile.createdAt;
         socialProfileDTO.updatedAt = socialProfile.updatedAt;
-        socialProfileDTO.ownerActorType = socialProfile.actorType
         socialProfileDTO.ownerActorId = socialProfile.actorId;
         socialProfileDTO.socialProvider = socialProfile.provider;
         socialProfileDTO.url = socialProfile.url;

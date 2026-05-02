@@ -1,7 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { ActorAttributeDTO, ActorAttributeRequestDTO } from "../actors/actorAttribute.dto";
+import { ActorAssetDTO, ActorAssetRequestDTO } from "../actorAssets/actorAssets.dtos";
 
-export class EmploymentDTO extends ActorAttributeDTO {
+export class EmploymentDTO extends ActorAssetDTO {
     @ApiProperty({
         description: 'Employment Record ID',
         example: '1234567890'
@@ -45,7 +45,7 @@ export class EmploymentDTO extends ActorAttributeDTO {
     isCurrent: boolean;
 }
 
-export class NewEmploymentRequestDTO extends ActorAttributeRequestDTO {
+export class NewEmploymentRequestDTO extends ActorAssetRequestDTO {
     @ApiProperty({
     })
     details: EmploymentDTO;
@@ -55,7 +55,7 @@ export class NewEmploymentRequestDTO extends ActorAttributeRequestDTO {
     documentIdentifier: string;
 }
 
-export class searchEmploymentsRequestDTO extends ActorAttributeRequestDTO {
+export class searchEmploymentsRequestDTO extends ActorAssetRequestDTO {
     @ApiProperty({
     })
     employmentId: string

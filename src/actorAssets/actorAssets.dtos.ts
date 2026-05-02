@@ -1,15 +1,7 @@
 import { IsNotEmpty, IsString, MaxLength } from 'class-validator';
-import { ActorType } from "./actorAttribute.entity";
 import { ApiProperty } from "@nestjs/swagger";
 
-export class ActorAttributeDTO {
-    @ApiProperty({
-        description: 'Actor Type, either agent or candidate',
-        enum: ActorType,
-        enumName: "ActorType"
-    })
-    ownerActorType: ActorType;
-
+export class ActorAssetDTO {
     @ApiProperty({
         description: 'The ID of the Actor, either agent or candidate',
         example: '96e4e28e-2404-4a4f-b69a-6b0709559596'
@@ -29,15 +21,7 @@ export class ActorAttributeDTO {
     updatedAt: Date
 }
 
-export class ActorAttributeRequestDTO {
-    @ApiProperty({
-        description: 'Actor Type, either agent or candidate',
-        enum: ActorType,
-        enumName: "ActorType"
-    })
-    @IsNotEmpty()
-    actorType: ActorType;
-
+export class ActorAssetRequestDTO {
     @ApiProperty({
         description: 'The ID of the candidate or agent',
     })

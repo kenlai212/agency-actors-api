@@ -1,8 +1,8 @@
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
-import { ActorAttribute } from "../actors/actorAttribute.entity";
+import { ActorAsset } from "../actorAssets/actorAsset.entity";
 
 @Entity()
-export class Resume extends ActorAttribute {
+export class Resume extends ActorAsset {
     @PrimaryGeneratedColumn('uuid')
     resumeId: string;
 

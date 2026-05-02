@@ -1,12 +1,12 @@
-import { ActorAttributeDTO, ActorAttributeRequestDTO } from "../actors/actorAttribute.dto";
+import { ActorAssetDTO, ActorAssetRequestDTO } from "../actorAssets/actorAssets.dtos";
 
-export class ResumeDTO extends ActorAttributeDTO {
+export class ResumeDTO extends ActorAssetDTO {
     resumeId: string;
     documentIdentifier: string;
 }
 
-export class UploadResumeRequestDTO extends ActorAttributeRequestDTO {
+export class UploadResumeRequestDTO extends ActorAssetRequestDTO {
     documentBase64: string;
 }
 
-export class GetResumesRequestDTO extends ActorAttributeRequestDTO { }
+export class GetResumesRequestDTO extends ActorAssetRequestDTO { }

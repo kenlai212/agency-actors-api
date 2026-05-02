@@ -1,8 +1,8 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { IsString, MaxLength } from 'class-validator';
-import { ActorAttributeDTO, ActorAttributeRequestDTO } from "../actors/actorAttribute.dto";
+import { ActorAssetDTO, ActorAssetRequestDTO } from "../actorAssets/actorAssets.dtos";
 
-export class EducationDTO extends ActorAttributeDTO {
+export class EducationDTO extends ActorAssetDTO {
     @ApiProperty({
         description: 'Education record ID',
         example: `96e4e28e-2404-4a4f-b69a-6b0709559596`
@@ -83,7 +83,7 @@ class EducationDetails {
     endYear!: string;
 }
 
-export class NewEducationRequestDTO extends ActorAttributeRequestDTO {
+export class NewEducationRequestDTO extends ActorAssetRequestDTO {
     @ApiPropertyOptional({
         description: 'Education Details',
     })
@@ -97,7 +97,7 @@ export class NewEducationRequestDTO extends ActorAttributeRequestDTO {
     documentBase64!: string;
 }
 
-export class SearchEducationsRequestDTO extends ActorAttributeRequestDTO {
+export class SearchEducationsRequestDTO extends ActorAssetRequestDTO {
     @ApiProperty({
         description: 'Education record ID',
         example: `96e4e28e-2404-4a4f-b69a-6b0709559596`

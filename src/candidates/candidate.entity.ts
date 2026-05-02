@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn } from "typeorm";
-import { AgencyActor } from "../actors/actor.entity";
+import { AgencyActor } from "../agencyActors/agencyActor.entity";
 
 @Entity()
 export class Candidate extends AgencyActor {

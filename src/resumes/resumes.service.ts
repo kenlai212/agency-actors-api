@@ -3,11 +3,10 @@ import { ResumeDTO } from "./resumes.dtos";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Resume } from "./resume.entity";
 import { Repository } from "typeorm";
-import { ActorAttributeService } from "../actors/actorAttribute.service";
-import { ActorType } from "../actors/actorAttribute.entity";
+import { ActorAssetsService } from "../actorAssets/actorAssets.service";
 
 @Injectable()
-export class ResumesService extends ActorAttributeService {
+export class ResumesService extends ActorAssetsService {
     private readonly logger: Logger = new Logger('ResumeService')
 
     constructor(
@@ -17,11 +16,11 @@ export class ResumesService extends ActorAttributeService {
         super();
     }
 
-    async uploadNewResume(actorType: ActorType, actorId: string, documentBase64: string): Promise<ResumeDTO> {
+    async uploadNewResume(actorId: string, documentBase64: string): Promise<ResumeDTO> {
         let resume = new Resume();
 
         // Validate candidate ID
-        await this.validateActor(actorType, actorId);
+        await this.validateActor(actorId);
         resume.actorId = actorId;
 
         //upload document
@@ -38,11 +37,11 @@ export class ResumesService extends ActorAttributeService {
                 throw new InternalServerErrorException("uploadNewResume() not available");
             });
 
-        return this.resumeToDTO(resume);
+        return this.entityToDTO(resume);
     }
 
-    async findResumes(actorType: ActorType, actorId: string): Promise<Array<ResumeDTO>> {
-        const resumes = await this.resumeRepository.find({ where: { actorType, actorId } })
+    async findResumes(actorId: string): Promise<Array<ResumeDTO>> {
+        const resumes = await this.resumeRepository.find({ where: { actorId } })
             .catch((error) => {
                 this.logger.error(error);
                 throw new InternalServerErrorException("findResumes() not available");
@@ -50,7 +49,7 @@ export class ResumesService extends ActorAttributeService {
 
         let resumeDTOs: Array<ResumeDTO> = [];
         for (const resume of resumes) {
-            resumeDTOs.push(this.resumeToDTO(resume));
+            resumeDTOs.push(this.entityToDTO(resume));
         }
 
         return resumeDTOs;
@@ -78,10 +77,9 @@ export class ResumesService extends ActorAttributeService {
         return "https://example.com/document/12345";
     }
 
-    private resumeToDTO(resume: Resume) {
+    private entityToDTO(resume: Resume) {
         let resumeDTO = new ResumeDTO();
         resumeDTO.resumeId = resume.resumeId;
-        resumeDTO.ownerActorType = resume.actorType;
         resumeDTO.ownerActorId = resume.actorId;
         resumeDTO.documentIdentifier = resume.documentIdentifier;
 

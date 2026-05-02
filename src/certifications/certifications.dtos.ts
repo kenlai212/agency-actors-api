@@ -1,8 +1,8 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsNotEmpty, IsString, MaxLength } from 'class-validator';
-import { ActorAttributeDTO, ActorAttributeRequestDTO } from "../actors/actorAttribute.dto";
+import { ActorAssetDTO, ActorAssetRequestDTO } from "../actorAssets/actorAssets.dtos";
 
-export class CertificationDTO extends ActorAttributeDTO {
+export class CertificationDTO extends ActorAssetDTO {
     @ApiProperty({
         description: 'Cerfication record ID',
         example: "96e4e28e-2404-4a4f-b69a-6b0709559596"
@@ -20,7 +20,7 @@ export class CertificationDTO extends ActorAttributeDTO {
     documentIdentifier!: string;
 }
 
-export class NewCertificationRequestDTO extends ActorAttributeRequestDTO {
+export class NewCertificationRequestDTO extends ActorAssetRequestDTO {
     @ApiProperty({
         description: 'The authority that issued the certification',
     })
@@ -71,7 +71,7 @@ export class UploadDocumentRequestDTO {
     documentBase64: string;
 }
 
-export class SearchCertificationsRequestDTO extends ActorAttributeRequestDTO {
+export class SearchCertificationsRequestDTO extends ActorAssetRequestDTO {
     @ApiProperty({
         description: `The ID of the Certification`,
         example: `96e4e28e-2404-4a4f-b69a-6b0709559596`

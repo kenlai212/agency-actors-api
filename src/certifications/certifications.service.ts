@@ -4,11 +4,10 @@ import { Repository } from 'typeorm';
 import { Certification } from "./certification.entity";
 import { CertificationDTO } from "./certifications.dtos";
 import { AuthoritiesService } from "./authoritries.service";
-import { ActorAttributeService } from "../actors/actorAttribute.service";
-import { ActorType } from "../actors/actorAttribute.entity";
+import { ActorAssetsService } from "../actorAssets/actorAssets.service";
 
 @Injectable()
-export class CertificationsService extends ActorAttributeService {
+export class CertificationsService extends ActorAssetsService {
     private readonly logger: Logger = new Logger('CertificationsService')
 
     constructor(
@@ -19,12 +18,11 @@ export class CertificationsService extends ActorAttributeService {
         super();
     }
 
-    async createCertification(actorType: ActorType, actorId: string, authority?: string, certificateName?: string, certificateNumber?: string, issueDate?: Date): Promise<CertificationDTO> {
+    async createCertification(actorId: string, authority?: string, certificateName?: string, certificateNumber?: string, issueDate?: Date): Promise<CertificationDTO> {
         let certification = new Certification();
-        certification.actorType = actorType;
 
         // Validate actor ID
-        await this.validateActor(actorType, actorId)
+        await this.validateActor(actorId)
         certification.actorId = actorId;
 
         // Validate authority and certificate name
@@ -47,15 +45,15 @@ export class CertificationsService extends ActorAttributeService {
         return this.entityToDTO(certification);
     }
 
-    async findCertifications(certificationId?: string, actorType?: ActorType, actorId?: string): Promise<Array<CertificationDTO>> {
-        if (!certificationId && !actorType && !actorId)
+    async findCertifications(certificationId?: string, actorId?: string): Promise<Array<CertificationDTO>> {
+        if (!certificationId && !actorId)
             throw new BadRequestException(`Must provide at lease one of certificationId, actorType, actorId`);
 
         let whereClause = {}
         if (certificationId)
             whereClause = { ...whereClause, certificationId }
         else
-            whereClause = { ...whereClause, actorId, actorType }
+            whereClause = { ...whereClause, actorId }
 
         const certifications = await this.certificationRepository.find({ where: whereClause })
             .catch((error) => {
@@ -127,15 +125,14 @@ export class CertificationsService extends ActorAttributeService {
         return "https://example.com/document/12345";
     }
 
-    private entityToDTO(certification: Certification): CertificationDTO {
+    private entityToDTO(entity: Certification): CertificationDTO {
         const certificationDTO = new CertificationDTO();
-        certificationDTO.certificationId = certification.certificationId;
-        certificationDTO.ownerActorType = certification.actorType;
-        certificationDTO.ownerActorId = certification.actorId;
-        certificationDTO.authority = certification.authority;
-        certificationDTO.certificateName = certification.certificateName;
-        certificationDTO.certificateNumber = certification.certificateNumber;
-        certificationDTO.issueDate = certification.issueDate;
+        certificationDTO.certificationId = entity.certificationId;
+        certificationDTO.ownerActorId = entity.actorId;
+        certificationDTO.authority = entity.authority;
+        certificationDTO.certificateName = entity.certificateName;
+        certificationDTO.certificateNumber = entity.certificateNumber;
+        certificationDTO.issueDate = entity.issueDate;
         return certificationDTO;
     }
 }

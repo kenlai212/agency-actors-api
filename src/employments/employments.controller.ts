@@ -1,5 +1,6 @@
-import { Body, Controller, Get, Post } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post } from "@nestjs/common";
 import { EmploymentDTO, NewEmploymentRequestDTO } from "./employments.dtos";
+import { UploadDocumentRequestDTO } from "../certifications/certifications.dtos";
 
 @Controller("/employments")
 export class EmploymentsController {
@@ -11,5 +12,15 @@ export class EmploymentsController {
     @Get("/")
     async searchEmployments(): Promise<EmploymentDTO[]> {
         return [];
+    }
+
+    @Delete("/:employmentId")
+    async deleteEmployments(@Param("employmentId") employmentId: string): Promise<string> {
+        return "Successfully deleted"
+    }
+
+    @Post("/upload-document")
+    async uploadDocument(@Body() body: UploadDocumentRequestDTO): Promise<EmploymentDTO> {
+        return new EmploymentDTO();
     }
 }
