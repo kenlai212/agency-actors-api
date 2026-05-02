@@ -80,22 +80,6 @@ export class NewAgencyActorRequestDTO {
     name: string;
 
     @ApiPropertyOptional({
-        description: 'Email Address of the Candidate',
-        example: "john.smith@test.com"
-    })
-    @IsEmail()
-    @IsOptional()
-    emailAddress: string;
-
-    @ApiPropertyOptional({
-        description: 'Phone Number of the Candidate, can include country and region codes as well',
-        example: "+852 1234 5673"
-    })
-    @IsString()
-    @IsOptional()
-    phoneNumber: string;
-
-    @ApiPropertyOptional({
         description: 'Gender of the Candidate',
         example: `${Gender.FEMALE}`,
         enum: Gender

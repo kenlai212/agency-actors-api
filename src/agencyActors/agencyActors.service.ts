@@ -6,30 +6,16 @@ import { AgencyActorDTO } from "./agencyActors.dto";
 
 @Injectable()
 export class AgencyActorsService {
-    private readonly logger = new Logger('ActorService');
+    private readonly logger = new Logger('AgencyActorsService');
 
     constructor(
         @InjectRepository(AgencyActor)
         private readonly agencyActorRepository: Repository<AgencyActor>,
     ) { }
 
-    async createAgencyActor(fullName: string, emailAddress?: string, mobilePhoneNumber?: string): Promise<AgencyActorDTO> {
+    async createAgencyActor(fullName: string): Promise<AgencyActorDTO> {
         let agencyActor = new AgencyActor();
         agencyActor.fullName = fullName;
-
-        await this.checkEmailOrPhoneExists(emailAddress, mobilePhoneNumber)
-            .then((exists) => {
-                if (exists) {
-                    throw new BadRequestException("Email address or phone number already exists");
-                }
-            });
-
-        if (emailAddress) {
-            agencyActor.emailAddress = emailAddress;
-        }
-        if (mobilePhoneNumber) {
-            agencyActor.mobilePhoneNumber = mobilePhoneNumber;
-        }
 
         await this.agencyActorRepository.save(agencyActor)
             .catch((error) => {
@@ -54,19 +40,38 @@ export class AgencyActorsService {
         return this.entityToDTO(agencyActor);
     }
 
-    private async checkEmailOrPhoneExists(emailAddress?: string, mobilePhoneNumber?: string): Promise<boolean> {
-        if (!emailAddress && !mobilePhoneNumber) {
-            return false;
+    async deleteActor(actorId: string): Promise<string> {
+        let actor = await this.agencyActorRepository.findOne({ where: { actorId } })
+            .catch((error) => {
+                this.logger.error(error);
+                throw new InternalServerErrorException("deleteCandidate() not available");
+            });
+
+        if (!actor) {
+            throw new NotFoundException("Candidate not found");
         }
+        await this.agencyActorRepository.remove(actor)
+            .catch((error) => {
+                this.logger.error(error);
+                throw new InternalServerErrorException("deleteCandidate() not available");
+            });
 
-        const existingCandidate = await this.agencyActorRepository.findOne({
-            where: [
-                { emailAddress },
-                { mobilePhoneNumber }
-            ]
-        });
+        //delete assets
 
-        return !!existingCandidate;
+        const msg = `Successfully deleted ${actorId}`
+        this.logger.log(msg);
+        return msg;
+    }
+
+    async validateActorId(actorId: string) {
+        const candidate = await this.agencyActorRepository.findOne({ where: { actorId } })
+            .catch((error) => {
+                this.logger.error(error);
+                throw new InternalServerErrorException("validateActorId() not available");
+            });
+
+        if (!candidate)
+            throw new BadRequestException(`Invalid actorId : ${actorId}`)
     }
 
     private entityToDTO(entity: AgencyActor): AgencyActorDTO {
@@ -74,8 +79,6 @@ export class AgencyActorsService {
         dto.actorId = entity.actorId;
         dto.actorType = entity.actorType;
         dto.fullName = entity.fullName;
-        dto.emailAddress = entity.emailAddress;
-        dto.mobilePhoneNumber = entity.mobilePhoneNumber;
         dto.gender = entity.gender;
         dto.dob = entity.dob;
         dto.createdAt = entity.createdAt;

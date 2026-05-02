@@ -1,11 +1,11 @@
 import { BadRequestException, Inject, Injectable, Logger } from "@nestjs/common";
-import { CandidatesService } from "../candidates/candidates.service";
+import { AgencyActorsService } from "../agencyActors/agencyActors.service";
 
 @Injectable()
 export class ActorAssetsService {
-    @Inject(CandidatesService) protected readonly candidatesService: CandidatesService;
+    @Inject(AgencyActorsService) protected readonly agencyActorsService: AgencyActorsService;
 
     protected async validateActor(actorId: string) {
-        await this.candidatesService.validateCandidateId(actorId);
+        await this.agencyActorsService.validateActorId(actorId);
     }
 }

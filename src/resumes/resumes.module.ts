@@ -2,13 +2,13 @@ import { Module } from "@nestjs/common";
 import { ResumesController } from "./resumes.controller";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { Resume } from "./resume.entity";
-import { CandidatesModule } from "../candidates/candidates.module";
 import { ResumesService } from "./resumes.service";
+import { AgencyActorsModule } from "../agencyActors/agencyActors.module";
 
 @Module({
     imports: [
         TypeOrmModule.forFeature([Resume]),
-        CandidatesModule
+        AgencyActorsModule
     ],
     controllers: [ResumesController],
     providers: [

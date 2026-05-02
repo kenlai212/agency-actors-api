@@ -4,7 +4,7 @@ import { ActorAsset } from "../actorAssets/actorAsset.entity";
 @Entity()
 export class GovIssueDoc extends ActorAsset {
     @PrimaryGeneratedColumn('uuid')
-    resumeId: string;
+    GovermentIssueDocId: string;
 
     @Column({
         nullable: false,

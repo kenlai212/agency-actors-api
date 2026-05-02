@@ -1,15 +1,15 @@
 import { Module } from "@nestjs/common";
 import { CertificationsController } from "./certifications.controller";
 import { CertificationsService } from "./certifications.service";
-import { CandidatesModule } from "../candidates/candidates.module";
 import { Certification } from "./certification.entity";
 import { TypeOrmModule } from "@nestjs/typeorm/dist/typeorm.module";
 import { AuthoritiesService } from "./authoritries.service";
+import { AgencyActorsModule } from "../agencyActors/agencyActors.module";
 
 @Module({
     imports: [
         TypeOrmModule.forFeature([Certification]),
-        CandidatesModule
+        AgencyActorsModule
     ],
     controllers: [
         CertificationsController

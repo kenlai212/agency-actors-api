@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Logger, Post, Query } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Logger, Post, Query } from "@nestjs/common";
 import { AgencyActorsService } from "./agencyActors.service";
 import { ApiOkResponse, ApiOperation } from "@nestjs/swagger";
 import { AgencyActorDTO, FindAgencyActorRequestDTO, NewAgencyActorRequestDTO } from "./agencyActors.dto";
@@ -24,16 +24,29 @@ export class AgencyActorsController {
         return await this.agencyActorsService.findAgencyActor(query.actorType, query.actorId);
     }
 
-    @Post("/candidate")
+    @Post("/")
     @ApiOperation({
         summary: 'Create new Agency Actor',
-        description: `Create new Agency Actor with email address and phone number.`
+        description: `Create new Agency Actor`
     })
     @ApiOkResponse({
         description: 'Successfully POST response AgencyActorDTO.',
         type: AgencyActorDTO,
     })
     async newCandidate(@Body() requestBody: NewAgencyActorRequestDTO): Promise<AgencyActorDTO> {
-        return await this.agencyActorsService.createAgencyActor(requestBody.name, requestBody.emailAddress, requestBody.phoneNumber);
+        return await this.agencyActorsService.createAgencyActor(requestBody.name);
+    }
+
+    @Delete("/:actorId")
+    @ApiOperation({
+        summary: 'Delete target Agency Actor',
+        description: `Delete target Agency Actor, along with all it's assets`
+    })
+    @ApiOkResponse({
+        description: 'Successfully DELETE response a successful message.',
+        type: AgencyActorDTO,
+    })
+    async deleteAgencyActor(@Query('actorId') actorId: string): Promise<string> {
+        return await this.agencyActorsService.deleteActor(actorId);
     }
 }

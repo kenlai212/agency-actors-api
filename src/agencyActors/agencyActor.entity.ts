@@ -39,22 +39,6 @@ export class AgencyActor {
 
     @Column({
         nullable: true,
-        type: "varchar",
-        length: 255,
-        unique: true
-    })
-    emailAddress: string;
-
-    @Column({
-        nullable: true,
-        type: "varchar",
-        length: 64,
-        unique: true
-    })
-    mobilePhoneNumber: string;
-
-    @Column({
-        nullable: true,
         type: "date",
         default: null
     })

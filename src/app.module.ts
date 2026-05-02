@@ -14,6 +14,7 @@ import { EmploymentsModule } from './employments/employments.module';
 import { AgencyActor } from './agencyActors/agencyActor.entity';
 import { AgencyActorsModule } from './agencyActors/agencyActors.module';
 import { EmailAddressesModule } from './emailAddresses/emailAddresses.module';
+import { EmailAddress } from './emailAddresses/emailAddress.entity';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { EmailAddressesModule } from './emailAddresses/emailAddresses.module';
       database: process.env.DB_NAME,
       entities: [
         AgencyActor,
+        EmailAddress,
         Resume,
         GovIssueDoc,
         SocialProfile,

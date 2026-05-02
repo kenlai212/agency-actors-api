@@ -19,7 +19,7 @@ async function bootstrap() {
     .addServer(process.env.SWAGGER_SERVER_PREFIX || '')
     .setDescription(process.env.DESCRIPTION || '')
     .setVersion(process.env.VERSION || '0.0.0')
-    .addTag('recruitment-orchestration')
+    .addTag('Agency Actor API', 'Manage the life cycle of the Agency Actor, including details and assets')
     .addBearerAuth()
     .build();
   const documentFactory = () => SwaggerModule.createDocument(app, config);
