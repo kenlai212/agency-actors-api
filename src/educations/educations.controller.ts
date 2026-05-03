@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, Param, Post, Query } from "@nestjs/common";
 import { ApiOkResponse, ApiOperation } from "@nestjs/swagger";
-import { EducationDTO, NewEducationRequestDTO, SearchEducationsRequestDTO } from "./educations.dtos";
+import { EducationDTO, NewEducationRequestDTO, SearchEducationsRequestDTO, UploadDocumentRequestDTO } from "./educations.dtos";
 import { EducationsService } from "./educations.service";
 
 @Controller("educations")
@@ -36,10 +36,20 @@ export class EducationsController {
     }
 
     @Delete("/:educationId")
+    @ApiOperation({
+        summary: 'Delete Education.',
+        description: `Delete Education will also delete document stored as well`
+    })
+    @ApiOkResponse({
+        description: 'Successfully DELETE response message.',
+        type: String,
+    })
     async deleteEducation(@Param("educationId") educationId: string): Promise<string> {
-        return `Successfully deleted ${educationId}`
+        return await this.educationsService.deleteEducation(educationId);
     }
 
     @Post("/upload-document")
-    async uploadDocument() { }
+    async uploadDocument(@Body() body: UploadDocumentRequestDTO): Promise<EducationDTO> {
+        return await this.educationsService.uploadDocument(body.educationId, body.documentBase64);
+    }
 }

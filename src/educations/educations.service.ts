@@ -68,6 +68,63 @@ export class EducationsService extends ActorAssetsService {
         return educationDTOs;
     }
 
+    async uploadDocument(educationId: string, documentBase64: string): Promise<EducationDTO> {
+        let education = await this.educationRepository.findOne({ where: { educationId } })
+            .catch((error) => {
+                this.logger.error(error);
+                throw new InternalServerErrorException("uploadDocument() not available");
+            });
+
+        if (!education)
+            throw new BadRequestException(`Invvalid educationId: ${educationId}`);
+
+        const documentIdentifier = await this.callExternalDocumentStorageService(documentBase64);
+
+        education.documentIdentifier = documentIdentifier;
+
+        education = await this.educationRepository.save(education)
+            .catch((error) => {
+                this.logger.error(error);
+                throw new InternalServerErrorException("uploadDocument() not available");
+            });
+
+        return this.entityToDTO(education);
+    }
+
+    async deleteEducation(educationId: string): Promise<string> {
+        let education = await this.educationRepository.findOne({ where: { educationId } })
+            .catch((error) => {
+                this.logger.error(error);
+                throw new InternalServerErrorException("deleteEducation() not available");
+            });
+
+        if (!education)
+            throw new BadRequestException(`Invalid educationId: ${educationId}`)
+
+        await this.educationRepository.delete(education)
+            .catch((error) => {
+                this.logger.error(error);
+                throw new InternalServerErrorException("deleteEducation() not available");
+            });
+
+        if (education.documentIdentifier) {
+            await this.callExternalDocumentStorageDeleteService(education.documentIdentifier)
+                .catch((error) => {
+                    this.logger.error(error);
+                    throw new InternalServerErrorException("deleteEducation() not available");
+                });
+        }
+
+        const msg = `Successfully deleted education with id: ${educationId}`
+        this.logger.log(msg);
+        return msg;
+    }
+
+    private async callExternalDocumentStorageDeleteService(documentId: string): Promise<string> {
+        return "Successfully deleted";
+    }
+
+
     private async callExternalDocumentStorageService(documentBase64: string): Promise<string> {
         return "https://example.com/document/12345";
     }
