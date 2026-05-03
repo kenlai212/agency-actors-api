@@ -18,6 +18,7 @@ import { EmailAddress } from './emailAddresses/emailAddress.entity';
 import { PhoneNumberDTO } from './phoneNumbers/phoneNumbers.dtos';
 import { phoneNumbersModule } from './phoneNumbers/phoneNumbers.module';
 import { PhoneNumber } from './phoneNumbers/phoneNumber.entity';
+import { Education } from './educations/education.entity';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { PhoneNumber } from './phoneNumbers/phoneNumber.entity';
         AgencyActor,
         EmailAddress,
         PhoneNumber,
+        Education,
         Resume,
         GovIssueDoc,
         SocialProfile,

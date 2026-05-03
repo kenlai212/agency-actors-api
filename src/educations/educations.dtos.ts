@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
-import { IsString, MaxLength } from 'class-validator';
+import { IsBase64, IsOptional, IsString, Max, MaxLength, Min } from 'class-validator';
 import { ActorAssetDTO, ActorAssetRequestDTO } from "../actorAssets/actorAssets.dtos";
 
 export class EducationDTO extends ActorAssetDTO {
@@ -31,13 +31,13 @@ export class EducationDTO extends ActorAssetDTO {
         description: 'Beginning Year of the Education',
         example: `YYYY`
     })
-    startYear!: string;
+    startYear!: number;
 
     @ApiProperty({
         description: 'Final Year of the Education',
         example: `YYYY`
     })
-    endYear!: string;
+    endYear!: number;
 
     @ApiProperty({
         description: 'Document ID from storage',
@@ -46,9 +46,10 @@ export class EducationDTO extends ActorAssetDTO {
     documentIdentifier!: string;
 }
 
-class EducationDetails {
+export class EducationDetails {
     @ApiPropertyOptional({
         description: 'Name of Insititution',
+        example: `University of Beijing`
     })
     @IsString()
     @MaxLength(255)
@@ -56,6 +57,7 @@ class EducationDetails {
 
     @ApiPropertyOptional({
         description: 'Name of Degree',
+        example: `Bachelor of Science`
     })
     @IsString()
     @MaxLength(255)
@@ -63,6 +65,7 @@ class EducationDetails {
 
     @ApiPropertyOptional({
         description: 'Field of Study',
+        example: `Science`
     })
     @IsString()
     @MaxLength(255)
@@ -70,37 +73,50 @@ class EducationDetails {
 
     @ApiPropertyOptional({
         description: 'Beginning Year of the Education',
+        example: `2004`
     })
-    @IsString()
-    @MaxLength(4)
-    startYear!: string;
+    @Min(1900)
+    @Max(2100)
+    startYear!: number;
 
     @ApiPropertyOptional({
         description: 'Final Year of the Education',
+        example: `2008`
     })
-    @IsString()
-    @MaxLength(4)
-    endYear!: string;
+    @Min(1900)
+    @Max(2100)
+    endYear!: number;
 }
 
 export class NewEducationRequestDTO extends ActorAssetRequestDTO {
     @ApiPropertyOptional({
         description: 'Education Details',
     })
+    @IsOptional()
     details: EducationDetails
 
     @ApiPropertyOptional({
         description: 'Document base64 file string',
     })
-    @IsString()
-    @MaxLength(4)
+    @IsBase64()
+    @IsOptional()
     documentBase64!: string;
 }
 
-export class SearchEducationsRequestDTO extends ActorAssetRequestDTO {
-    @ApiProperty({
-        description: 'Education record ID',
-        example: `96e4e28e-2404-4a4f-b69a-6b0709559596`
+export class SearchEducationsRequestDTO {
+    @ApiPropertyOptional({
+        description: 'Actor ID'
     })
+    @IsOptional()
+    @IsString()
+    @MaxLength(36)
+    actorId: string;
+
+    @ApiPropertyOptional({
+        description: 'Education record ID'
+    })
+    @IsOptional()
+    @IsString()
+    @MaxLength(36)
     educationId: string;
 }
