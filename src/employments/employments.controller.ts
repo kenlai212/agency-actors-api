@@ -1,17 +1,30 @@
-import { Body, Controller, Delete, Get, Param, Post } from "@nestjs/common";
-import { EmploymentDTO, NewEmploymentRequestDTO } from "./employments.dtos";
+import { Body, Controller, Delete, Get, Param, Post, Query } from "@nestjs/common";
+import { EmploymentDTO, NewEmploymentRequestDTO, searchEmploymentsRequestDTO } from "./employments.dtos";
 import { UploadDocumentRequestDTO } from "../certifications/certifications.dtos";
+import { EmploymentsService } from "./employments.service";
+import { ApiOkResponse, ApiOperation } from "@nestjs/swagger";
 
 @Controller("/employments")
 export class EmploymentsController {
+    constructor(
+        private readonly employmentsService: EmploymentsService
+    ) { }
+
     @Post("/")
+    @ApiOperation({
+        summary: 'Create new Employment for an Actor'
+    })
+    @ApiOkResponse({
+        description: 'Successfully POST response EmmploymentDTO.',
+        type: EmploymentDTO,
+    })
     async createNewEmployments(@Body() newEmploymentRequestDTO: NewEmploymentRequestDTO): Promise<EmploymentDTO> {
-        return new EmploymentDTO();
+        return await this.employmentsService.createNewEmployment(newEmploymentRequestDTO);
     }
 
     @Get("/")
-    async searchEmployments(): Promise<EmploymentDTO[]> {
-        return [];
+    async searchEmployments(@Query() query: searchEmploymentsRequestDTO): Promise<EmploymentDTO[]> {
+        return await this.employmentsService.searchEmployment(query.actorId, query.employmentId);
     }
 
     @Delete("/:employmentId")

@@ -1,5 +1,6 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { ActorAssetDTO, ActorAssetRequestDTO } from "../actorAssets/actorAssets.dtos";
+import { IsBoolean, IsDate, IsDateString, IsNotEmpty, IsOptional, IsString, MaxLength } from "class-validator";
 
 export class EmploymentDTO extends ActorAssetDTO {
     @ApiProperty({
@@ -47,16 +48,71 @@ export class EmploymentDTO extends ActorAssetDTO {
 
 export class NewEmploymentRequestDTO extends ActorAssetRequestDTO {
     @ApiProperty({
+        description: 'Employment Company name',
+        example: 'Manulife'
     })
-    details: EmploymentDTO;
+    @IsNotEmpty()
+    @IsString()
+    @MaxLength(128)
+    companyName: string;
 
     @ApiProperty({
+        description: 'Job Title',
+        example: 'Software Engineer'
     })
-    documentIdentifier: string;
+    @IsNotEmpty()
+    @IsString()
+    @MaxLength(128)
+    jobTitle: string;
+
+    @ApiProperty({
+        description: 'Office location',
+        example: '123 Main Street, New York, USA'
+    })
+    @IsNotEmpty()
+    @IsString()
+    @MaxLength(255)
+    location: string;
+
+    @ApiProperty({
+        description: 'Start date of employment',
+        example: 'YYYY-MM-DD'
+    })
+    @IsNotEmpty()
+    @IsDateString()
+    startDate: Date;
+
+    @ApiPropertyOptional({
+        description: 'End date of employment',
+        example: 'YYYY-MM-DD'
+    })
+    @IsOptional()
+    @IsDateString()
+    endDate!: Date;
+
+    @ApiPropertyOptional({
+        description: 'Is this current job? TRUE or FALSE',
+        example: 'TRUE'
+    })
+    @IsOptional()
+    @IsBoolean()
+    isCurrent!: boolean;
 }
 
-export class searchEmploymentsRequestDTO extends ActorAssetRequestDTO {
-    @ApiProperty({
+export class searchEmploymentsRequestDTO {
+    @ApiPropertyOptional({
+        description: 'Actor ID',
     })
-    employmentId: string
+    @IsOptional()
+    @IsString()
+    @MaxLength(36)
+    actorId!: string
+
+    @ApiPropertyOptional({
+        description: 'Employment Record ID',
+    })
+    @IsOptional()
+    @IsString()
+    @MaxLength(36)
+    employmentId!: string
 }

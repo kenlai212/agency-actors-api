@@ -19,6 +19,7 @@ import { PhoneNumberDTO } from './phoneNumbers/phoneNumbers.dtos';
 import { phoneNumbersModule } from './phoneNumbers/phoneNumbers.module';
 import { PhoneNumber } from './phoneNumbers/phoneNumber.entity';
 import { Education } from './educations/education.entity';
+import { Employment } from './employments/employment.entity';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { Education } from './educations/education.entity';
         EmailAddress,
         PhoneNumber,
         Education,
+        Employment,
         Resume,
         GovIssueDoc,
         SocialProfile,

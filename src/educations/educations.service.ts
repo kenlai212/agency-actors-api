@@ -92,20 +92,15 @@ export class EducationsService extends ActorAssetsService {
     }
 
     async deleteEducation(educationId: string): Promise<string> {
-        let education = await this.educationRepository.findOne({ where: { educationId } })
+        const education = await this.educationRepository.findOne({ where: { educationId } })
             .catch((error) => {
                 this.logger.error(error);
                 throw new InternalServerErrorException("deleteEducation() not available");
             });
+        this.logger.debug(`found education: ${JSON.stringify(education)}`);
 
         if (!education)
             throw new BadRequestException(`Invalid educationId: ${educationId}`)
-
-        await this.educationRepository.delete(education)
-            .catch((error) => {
-                this.logger.error(error);
-                throw new InternalServerErrorException("deleteEducation() not available");
-            });
 
         if (education.documentIdentifier) {
             await this.callExternalDocumentStorageDeleteService(education.documentIdentifier)
@@ -114,6 +109,12 @@ export class EducationsService extends ActorAssetsService {
                     throw new InternalServerErrorException("deleteEducation() not available");
                 });
         }
+
+        await this.educationRepository.delete(education)
+            .catch((error) => {
+                this.logger.error(error);
+                throw new InternalServerErrorException("deleteEducation() not available");
+            });
 
         const msg = `Successfully deleted education with id: ${educationId}`
         this.logger.log(msg);

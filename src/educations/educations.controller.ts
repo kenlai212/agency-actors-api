@@ -49,6 +49,14 @@ export class EducationsController {
     }
 
     @Post("/upload-document")
+    @ApiOperation({
+        summary: 'Upload Education Document',
+        description: `Upload a document (e.g pdf, image) to an existing Education. Will send to storage facility`
+    })
+    @ApiOkResponse({
+        description: 'Successfully POST response EducationDTO',
+        type: EducationDTO,
+    })
     async uploadDocument(@Body() body: UploadDocumentRequestDTO): Promise<EducationDTO> {
         return await this.educationsService.uploadDocument(body.educationId, body.documentBase64);
     }

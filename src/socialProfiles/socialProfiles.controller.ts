@@ -10,7 +10,7 @@ export class SocialProfilesController {
         private readonly socialProfilesService: SocialProfilesService,
     ) { }
 
-    @Get("/social-profiles")
+    @Get("/")
     async getCandidateById(@Query() query: GetSocialProfilesRequestDTO): Promise<Array<SocialProfileDTO>> {
         return await this.socialProfilesService.findSocialProfiles(
             query.actorId,
@@ -19,7 +19,7 @@ export class SocialProfilesController {
         );
     }
 
-    @Post("/social-profile")
+    @Post("/")
     async newCandidate(@Body() requestBody: PostSocialProfileRequestDTO): Promise<SocialProfileDTO> {
         return await this.socialProfilesService.createSocialProfile(
             requestBody.actorId,
@@ -30,7 +30,7 @@ export class SocialProfilesController {
         );
     }
 
-    @Delete("/social-profile/:socialProfileId")
+    @Delete("/:socialProfileId")
     async deleteSocialProfile(@Param("socialProfileId") socialProfileId: string): Promise<void> {
         return await this.socialProfilesService.deleteSocialProfile(socialProfileId);
     }
