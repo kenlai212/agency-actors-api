@@ -1,10 +1,13 @@
 import { Body, Controller, Delete, Get, Post, Query } from "@nestjs/common";
-import { CreatePhoneNumberDTO, PhoneNumberDTO, SearchPhoneNumberDTO } from "./phoneNumbers.dtos";
+import { CreatePhoneNumberRequestDTO, PhoneNumberDTO, SearchPhoneNumberDTO } from "./phoneNumbers.dtos";
 import { ApiOkResponse, ApiOperation } from "@nestjs/swagger";
+import { PhoneNumbersService } from "./phoneNumber.service";
 
 @Controller("/phone-numbers")
 export class PhoneNumbersController {
-    constructor() { }
+    constructor(
+        private readonly phoneNumbersService: PhoneNumbersService
+    ) { }
 
     @Post("/")
     @ApiOperation({
@@ -15,8 +18,8 @@ export class PhoneNumbersController {
         description: 'Successfully POST response PhoneNumberDTO.',
         type: PhoneNumberDTO,
     })
-    async createPhoneNumber(@Body() body: CreatePhoneNumberDTO): Promise<PhoneNumberDTO> {
-        return new PhoneNumberDTO
+    async createPhoneNumber(@Body() body: CreatePhoneNumberRequestDTO): Promise<PhoneNumberDTO> {
+        return await this.phoneNumbersService.createNewPhoneNumber(body.actorId, body.countryCode, body.numberString, body.phoneNumberType)
     }
 
     @Get("/")

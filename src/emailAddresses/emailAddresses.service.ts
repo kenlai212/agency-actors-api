@@ -4,7 +4,6 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { EmailAddress } from "./emailAddress.entity";
 import { Repository } from "typeorm";
 import { EmailAddressDTO } from "./emailAddresses.dtos";
-import { NotFoundError } from "rxjs";
 
 @Injectable()
 export class EmailAdddressesService extends ActorAssetsService {
@@ -62,6 +61,9 @@ export class EmailAdddressesService extends ActorAssetsService {
                 throw new InternalServerErrorException("searchEmailAddresses() not available");
             })
         this.logger.debug(`email addresses found : ${emailAddresses}`);
+
+        if (!emailAddresses || emailAddresses.length === 0)
+            throw new NotFoundException(`${addressString} doesn't exist`);
 
         let emailAddressDTOs = []
         for (let emailAddress of emailAddresses) {

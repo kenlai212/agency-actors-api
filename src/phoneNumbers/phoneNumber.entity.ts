@@ -1,7 +1,7 @@
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 import { ActorAsset } from "../actorAssets/actorAsset.entity";
 
-export enum PhoneType {
+export enum PhoneNumberType {
     MOBILE = "MOBILE",
     HOME = "HOME",
     OFFICE = "OFFICE",
@@ -32,4 +32,11 @@ export class PhoneNumber extends ActorAsset {
         length: 64,
     })
     numberString: string;
+
+    @Column({
+        nullable: false,
+        type: "enum",
+        enum: PhoneNumberType,
+    })
+    phoneNumberType: PhoneNumberType
 }
