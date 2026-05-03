@@ -32,7 +32,7 @@ export class EmailAddressesController {
         type: EmailAddressDTO,
     })
     async searchEmailAddresses(@Query() query: SearchEmailAddressesRequestDTO): Promise<EmailAddressDTO[]> {
-        return [];
+        return await this.emailAddressesService.searchEmailAddresses(query.actorId, query.addressString);
     }
 
     @Delete("/:emailAddressId")
@@ -43,19 +43,19 @@ export class EmailAddressesController {
         description: 'Successfully DELETE response a successful message',
         type: String,
     })
-    async deleteEmailAddress(@Param("emailAddressId") EmailAddressId: string): Promise<string> {
-        return "Successfully deleted email address"
+    async deleteEmailAddress(@Param("emailAddressId") emailAddressId: string): Promise<string> {
+        return await this.emailAddressesService.deleteEmailAddress(emailAddressId);
     }
 
     @Put("/lock-email-address")
     @ApiOperation({
-        summary: 'set locked Email Address for an Actor'
+        summary: 'Lock an Email Address for an Actor'
     })
     @ApiOkResponse({
         description: 'Successfully PUT response list of EmailAddressDTOs belonging to the actor',
         type: Array<EmailAddressDTO>,
     })
-    async setDefaultEmailAddress(@Body() body: SetLockEmailAddressRequestDTO): Promise<EmailAddressDTO[]> {
-        return [];
+    async setLockEmailAddress(@Body() body: SetLockEmailAddressRequestDTO): Promise<EmailAddressDTO[]> {
+        return await this.emailAddressesService.lockEmailAddress(body.actorId, body.addressString);
     }
 }

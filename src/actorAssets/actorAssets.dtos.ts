@@ -23,7 +23,7 @@ export class ActorAssetDTO {
 
 export class ActorAssetRequestDTO {
     @ApiProperty({
-        description: 'The ID of the candidate or agent',
+        description: 'Actor ID',
     })
     @IsNotEmpty()
     @IsString()

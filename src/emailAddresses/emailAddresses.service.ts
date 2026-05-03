@@ -1,9 +1,10 @@
-import { BadRequestException, Injectable, InternalServerErrorException, Logger } from "@nestjs/common";
+import { BadRequestException, Injectable, InternalServerErrorException, Logger, NotFoundException } from "@nestjs/common";
 import { ActorAssetsService } from "../actorAssets/actorAssets.service";
 import { InjectRepository } from "@nestjs/typeorm";
 import { EmailAddress } from "./emailAddress.entity";
 import { Repository } from "typeorm";
 import { EmailAddressDTO } from "./emailAddresses.dtos";
+import { NotFoundError } from "rxjs";
 
 @Injectable()
 export class EmailAdddressesService extends ActorAssetsService {
@@ -19,6 +20,9 @@ export class EmailAdddressesService extends ActorAssetsService {
     async createNewEmailAddress(actorId: string, addressString: string): Promise<EmailAddressDTO> {
         let emailAddressEntity = new EmailAddress();
 
+        await this.validateUniqueEmailAddress(addressString);
+        emailAddressEntity.addressString = addressString;
+
         await this.validateActor(actorId);
         emailAddressEntity.actorId = actorId;
 
@@ -28,11 +32,10 @@ export class EmailAdddressesService extends ActorAssetsService {
                 this.logger.error(error);
                 throw new InternalServerErrorException("createNewEmailAddress() not available");
             });
-        if (!actorOtherEmailAddresses)
+
+        if (!actorOtherEmailAddresses || actorOtherEmailAddresses.length === 0)
             //If none, set this one to 'locked'.
             emailAddressEntity.isLocked = true;
-
-        await this.validateUniqueEmailAddress(addressString);
 
         emailAddressEntity = await this.emailAddressRepository.save(emailAddressEntity)
             .catch((error) => {
@@ -41,6 +44,139 @@ export class EmailAdddressesService extends ActorAssetsService {
             });
 
         return this.entityToDTO(emailAddressEntity);
+    }
+
+    async searchEmailAddresses(actorId?: string, addressString?: string): Promise<EmailAddressDTO[]> {
+        if (!actorId && !addressString)
+            throw new BadRequestException(`Must provide atleast one of actorId or addressString`);
+
+        let whereClause = {}
+        if (actorId)
+            whereClause = { actorId }
+        else
+            whereClause = { addressString }
+
+        const emailAddresses = await this.emailAddressRepository.find({ where: whereClause })
+            .catch((error) => {
+                this.logger.error(error);
+                throw new InternalServerErrorException("searchEmailAddresses() not available");
+            })
+        this.logger.debug(`email addresses found : ${emailAddresses}`);
+
+        let emailAddressDTOs = []
+        for (let emailAddress of emailAddresses) {
+            emailAddressDTOs.push(this.entityToDTO(emailAddress));
+        }
+
+        return emailAddressDTOs;
+    }
+
+    async deleteEmailAddress(emailAddressId: string): Promise<string> {
+        const emailAddress = await this.emailAddressRepository.findOne({ where: { emailAddressId } })
+
+        if (!emailAddress)
+            throw new NotFoundException("Email address not found");
+
+        if (emailAddress.isLocked)
+            throw new BadRequestException("Cannot delete a locked Email Address, it is tied to an Actor as an Identifier. Please create another locked Email Address for this Actor, before deleting this one")
+
+        await this.emailAddressRepository.delete(emailAddressId)
+            .catch((error) => {
+                this.logger.error(error);
+                throw new InternalServerErrorException("deleteEmailAddress not available");
+            });
+
+        const msg = `Successfully deleted email address with id: ${emailAddressId}`;
+        this.logger.log(msg);
+        return msg;
+    }
+
+    async lockEmailAddress(actorId: string, addressString: string) {
+        //check if this is a valid actor
+        await this.validateActor(actorId);
+
+        const actorEmailAddresses = await this.emailAddressRepository.find({ where: { actorId } })
+            .catch((error) => {
+                this.logger.error(error);
+                throw new InternalServerErrorException("lockEmailAddress() not available");
+            });
+
+        if (this.validateUniqueEmailAddress(addressString)) {
+            //if this emailAddress doesn't exist in the db, then create it a new emailAddress and lock it to this actor
+
+            let newEmailAddress = new EmailAddress();
+            newEmailAddress.actorId = actorId;
+            newEmailAddress.addressString = addressString;
+            newEmailAddress.isLocked = true;
+
+            newEmailAddress = await this.emailAddressRepository.save(newEmailAddress)
+                .catch((error) => {
+                    this.logger.error(error);
+                    throw new InternalServerErrorException("lockEmailAddress() not available");
+                });
+
+            this.logger.log(`Created new Locked Email Address ${addressString} for Actor ${actorId}`)
+
+            return [this.entityToDTO(newEmailAddress)];
+        } else {
+            //this is an existing emailAddress
+            //find all emailAddresses of this actor, and set the isLock flag from old to new emailAddress
+            const emailAddresses = await this.emailAddressRepository.find({ where: { actorId } })
+                .catch((error) => {
+                    this.logger.error(error);
+                    throw new InternalServerErrorException("lockEmailAddress() not available");
+                });
+
+            //loop thru all the emailAddress of this actor to find old + new locked email addresses
+            let oldLockedEmailAddress: EmailAddress;
+            let targetEmailAddress: EmailAddress;
+            for (let emailAddress of emailAddresses) {
+                if (emailAddress.isLocked)
+                    oldLockedEmailAddress = emailAddress;
+
+                if (emailAddress.addressString === addressString)
+                    targetEmailAddress = emailAddress;
+            }
+
+            if (!targetEmailAddress)
+                throw new BadRequestException(`${addressString} does not belog to Actor ${actorId}`)
+
+            //lock target emailAddress
+            targetEmailAddress.isLocked = true;
+            await this.emailAddressRepository.save(targetEmailAddress)
+                .then(() => {
+                    this.logger.log(`Locked Email Address ${targetEmailAddress.addressString} for Actor ${actorId}`)
+                })
+                .catch((error) => {
+                    this.logger.error(error);
+                    throw new InternalServerErrorException("lockEmailAddress() not available");
+                });
+
+            //flip unlocked old emailAddress
+            oldLockedEmailAddress.isLocked = false;
+            await this.emailAddressRepository.save(oldLockedEmailAddress)
+                .then(() => {
+                    this.logger.log(`Unlocked Email Address ${oldLockedEmailAddress.addressString} for Actor ${actorId}`)
+                })
+                .catch((error) => {
+                    this.logger.error(error);
+                    throw new InternalServerErrorException("lockEmailAddress() not available");
+                });
+        }
+
+        //build output
+        let emailAddresses = await this.emailAddressRepository.find({ where: { actorId } })
+            .catch((error) => {
+                this.logger.error(error);
+                throw new InternalServerErrorException("lockEmailAddress() not available");
+            });
+
+        let emailAddressesDTOs = []
+        for (let emailAddress of emailAddresses) {
+            emailAddressesDTOs.push(this.entityToDTO(emailAddress))
+        }
+
+        return emailAddressesDTOs;
     }
 
     async validateUniqueEmailAddress(addressString: string) {
