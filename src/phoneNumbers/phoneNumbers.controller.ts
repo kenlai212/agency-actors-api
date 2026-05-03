@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Post, Query } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, Query } from "@nestjs/common";
 import { CreatePhoneNumberRequestDTO, PhoneNumberDTO, SearchPhoneNumberDTO } from "./phoneNumbers.dtos";
 import { ApiOkResponse, ApiOperation } from "@nestjs/swagger";
 import { PhoneNumbersService } from "./phoneNumber.service";
@@ -32,7 +32,7 @@ export class PhoneNumbersController {
         type: PhoneNumberDTO,
     })
     async searchPhoneNumbers(@Query() query: SearchPhoneNumberDTO): Promise<PhoneNumberDTO[]> {
-        return [];
+        return await this.phoneNumbersService.searchPhoneNuber(query.actorId, query.countryCode, query.numberString);
     }
 
     @Delete("/:phoneNumberId")
@@ -41,10 +41,10 @@ export class PhoneNumbersController {
     })
     @ApiOkResponse({
         description: 'DELETE response a successfull message',
-        type: PhoneNumberDTO,
+        type: String,
     })
-    async deletePhoneNumber(): Promise<string> {
-        return "Phone number deleted";
+    async deletePhoneNumber(@Param("phoneNumberId") phoneNumberId: string): Promise<string> {
+        return await this.phoneNumbersService.deletePhoneNumber(phoneNumberId);
     }
 
 }

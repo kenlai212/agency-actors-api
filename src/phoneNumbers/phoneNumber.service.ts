@@ -38,7 +38,49 @@ export class PhoneNumbersService extends ActorAssetsService {
     }
 
     async searchPhoneNuber(actorId?: string, countryCode?: CountryCode, numberString?: string): Promise<PhoneNumberDTO[]> {
-        return []
+        if (!actorId && !countryCode && !numberString)
+            throw new BadRequestException("Must provide at least one search parameter");
+
+        let whereClause = {}
+        if (actorId)
+            whereClause = { actorId };
+        else
+            whereClause = { countryCode, numberString };
+
+        const phoneNumbers = await this.phoneNumberRepository.find({ where: whereClause })
+            .catch((error) => {
+                this.logger.error(error);
+                throw new InternalServerErrorException("searchPhoneNuber() not available");
+            })
+
+        let phoneNumberDTOs = []
+        for (let phoneNumber of phoneNumbers) {
+            phoneNumberDTOs.push();
+            phoneNumberDTOs.push(this.entityToDTO(phoneNumber));
+        }
+
+        return phoneNumberDTOs;
+    }
+
+    async deletePhoneNumber(phoneNumberId: string): Promise<string> {
+        const phoneNumber = await this.phoneNumberRepository.findOne({ where: { phoneNumberId } })
+            .catch((error) => {
+                this.logger.error(error);
+                throw new InternalServerErrorException("deletePhoneNumber() not available");
+            })
+
+        if (!phoneNumber)
+            throw new BadRequestException(`Invalid phoneNumberId`)
+
+        await this.phoneNumberRepository.delete(phoneNumber)
+            .catch((error) => {
+                this.logger.error(error);
+                throw new InternalServerErrorException("deletePhoneNumber() not available");
+            })
+
+        const msg = `Successfully deleted phoneNumberId: ${phoneNumberId}`
+        this.logger.log(msg)
+        return msg
     }
 
     async validateUniquePhoneNumber(countryCode: CountryCode, numberString: string) {

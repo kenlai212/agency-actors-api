@@ -85,6 +85,7 @@ export class SearchPhoneNumberDTO {
         description: `Phone Number String`,
         example: `12345678`
     })
+    @IsOptional()
     @IsString()
     @MaxLength(36)
     numberString!: string;
