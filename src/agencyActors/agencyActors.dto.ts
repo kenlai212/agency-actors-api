@@ -1,6 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
-import { IsNotEmpty, IsString, MaxLength, IsEmail, IsOptional, IsDate } from 'class-validator';
-import { AgencyActorType, Country, Gender } from "./agencyActor.entity";
+import { IsNotEmpty, IsString, MaxLength, IsEmail, IsOptional, IsDate, IsDateString } from 'class-validator';
+import { AgencyActorType, Country, Gender, ResidencyStatus } from "./agencyActor.entity";
 
 export class AgencyActorDTO {
     @ApiProperty({
@@ -10,7 +10,7 @@ export class AgencyActorDTO {
     actorId: string;
 
     @ApiProperty({
-        description: 'Agency Actor Type',
+        description: `Agency Actor Type : ${Object.keys(AgencyActorType)}`,
         enum: AgencyActorType,
         enumName: "AgencyActorType"
     })
@@ -18,22 +18,22 @@ export class AgencyActorDTO {
 
     @ApiProperty({
         description: 'Actor fullname',
-        example: "John Smith"
+        example: "Jane Smith"
     })
     fullName: string;
 
-    @ApiProperty({
-        description: `Actor's Gender, can be MALE, FEMALE, OTHER`,
+    @ApiPropertyOptional({
+        description: `Actor's Gender : ${Object.keys(Gender)}`,
         enum: Gender,
         enumName: "Gender"
     })
-    gender: Gender;
+    gender!: Gender;
 
-    @ApiProperty({
+    @ApiPropertyOptional({
         description: `Actor's Date of Birth, `,
-        example: "YYYY-MM-DD"
+        example: "2005-11-30"
     })
-    dob: Date;
+    dob!: Date;
 
     @ApiProperty({
         description: 'Record creation datetime',
@@ -47,28 +47,43 @@ export class AgencyActorDTO {
     })
     updatedAt: Date;
 
-    @ApiProperty({
-        description: `Actor's country of resistence`,
-        example: "HK"
+    @ApiPropertyOptional({
+        description: `Actor's country of resistence : : ${Object.keys(Country)}`,
+        example: Country.SG
     })
     countryOfResidence: Country;
 
-    @ApiProperty({
-        description: `Actor's Nationality`,
-        example: "HK"
+    @ApiPropertyOptional({
+        description: `Actor's Nationality : : ${Object.keys(Country)}`,
+        example: Country.HK
     })
-    nationality: Country;
-    residencyStatus: string;
+    nationality!: Country;
+
+    @ApiPropertyOptional({
+        description: `Actor's recidency status : ${Object.keys(ResidencyStatus)}`,
+        example: `${ResidencyStatus.EMPLOYMENT_PASS}`
+    })
+    residencyStatus!: ResidencyStatus;
 }
 
 export class FindAgencyActorRequestDTO {
+    @ApiProperty({
+        description: `Agency Actor Type : ${Object.keys(AgencyActorType)}`,
+        enum: AgencyActorType,
+        enumName: "AgencyActorType"
+    })
     agencyActorType: AgencyActorType;
+
+    @ApiProperty({
+        description: 'Target Agency Actor ID',
+        example: "96e4e28e-2404-4a4f-b69a-6b0709559596"
+    })
     actorId: string;
 }
 
 export class NewAgencyActorRequestDTO {
     @ApiProperty({
-        description: `Agency Actor Type`,
+        description: `Agency Actor Type : ${Object.keys(AgencyActorType)}`,
         example: AgencyActorType.CANDIDATE
     })
     @IsNotEmpty()
@@ -76,7 +91,7 @@ export class NewAgencyActorRequestDTO {
 
     @ApiProperty({
         description: `Actor's Full Name`,
-        example: "John Smith"
+        example: "Jane Smith"
     })
     @IsNotEmpty()
     @IsString()
@@ -84,7 +99,7 @@ export class NewAgencyActorRequestDTO {
     fullName: string;
 
     @ApiPropertyOptional({
-        description: 'Gender of the Candidate',
+        description: `Actor's gender : ${Object.keys(Gender)}`,
         example: `${Gender.FEMALE}`,
         enum: Gender
     })
@@ -93,27 +108,33 @@ export class NewAgencyActorRequestDTO {
 
     @ApiPropertyOptional({
         description: 'Date of Birth for the Candidate',
-        example: `YYYY-MM-DD`
+        example: `2005-11-30`
     })
-    @IsDate()
+    @IsDateString()
     @IsOptional()
     dob: Date;
 
     @ApiPropertyOptional({
-        description: `Actor's country of residence`,
-        example: `${Country.HK}`,
+        description: `Actor's country of residence : ${Object.keys(Country)}`,
+        example: `${Country.SG}`,
         enum: Country
     })
     @IsOptional()
     countryOfResidence: Country;
 
     @ApiPropertyOptional({
-        description: `Actor's country of residence`,
+        description: `Actor's Nationality : ${Object.keys(Country)}`,
         example: `${Country.HK}`,
         enum: Country
     })
     @IsOptional()
-    nationality: string;
+    nationality: Country;
 
-    residencyStatus: string;
+    @ApiPropertyOptional({
+        description: `Actor's recidency status : ${Object.keys(ResidencyStatus)}`,
+        example: `${ResidencyStatus.EMPLOYMENT_PASS}`,
+        enum: ResidencyStatus
+    })
+    @IsOptional()
+    residencyStatus: ResidencyStatus;
 }

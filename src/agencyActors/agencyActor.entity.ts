@@ -1,22 +1,33 @@
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 export enum Gender {
-    MALE = 'male',
-    FEMALE = 'female',
-    OTHER = 'other'
+    MALE = 'MALE',
+    FEMALE = 'FEMALE',
+    OTHER = 'OTHER'
 }
 
 export enum AgencyActorType {
-    CANDIDATE,
-    AGENT,
-    BROKEN
+    CANDIDATE = "CANADATE",
+    AGENT = "AGENT",
+    BROKER = "BROKER"
 }
 
 export enum Country {
-    HK,
-    CH,
-    SG,
-    JP
+    HK = "HK",
+    CH = "CH",
+    SG = "SG",
+    JP = "JP"
+}
+
+export enum ResidencyStatus {
+    CITIZIEN = "CITIZEN",
+    PERMENANT_RESIDENT = "PERMENANT_RESIDENT",
+    EMPLOYMENT_PASS = "EMPLOYMENT_PASS_HOLDER",
+    DEPENDENT_PASS = "DEPENDENT_PASS",
+    LONG_TERM_VISIT_PASS = "LONG_TERM_VISIT",
+    WORK_PERMIT = "WORK_PERMIT",
+    STUDENT_PASS = "STUDENT_PASS",
+    DUAL_STATUS = "DUAL_STATUS"
 }
 
 @Entity()
@@ -73,12 +84,13 @@ export class AgencyActor {
         enum: Country,
         default: null
     })
-    nationality: string;
+    nationality: Country;
 
     @Column({
         nullable: true,
-        type: "varchar",
-        length: 64
+        type: "enum",
+        enum: ResidencyStatus,
+        default: null
     })
-    residencyStatus: string;
+    residencyStatus: ResidencyStatus;
 }

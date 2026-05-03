@@ -21,7 +21,7 @@ export class AgencyActorsController {
         type: AgencyActorDTO,
     })
     async findAgencyActor(@Query() query: FindAgencyActorRequestDTO): Promise<AgencyActorDTO> {
-        return await this.agencyActorsService.findAgencyActor(query.actorType, query.actorId);
+        return await this.agencyActorsService.findAgencyActor(query.agencyActorType, query.actorId);
     }
 
     @Post("/")
@@ -34,7 +34,7 @@ export class AgencyActorsController {
         type: AgencyActorDTO,
     })
     async newCandidate(@Body() requestBody: NewAgencyActorRequestDTO): Promise<AgencyActorDTO> {
-        return await this.agencyActorsService.createAgencyActor(requestBody.name);
+        return await this.agencyActorsService.createAgencyActor(requestBody);
     }
 
     @Delete("/:actorId")

@@ -22,6 +22,7 @@ export class AgencyActorsService {
         agencyActor.nationality = dto.nationality;
         agencyActor.countryOfResidence = dto.countryOfResidence;
         agencyActor.agencyActorType = dto.agencyActorType;
+        agencyActor.residencyStatus = dto.residencyStatus;
 
         await this.agencyActorRepository.save(agencyActor)
             .catch((error) => {
@@ -87,6 +88,9 @@ export class AgencyActorsService {
         dto.fullName = entity.fullName;
         dto.gender = entity.gender;
         dto.dob = entity.dob;
+        dto.countryOfResidence = entity.countryOfResidence;
+        dto.nationality = entity.nationality;
+        dto.residencyStatus = entity.residencyStatus;
         dto.createdAt = entity.createdAt;
         dto.updatedAt = entity.updatedAt;
         return dto;
