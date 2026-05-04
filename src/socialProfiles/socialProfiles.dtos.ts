@@ -4,7 +4,6 @@ import { IsNotEmpty, IsString, MaxLength, IsOptional } from 'class-validator';
 import { ActorAssetDTO, ActorAssetRequestDTO } from "../actorAssets/actorAssets.dtos";
 
 export class SocialProfileDTO extends ActorAssetDTO {
-    id: string
     socialProvider: SocialProvider
     url: string
     providerUserId: string

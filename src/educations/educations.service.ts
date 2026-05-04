@@ -6,14 +6,14 @@ import { Repository } from "typeorm";
 import { EducationDetails, EducationDTO } from "./educations.dtos";
 
 @Injectable()
-export class EducationsService extends ActorAssetsService {
-    private readonly logger: Logger = new Logger('EducationsService')
+export class EducationsService extends ActorAssetsService<Education> {
+    readonly logger: Logger = new Logger('EducationsService')
 
     constructor(
         @InjectRepository(Education)
         private readonly educationRepository: Repository<Education>,
     ) {
-        super();
+        super(educationRepository);
     }
 
     async createNewEducation(actorId: string, details?: EducationDetails, documentBase64?: string): Promise<EducationDTO> {
@@ -130,12 +130,8 @@ export class EducationsService extends ActorAssetsService {
         return "https://example.com/document/12345";
     }
 
-    private entityToDTO(entity: Education) {
-        let dto = new EducationDTO;
-        dto.educationId = entity.assetId;
-        dto.ownerActorId = entity.actorId;
-        dto.createdAt = entity.createdAt;
-        dto.updatedAt = entity.updatedAt;
+    entityToDTO(entity: Education) {
+        let dto = new EducationDTO(entity);
         dto.institutionName = entity.institutionName;
         dto.degree = entity.degree;
         dto.fieldOfStudy = entity.fieldOfStudy;

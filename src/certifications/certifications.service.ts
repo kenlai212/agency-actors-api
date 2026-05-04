@@ -7,7 +7,7 @@ import { AuthoritiesService } from "./authoritries.service";
 import { ActorAssetsService } from "../actorAssets/actorAssets.service";
 
 @Injectable()
-export class CertificationsService extends ActorAssetsService {
+export class CertificationsService extends ActorAssetsService<Certification> {
     private readonly logger: Logger = new Logger('CertificationsService')
 
     constructor(
@@ -15,7 +15,7 @@ export class CertificationsService extends ActorAssetsService {
         private readonly certificationRepository: Repository<Certification>,
         private readonly authortiesService: AuthoritiesService,
     ) {
-        super();
+        super(certificationRepository);
     }
 
     async createCertification(actorId: string, authority?: string, certificateName?: string, certificateNumber?: string, issueDate?: Date): Promise<CertificationDTO> {
@@ -125,14 +125,12 @@ export class CertificationsService extends ActorAssetsService {
         return "https://example.com/document/12345";
     }
 
-    private entityToDTO(entity: Certification): CertificationDTO {
-        const certificationDTO = new CertificationDTO();
-        certificationDTO.certificationId = entity.assetId;
-        certificationDTO.ownerActorId = entity.actorId;
-        certificationDTO.authority = entity.authority;
-        certificationDTO.certificateName = entity.certificateName;
-        certificationDTO.certificateNumber = entity.certificateNumber;
-        certificationDTO.issueDate = entity.issueDate;
-        return certificationDTO;
+    entityToDTO(entity: Certification): CertificationDTO {
+        const dto = new CertificationDTO(entity);
+        dto.authority = entity.authority;
+        dto.certificateName = entity.certificateName;
+        dto.certificateNumber = entity.certificateNumber;
+        dto.issueDate = entity.issueDate;
+        return dto;
     }
 }

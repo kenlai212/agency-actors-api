@@ -4,12 +4,6 @@ import { IsBoolean, IsDate, IsDateString, IsNotEmpty, IsOptional, IsString, MaxL
 
 export class EmploymentDTO extends ActorAssetDTO {
     @ApiProperty({
-        description: 'Employment Record ID',
-        example: '1234567890'
-    })
-    employmentId: string;
-
-    @ApiProperty({
         description: 'Employment Company name',
         example: 'Manulife'
     })

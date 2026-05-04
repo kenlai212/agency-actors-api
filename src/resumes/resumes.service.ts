@@ -6,14 +6,14 @@ import { Repository } from "typeorm";
 import { ActorAssetsService } from "../actorAssets/actorAssets.service";
 
 @Injectable()
-export class ResumesService extends ActorAssetsService {
+export class ResumesService extends ActorAssetsService<Resume> {
     private readonly logger: Logger = new Logger('ResumeService')
 
     constructor(
         @InjectRepository(Resume)
         private readonly resumeRepository: Repository<Resume>,
     ) {
-        super();
+        super(resumeRepository);
     }
 
     async uploadNewResume(actorId: string, documentBase64: string): Promise<ResumeDTO> {
@@ -77,12 +77,10 @@ export class ResumesService extends ActorAssetsService {
         return "https://example.com/document/12345";
     }
 
-    private entityToDTO(entity: Resume) {
-        let resumeDTO = new ResumeDTO();
-        resumeDTO.resumeId = entity.assetId;
-        resumeDTO.ownerActorId = entity.actorId;
-        resumeDTO.documentIdentifier = entity.documentIdentifier;
+    entityToDTO(entity: Resume) {
+        let dto = new ResumeDTO(entity);
+        dto.documentIdentifier = entity.documentIdentifier;
 
-        return resumeDTO;
+        return dto;
     }
 }

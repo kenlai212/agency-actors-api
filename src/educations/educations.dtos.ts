@@ -4,12 +4,6 @@ import { ActorAssetDTO, ActorAssetRequestDTO } from "../actorAssets/actorAssets.
 
 export class EducationDTO extends ActorAssetDTO {
     @ApiProperty({
-        description: 'Education record ID',
-        example: `96e4e28e-2404-4a4f-b69a-6b0709559596`
-    })
-    educationId!: string;
-
-    @ApiProperty({
         description: 'Name of Insititution',
         example: `University of Beijing`
     })

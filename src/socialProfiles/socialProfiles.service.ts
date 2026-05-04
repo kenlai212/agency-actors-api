@@ -6,14 +6,14 @@ import { SocialProfileDTO } from "./socialProfiles.dtos";
 import { ActorAssetsService } from "../actorAssets/actorAssets.service";
 
 @Injectable()
-export class SocialProfilesService extends ActorAssetsService {
-    private readonly logger: Logger = new Logger('SocialProfilesService')
+export class SocialProfilesService extends ActorAssetsService<SocialProfile> {
+    readonly logger: Logger = new Logger('SocialProfilesService')
 
     constructor(
         @InjectRepository(SocialProfile)
         private readonly socialProfileRepository: Repository<SocialProfile>,
     ) {
-        super()
+        super(socialProfileRepository)
     }
 
     async createSocialProfile(actorId: string, provider: SocialProvider, providerHandle: string, url?: string, providerUserId?: string): Promise<SocialProfileDTO> {
@@ -87,12 +87,8 @@ export class SocialProfilesService extends ActorAssetsService {
 
     }
 
-    private entityToDTO(entity: SocialProfile): SocialProfileDTO {
-        let dto = new SocialProfileDTO();
-        dto.id = entity.assetId;
-        dto.createdAt = entity.createdAt;
-        dto.updatedAt = entity.updatedAt;
-        dto.ownerActorId = entity.actorId;
+    entityToDTO(entity: SocialProfile): SocialProfileDTO {
+        let dto = new SocialProfileDTO(entity);
         dto.socialProvider = entity.provider;
         dto.url = entity.url;
         dto.providerUserId = entity.providerUserId;

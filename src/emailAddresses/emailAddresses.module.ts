@@ -1,4 +1,4 @@
-import { Module, Post } from "@nestjs/common";
+import { Logger, Module, Post } from "@nestjs/common";
 import { EmailAddressesController } from "./emailAddresses.controller";
 import { AgencyActorsModule } from "../agencyActors/agencyActors.module";
 import { EmailAdddressesService } from "./emailAddresses.service";

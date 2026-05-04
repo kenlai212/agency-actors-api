@@ -44,7 +44,7 @@ export class EmailAddressesController {
         type: String,
     })
     async deleteEmailAddress(@Param("emailAddressId") emailAddressId: string): Promise<string> {
-        return await this.emailAddressesService.deleteEmailAddress(emailAddressId);
+        return await this.emailAddressesService.deleteAsset(emailAddressId);
     }
 
     @Put("/lock-email-address")

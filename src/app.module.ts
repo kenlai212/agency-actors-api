@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Logger, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Resume } from './resumes/resume.entity';
@@ -15,7 +15,6 @@ import { AgencyActor } from './agencyActors/agencyActor.entity';
 import { AgencyActorsModule } from './agencyActors/agencyActors.module';
 import { EmailAddressesModule } from './emailAddresses/emailAddresses.module';
 import { EmailAddress } from './emailAddresses/emailAddress.entity';
-import { PhoneNumberDTO } from './phoneNumbers/phoneNumbers.dtos';
 import { phoneNumbersModule } from './phoneNumbers/phoneNumbers.module';
 import { PhoneNumber } from './phoneNumbers/phoneNumber.entity';
 import { Education } from './educations/education.entity';

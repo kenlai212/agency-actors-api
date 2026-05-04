@@ -6,14 +6,14 @@ import { Repository } from "typeorm";
 import { EmailAddressDTO } from "./emailAddresses.dtos";
 
 @Injectable()
-export class EmailAdddressesService extends ActorAssetsService {
+export class EmailAdddressesService extends ActorAssetsService<EmailAddress> {
     private readonly logger = new Logger('EmailAddressesService');
 
     constructor(
         @InjectRepository(EmailAddress)
-        private readonly emailAddressRepository: Repository<EmailAddress>,
+        private readonly emailAddressRepository: Repository<EmailAddress>
     ) {
-        super();
+        super(emailAddressRepository);
     }
 
     async createNewEmailAddress(actorId: string, addressString: string): Promise<EmailAddressDTO> {
@@ -73,7 +73,7 @@ export class EmailAdddressesService extends ActorAssetsService {
         return emailAddressDTOs;
     }
 
-    async deleteEmailAddress(assetId: string): Promise<string> {
+    /*async deleteEmailAddress(assetId: string): Promise<string> {
         const emailAddress = await this.emailAddressRepository.findOne({ where: { assetId } })
 
         if (!emailAddress)
@@ -91,7 +91,7 @@ export class EmailAdddressesService extends ActorAssetsService {
         const msg = `Successfully deleted email address with id: ${assetId}`;
         this.logger.log(msg);
         return msg;
-    }
+    }*/
 
     async lockEmailAddress(actorId: string, addressString: string) {
         //check if this is a valid actor
@@ -192,11 +192,8 @@ export class EmailAdddressesService extends ActorAssetsService {
             throw new BadRequestException("Email address already exists");
     }
 
-    private entityToDTO(entity: EmailAddress): EmailAddressDTO {
-        let dto = new EmailAddressDTO();
-        dto.ownerActorId = entity.actorId;
-        dto.createdAt = entity.createdAt;
-        dto.updatedAt = entity.updatedAt;
+    entityToDTO(entity: EmailAddress): EmailAddressDTO {
+        let dto = new EmailAddressDTO(entity);
         dto.addressString = entity.addressString;
         dto.isLocked = entity.isLocked;
 

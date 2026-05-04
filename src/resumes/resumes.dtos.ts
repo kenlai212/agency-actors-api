@@ -1,7 +1,6 @@
 import { ActorAssetDTO, ActorAssetRequestDTO } from "../actorAssets/actorAssets.dtos";
 
 export class ResumeDTO extends ActorAssetDTO {
-    resumeId: string;
     documentIdentifier: string;
 }
 

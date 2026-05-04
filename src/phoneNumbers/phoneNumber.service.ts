@@ -6,14 +6,13 @@ import { ActorAssetsService } from "../actorAssets/actorAssets.service";
 import { PhoneNumberDTO } from "./phoneNumbers.dtos";
 
 @Injectable()
-export class PhoneNumbersService extends ActorAssetsService {
-    private readonly logger = new Logger('PhoneNumbersService');
-
+export class PhoneNumbersService extends ActorAssetsService<PhoneNumber> {
+    readonly logger = new Logger('PhoneNumbersService')
     constructor(
         @InjectRepository(PhoneNumber)
         private readonly phoneNumberRepository: Repository<PhoneNumber>,
     ) {
-        super();
+        super(phoneNumberRepository);
     }
 
     async createNewPhoneNumber(actorId: string, countryCode: CountryCode, numberString: string, phoneNumberType: PhoneNumberType): Promise<PhoneNumberDTO> {
@@ -94,15 +93,12 @@ export class PhoneNumbersService extends ActorAssetsService {
             throw new BadRequestException(`Phone Number ${countryCode} ${numberString} already exist`);
     }
 
-    private entityToDTO(entity: PhoneNumber) {
-        let dto = new PhoneNumberDTO;
+    entityToDTO(entity: PhoneNumber) {
+        let dto = new PhoneNumberDTO(entity);
         dto.phoneNumberId = entity.assetId;
         dto.countryCode = entity.countryCode;
         dto.numberString = entity.numberString;
         dto.phoneNumberType = entity.phoneNumberType;
-        dto.createdAt = entity.createdAt;
-        dto.updatedAt = entity.updatedAt;
-        dto.ownerActorId = entity.actorId;
 
         return dto;
     }

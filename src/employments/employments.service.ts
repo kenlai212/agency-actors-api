@@ -6,14 +6,14 @@ import { Repository } from "typeorm";
 import { EmploymentDTO, NewEmploymentRequestDTO } from "./employments.dtos";
 
 @Injectable()
-export class EmploymentsService extends ActorAssetsService {
-    private readonly logger = new Logger('EmploymentsService');
+export class EmploymentsService extends ActorAssetsService<Employment> {
+    private readonly logger = new Logger('EmploymentsService')
 
     constructor(
         @InjectRepository(Employment)
         private readonly employmentRepository: Repository<Employment>,
     ) {
-        super();
+        super(employmentRepository);
     }
 
     async createNewEmployment(dto: NewEmploymentRequestDTO): Promise<EmploymentDTO> {
@@ -65,10 +65,8 @@ export class EmploymentsService extends ActorAssetsService {
         return employmentDTOs;
     }
 
-    private entityToDTO(entity: Employment) {
-        let dto = new EmploymentDTO();
-        dto.ownerActorId = entity.actorId;
-        dto.employmentId = entity.assetId;
+    entityToDTO(entity: Employment) {
+        let dto = new EmploymentDTO(entity);
         dto.companyName = entity.companyName;
         dto.jobTitle = entity.jobTitle;
         dto.location = entity.location;
