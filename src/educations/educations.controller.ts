@@ -36,7 +36,7 @@ export class EducationsController {
         return await this.educationsService.searchEducations(query.actorId, query.assetId);
     }
 
-    @Delete("/:educationId")
+    @Delete("/:assetId")
     @ApiOperation({
         summary: 'Delete Education.',
         description: `Delete Education will also delete document stored as well`
@@ -45,8 +45,8 @@ export class EducationsController {
         description: 'Successfully DELETE response message.',
         type: String,
     })
-    async deleteEducation(@Param("educationId") educationId: string): Promise<string> {
-        return await this.educationsService.deleteAsset(educationId);
+    async deleteEducation(@Param("assetId") assetId: string): Promise<string> {
+        return await this.educationsService.deleteAsset(assetId);
     }
 
     @Post("/upload-document")

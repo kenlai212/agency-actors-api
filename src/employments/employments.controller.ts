@@ -28,9 +28,9 @@ export class EmploymentsController {
         return await this.employmentsService.searchEmployment(query.actorId, query.assetId);
     }
 
-    @Delete("/:employmentId")
-    async deleteEmployments(@Param("employmentId") employmentId: string): Promise<string> {
-        return await this.employmentsService.deleteAsset(employmentId);
+    @Delete("/:assetId")
+    async deleteEmployments(@Param("assetId") assetId: string): Promise<string> {
+        return await this.employmentsService.deleteAsset(assetId);
     }
 
     @Post("/upload-document")

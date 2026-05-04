@@ -2,12 +2,15 @@ import { Body, Controller, Delete, Get, Param, Post, Put, Query } from "@nestjs/
 import { CreateNewEmailAddressRequestDTO, EmailAddressDTO, SearchEmailAddressesRequestDTO, SetLockEmailAddressRequestDTO } from "./emailAddresses.dtos";
 import { ApiOkResponse, ApiOperation } from "@nestjs/swagger";
 import { EmailAdddressesService } from "./emailAddresses.service";
+import { ActorAssetsController } from "../actorAssets/actorAssets.contorller";
 
 @Controller("/email-addresses")
-export class EmailAddressesController {
+export class EmailAddressesController extends ActorAssetsController {
     constructor(
         private readonly emailAddressesService: EmailAdddressesService
-    ) { }
+    ) {
+        super(emailAddressesService)
+    }
 
     @Post("/")
     @ApiOperation({
@@ -35,7 +38,7 @@ export class EmailAddressesController {
         return await this.emailAddressesService.searchEmailAddresses(query.actorId, query.addressString);
     }
 
-    @Delete("/:emailAddressId")
+    /*@Delete("/:assetId")
     @ApiOperation({
         summary: 'Delete an Email Address for an Actor'
     })
@@ -43,9 +46,9 @@ export class EmailAddressesController {
         description: 'Successfully DELETE response a successful message',
         type: String,
     })
-    async deleteEmailAddress(@Param("emailAddressId") emailAddressId: string): Promise<string> {
-        return await this.emailAddressesService.deleteAsset(emailAddressId);
-    }
+    async deleteEmailAddress(@Param("assetId") assetId: string): Promise<string> {
+        return await this.emailAddressesService.deleteAsset(assetId);
+    }*/
 
     @Put("/lock-email-address")
     @ApiOperation({

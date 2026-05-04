@@ -1,19 +1,19 @@
 import { Body, Controller, Delete, Get, Post } from "@nestjs/common";
 import { GovIssueDocDTO, NewGovIssueDocRequestDTO } from "./govIssueDocs.dtos";
 
-@Controller()
+@Controller("gov-issue-doc")
 export class GovIssueDocsController {
-    @Post("/government-id")
+    @Post("/")
     async uploadGovernmentId(@Body() newGovernmentIdRequest: NewGovIssueDocRequestDTO): Promise<GovIssueDocDTO> {
         return new GovIssueDocDTO();
     }
 
-    @Delete("/government-id/:governmentId")
+    @Delete("/:assetId")
     async deleteGovernmentId(): Promise<void> {
         return;
     }
 
-    @Get("/government-id/:candidateId")
+    @Get("/:candidateId")
     async getGovernmentId(): Promise<Array<GovIssueDocDTO>> {
         return [new GovIssueDocDTO()];
     }

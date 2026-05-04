@@ -35,7 +35,7 @@ export class PhoneNumbersController {
         return await this.phoneNumbersService.searchPhoneNuber(query.actorId, query.countryCode, query.numberString);
     }
 
-    @Delete("/:phoneNumberId")
+    @Delete("/:assetId")
     @ApiOperation({
         summary: 'Delete Phone Numbers belonging to an Actor'
     })
@@ -43,8 +43,8 @@ export class PhoneNumbersController {
         description: 'DELETE response a successfull message',
         type: String,
     })
-    async deletePhoneNumber(@Param("phoneNumberId") phoneNumberId: string): Promise<string> {
-        return await this.phoneNumbersService.deleteAsset(phoneNumberId);
+    async deletePhoneNumber(@Param("assetId") assetId: string): Promise<string> {
+        return await this.phoneNumbersService.deleteAsset(assetId);
     }
 
 }

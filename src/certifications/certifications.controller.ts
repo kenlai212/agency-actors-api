@@ -48,7 +48,7 @@ export class CertificationsController {
         return certifications;
     }
 
-    @Delete("/:certificationId")
+    @Delete("/:assetId")
     @ApiOperation({
         summary: 'Delete Certification.',
         description: `Delete target Certification ID, this should trigger deletion of the document also`
@@ -57,8 +57,8 @@ export class CertificationsController {
         description: 'Successfully Delete response successful message.',
         type: CertificationDTO,
     })
-    async deleteCertificationById(@Param('certificationId') certificationId: string): Promise<string> {
-        return await this.certificationsService.deleteAsset(certificationId);
+    async deleteCertificationById(@Param('assetId') assetId: string): Promise<string> {
+        return await this.certificationsService.deleteAsset(assetId);
     }
 
     @Post("/upload-document")
