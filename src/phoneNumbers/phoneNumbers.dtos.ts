@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
-import { ActorAssetDTO, ActorAssetRequestDTO } from "../actorAssets/actorAssets.dtos";
+import { ActorAssetDTO, CreateNewAssetRequestDTO, SearchAssetRequestDTO } from "../actorAssets/actorAssets.dtos";
 import { CountryCode, PhoneNumberType } from "./phoneNumber.entity";
 import { IsEnum, IsNotEmpty, IsOptional, IsString, MaxLength } from "class-validator";
 
@@ -31,7 +31,7 @@ export class PhoneNumberDTO extends ActorAssetDTO {
     phoneNumberType: PhoneNumberType;
 }
 
-export class CreatePhoneNumberRequestDTO extends ActorAssetRequestDTO {
+export class CreatePhoneNumberRequestDTO extends CreateNewAssetRequestDTO {
     @ApiProperty({
         description: `Phone Number Country Code ${Object.values(CountryCode)}`,
         example: CountryCode.HK,
@@ -62,15 +62,7 @@ export class CreatePhoneNumberRequestDTO extends ActorAssetRequestDTO {
     phoneNumberType: PhoneNumberType;
 }
 
-export class SearchPhoneNumberDTO {
-    @ApiPropertyOptional({
-        description: 'Actor ID',
-    })
-    @IsOptional()
-    @IsString()
-    @MaxLength(36)
-    actorId!: string;
-
+export class SearchPhoneNumberDTO extends SearchAssetRequestDTO {
     @ApiPropertyOptional({
         description: `Phone Number Country Code ${Object.values(CountryCode)}`,
         example: CountryCode.HK,

@@ -69,7 +69,7 @@ export class CertificationsService extends ActorAssetsService<Certification> {
         return certificationDTOs;
     }
 
-    async deleteCertification(assetId: string): Promise<string> {
+    /*async deleteCertification(assetId: string): Promise<string> {
         const certification = await this.certificationRepository.findOne({ where: { assetId } })
             .catch((error) => {
                 this.logger.error(error);
@@ -89,7 +89,7 @@ export class CertificationsService extends ActorAssetsService<Certification> {
         const msg = `Successfully deleted ${assetId}`;
         this.logger.log(msg);
         return msg
-    }
+    }*/
 
     async uploadDocument(assetId: string, documentBase64: string): Promise<CertificationDTO> {
         const certification = await this.certificationRepository.findOne({ where: { assetId } })

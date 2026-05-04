@@ -64,13 +64,13 @@ export class SocialProfilesService extends ActorAssetsService<SocialProfile> {
         return socialProfiles.map((sp) => this.entityToDTO(sp));
     }
 
-    async deleteSocialProfile(assetId: string): Promise<void> {
+    /*async deleteSocialProfile(assetId: string): Promise<void> {
         await this.socialProfileRepository.delete({ assetId })
             .catch((error) => {
                 this.logger.error(error);
                 throw new InternalServerErrorException("deleteSocialProfile() not available");
             });
-    }
+    }*/
 
     private async checkSocialProfileUnique(provider: SocialProvider, providerHandle: string): Promise<boolean> {
         return await this.socialProfileRepository.findOne({

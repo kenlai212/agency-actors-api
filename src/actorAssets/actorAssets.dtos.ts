@@ -1,5 +1,5 @@
-import { IsNotEmpty, IsString, MaxLength } from 'class-validator';
-import { ApiProperty } from "@nestjs/swagger";
+import { IsNotEmpty, IsOptional, IsString, MaxLength } from 'class-validator';
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { ActorAsset } from './actorAsset.entity';
 
 export class ActorAssetDTO {
@@ -37,7 +37,7 @@ export class ActorAssetDTO {
     }
 }
 
-export class ActorAssetRequestDTO {
+export class CreateNewAssetRequestDTO {
     @ApiProperty({
         description: 'Actor ID',
     })
@@ -45,4 +45,22 @@ export class ActorAssetRequestDTO {
     @IsString()
     @MaxLength(36)
     actorId: string;
+}
+
+export class SearchAssetRequestDTO {
+    @ApiPropertyOptional({
+        description: 'Actor ID',
+    })
+    @IsOptional()
+    @IsString()
+    @MaxLength(36)
+    actorId!: string;
+
+    @ApiPropertyOptional({
+        description: 'Asset ID',
+    })
+    @IsOptional()
+    @IsString()
+    @MaxLength(36)
+    assetId!: string;
 }

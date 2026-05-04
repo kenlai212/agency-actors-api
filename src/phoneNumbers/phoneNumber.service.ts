@@ -61,7 +61,7 @@ export class PhoneNumbersService extends ActorAssetsService<PhoneNumber> {
         return phoneNumberDTOs;
     }
 
-    async deletePhoneNumber(assetId: string): Promise<string> {
+    /*async deletePhoneNumber(assetId: string): Promise<string> {
         const phoneNumber = await this.phoneNumberRepository.findOne({ where: { assetId } })
             .catch((error) => {
                 this.logger.error(error);
@@ -80,7 +80,7 @@ export class PhoneNumbersService extends ActorAssetsService<PhoneNumber> {
         const msg = `Successfully deleted phoneNumberId: ${assetId}`
         this.logger.log(msg)
         return msg
-    }
+    }*/
 
     async validateUniquePhoneNumber(countryCode: CountryCode, numberString: string) {
         let phoneNumber = await this.phoneNumberRepository.findOne({ where: { countryCode, numberString } })

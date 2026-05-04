@@ -91,7 +91,7 @@ export class EducationsService extends ActorAssetsService<Education> {
         return this.entityToDTO(education);
     }
 
-    async deleteEducation(assetId: string): Promise<string> {
+    /*async deleteEducation(assetId: string): Promise<string> {
         const education = await this.educationRepository.findOne({ where: { assetId } })
             .catch((error) => {
                 this.logger.error(error);
@@ -119,7 +119,7 @@ export class EducationsService extends ActorAssetsService<Education> {
         const msg = `Successfully deleted education with id: ${assetId}`
         this.logger.log(msg);
         return msg;
-    }
+    }*/
 
     private async callExternalDocumentStorageDeleteService(documentId: string): Promise<string> {
         return "Successfully deleted";

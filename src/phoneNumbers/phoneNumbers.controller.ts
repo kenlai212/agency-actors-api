@@ -44,7 +44,7 @@ export class PhoneNumbersController {
         type: String,
     })
     async deletePhoneNumber(@Param("phoneNumberId") phoneNumberId: string): Promise<string> {
-        return await this.phoneNumbersService.deletePhoneNumber(phoneNumberId);
+        return await this.phoneNumbersService.deleteAsset(phoneNumberId);
     }
 
 }

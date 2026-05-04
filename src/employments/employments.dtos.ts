@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
-import { ActorAssetDTO, ActorAssetRequestDTO } from "../actorAssets/actorAssets.dtos";
+import { ActorAssetDTO, CreateNewAssetRequestDTO, SearchAssetRequestDTO } from "../actorAssets/actorAssets.dtos";
 import { IsBoolean, IsDate, IsDateString, IsNotEmpty, IsOptional, IsString, MaxLength } from "class-validator";
 
 export class EmploymentDTO extends ActorAssetDTO {
@@ -40,7 +40,7 @@ export class EmploymentDTO extends ActorAssetDTO {
     isCurrent: boolean;
 }
 
-export class NewEmploymentRequestDTO extends ActorAssetRequestDTO {
+export class NewEmploymentRequestDTO extends CreateNewAssetRequestDTO {
     @ApiProperty({
         description: 'Employment Company name',
         example: 'Manulife'
@@ -91,22 +91,4 @@ export class NewEmploymentRequestDTO extends ActorAssetRequestDTO {
     @IsOptional()
     @IsBoolean()
     isCurrent!: boolean;
-}
-
-export class searchEmploymentsRequestDTO {
-    @ApiPropertyOptional({
-        description: 'Actor ID',
-    })
-    @IsOptional()
-    @IsString()
-    @MaxLength(36)
-    actorId!: string
-
-    @ApiPropertyOptional({
-        description: 'Employment Record ID',
-    })
-    @IsOptional()
-    @IsString()
-    @MaxLength(36)
-    employmentId!: string
 }

@@ -1,7 +1,8 @@
 import { Body, Controller, Delete, Get, NotFoundException, Param, Post, Query } from "@nestjs/common";
-import { CertificationDTO, NewCertificationRequestDTO, SearchCertificationsRequestDTO, UploadDocumentRequestDTO } from "./certifications.dtos";
+import { CertificationDTO, NewCertificationRequestDTO, UploadDocumentRequestDTO } from "./certifications.dtos";
 import { CertificationsService } from "./certifications.service";
 import { ApiOkResponse, ApiOperation } from "@nestjs/swagger";
+import { SearchAssetRequestDTO } from "../actorAssets/actorAssets.dtos";
 
 @Controller("/certifications")
 export class CertificationsController {
@@ -37,8 +38,8 @@ export class CertificationsController {
         description: 'Successfully POST response CandidateDTO.',
         type: CertificationDTO,
     })
-    async searchCertifications(@Query() query: SearchCertificationsRequestDTO): Promise<Array<CertificationDTO>> {
-        const certifications = await this.certificationsService.findCertifications(query.certificationId, query.actorId);
+    async searchCertifications(@Query() query: SearchAssetRequestDTO): Promise<Array<CertificationDTO>> {
+        const certifications = await this.certificationsService.findCertifications(query.assetId, query.actorId);
 
         if (certifications.length === 0) {
             throw new NotFoundException("No certifications found for actor ID: " + query.actorId);
@@ -57,7 +58,7 @@ export class CertificationsController {
         type: CertificationDTO,
     })
     async deleteCertificationById(@Param('certificationId') certificationId: string): Promise<string> {
-        return await this.certificationsService.deleteCertification(certificationId);
+        return await this.certificationsService.deleteAsset(certificationId);
     }
 
     @Post("/upload-document")

@@ -55,7 +55,7 @@ export class ResumesService extends ActorAssetsService<Resume> {
         return resumeDTOs;
     }
 
-    async deleteResume(assetId: string): Promise<void> {
+    /*async deleteResume(assetId: string): Promise<void> {
         const resume = await this.resumeRepository.findOne({ where: { assetId } })
             .catch((error) => {
                 this.logger.error(error);
@@ -71,7 +71,7 @@ export class ResumesService extends ActorAssetsService<Resume> {
                 this.logger.error(error);
                 throw new InternalServerErrorException("deleteCertification() not available");
             });
-    }
+    }*/
 
     private async callExternalDocumentStorageService(documentBase64: string): Promise<string> {
         return "https://example.com/document/12345";

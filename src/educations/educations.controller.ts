@@ -1,7 +1,8 @@
 import { Body, Controller, Delete, Get, Param, Post, Query } from "@nestjs/common";
 import { ApiOkResponse, ApiOperation } from "@nestjs/swagger";
-import { EducationDTO, NewEducationRequestDTO, SearchEducationsRequestDTO, UploadDocumentRequestDTO } from "./educations.dtos";
+import { EducationDTO, NewEducationRequestDTO, UploadDocumentRequestDTO } from "./educations.dtos";
 import { EducationsService } from "./educations.service";
+import { SearchAssetRequestDTO } from "../actorAssets/actorAssets.dtos";
 
 @Controller("educations")
 export class EducationsController {
@@ -31,8 +32,8 @@ export class EducationsController {
         description: 'Successfully POST response EducationDTO.',
         type: EducationDTO,
     })
-    async searchEducations(@Query() query: SearchEducationsRequestDTO): Promise<Array<EducationDTO>> {
-        return await this.educationsService.searchEducations(query.actorId, query.educationId);
+    async searchEducations(@Query() query: SearchAssetRequestDTO): Promise<Array<EducationDTO>> {
+        return await this.educationsService.searchEducations(query.actorId, query.assetId);
     }
 
     @Delete("/:educationId")
@@ -45,7 +46,7 @@ export class EducationsController {
         type: String,
     })
     async deleteEducation(@Param("educationId") educationId: string): Promise<string> {
-        return await this.educationsService.deleteEducation(educationId);
+        return await this.educationsService.deleteAsset(educationId);
     }
 
     @Post("/upload-document")

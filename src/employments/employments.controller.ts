@@ -1,8 +1,9 @@
 import { Body, Controller, Delete, Get, Param, Post, Query } from "@nestjs/common";
-import { EmploymentDTO, NewEmploymentRequestDTO, searchEmploymentsRequestDTO } from "./employments.dtos";
+import { EmploymentDTO, NewEmploymentRequestDTO } from "./employments.dtos";
 import { UploadDocumentRequestDTO } from "../certifications/certifications.dtos";
 import { EmploymentsService } from "./employments.service";
 import { ApiOkResponse, ApiOperation } from "@nestjs/swagger";
+import { SearchAssetRequestDTO } from "../actorAssets/actorAssets.dtos";
 
 @Controller("/employments")
 export class EmploymentsController {
@@ -23,13 +24,13 @@ export class EmploymentsController {
     }
 
     @Get("/")
-    async searchEmployments(@Query() query: searchEmploymentsRequestDTO): Promise<EmploymentDTO[]> {
-        return await this.employmentsService.searchEmployment(query.actorId, query.employmentId);
+    async searchEmployments(@Query() query: SearchAssetRequestDTO): Promise<EmploymentDTO[]> {
+        return await this.employmentsService.searchEmployment(query.actorId, query.assetId);
     }
 
     @Delete("/:employmentId")
     async deleteEmployments(@Param("employmentId") employmentId: string): Promise<string> {
-        return "Successfully deleted"
+        return await this.employmentsService.deleteAsset(employmentId);
     }
 
     @Post("/upload-document")
