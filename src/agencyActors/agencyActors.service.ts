@@ -2,7 +2,7 @@ import { BadRequestException, Injectable, InternalServerErrorException, Logger, 
 import { InjectRepository } from "@nestjs/typeorm";
 import { AgencyActorType, AgencyActor } from "./agencyActor.entity";
 import { Repository } from "typeorm";
-import { AgencyActorDTO, NewAgencyActorRequestDTO } from "./agencyActors.dto";
+import { AgencyActorDTO, NewAgencyActorRequestDTO, UpdateAgencyActorDTO } from "./agencyActors.dto";
 
 @Injectable()
 export class AgencyActorsService {
@@ -68,6 +68,43 @@ export class AgencyActorsService {
         const msg = `Successfully deleted ${actorId}`
         this.logger.log(msg);
         return msg;
+    }
+
+    async updateAgencyActor(dto: UpdateAgencyActorDTO): Promise<AgencyActorDTO> {
+        let agencyActor = await this.agencyActorRepository.findOne({ where: { actorId: dto.actorId } })
+            .catch((error) => {
+                this.logger.error(error);
+                throw new InternalServerErrorException("updateAgencyActor() not available");
+            });
+
+        if (!agencyActor)
+            throw new NotFoundException(`Invalid actorId ${dto.actorId}`);
+
+        if (dto.agencyActorType)
+            agencyActor.agencyActorType = dto.agencyActorType;
+
+        if (dto.fullName)
+            agencyActor.fullName = dto.fullName;
+
+        if (dto.gender)
+            agencyActor.gender = dto.gender;
+
+        if (dto.countryOfResidence)
+            agencyActor.countryOfResidence = dto.countryOfResidence;
+
+        if (dto.residencyStatus)
+            agencyActor.residencyStatus = dto.residencyStatus;
+
+        if (dto.nationality)
+            agencyActor.nationality = dto.nationality;
+
+        agencyActor = await this.agencyActorRepository.save(agencyActor)
+            .catch((error) => {
+                this.logger.error(error);
+                throw new InternalServerErrorException("updateAgencyActor() not available");
+            });
+
+        return this.entityToDTO(agencyActor);
     }
 
     async validateActorId(actorId: string) {

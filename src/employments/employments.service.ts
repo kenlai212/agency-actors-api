@@ -43,28 +43,6 @@ export class EmploymentsService extends DocumentLinkedAssetsService<Employment, 
         return this.entityToDTO(employment);
     }
 
-    async searchEmployment(actorId?: string, employmentId?: string): Promise<EmploymentDTO[]> {
-        let whereClause = {}
-
-        if (actorId)
-            whereClause = { actorId }
-        else
-            whereClause = { employmentId }
-
-        let employments = await this.employmentRepository.find({ where: whereClause })
-            .catch((error) => {
-                this.logger.error(error);
-                throw new InternalServerErrorException("searchEmployment() not available");
-            })
-
-        let employmentDTOs = []
-        for (let employment of employments) {
-            employmentDTOs.push(this.entityToDTO(employment));
-        }
-
-        return employmentDTOs;
-    }
-
     entityToDTO(entity: Employment) {
         let dto = new EmploymentDTO(entity);
         dto.companyName = entity.companyName;

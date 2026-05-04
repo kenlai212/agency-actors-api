@@ -138,3 +138,30 @@ export class NewAgencyActorRequestDTO {
     @IsOptional()
     residencyStatus: ResidencyStatus;
 }
+
+export class UpdateAgencyActorDTO extends NewAgencyActorRequestDTO {
+    @ApiProperty({
+        description: 'Target Agency Actor ID',
+        example: "96e4e28e-2404-4a4f-b69a-6b0709559596"
+    })
+    @IsNotEmpty()
+    @IsString()
+    @MaxLength(36)
+    actorId: string;
+
+    @ApiPropertyOptional({
+        description: `Agency Actor Type : ${Object.keys(AgencyActorType)}`,
+        example: AgencyActorType.CANDIDATE
+    })
+    @IsOptional()
+    declare agencyActorType: AgencyActorType;
+
+    @ApiPropertyOptional({
+        description: `Actor's Full Name`,
+        example: "Jane Smith"
+    })
+    @IsOptional()
+    @IsString()
+    @MaxLength(36)
+    declare fullName: string;
+}

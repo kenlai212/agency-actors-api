@@ -1,8 +1,8 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsNotEmpty, IsString } from 'class-validator';
-import { CreateNewDocumentLinkedAssetRequestDTO, DocumentLinkedAssedDTO } from "../actorAssets/actorAssets.dtos";
+import { CreateNewDocumentLinkedAssetRequestDTO, DocumentLinkedAssetDTO } from "../actorAssets/actorAssets.dtos";
 
-export class GovIssueDocDTO extends DocumentLinkedAssedDTO {
+export class GovIssueDocDTO extends DocumentLinkedAssetDTO {
     issuerCountryCode: string;
     documentType: string;
     documentNumber: string;

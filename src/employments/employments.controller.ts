@@ -1,12 +1,12 @@
-import { Body, Controller, Get, Post, Query } from "@nestjs/common";
+import { Body, Controller, Post } from "@nestjs/common";
 import { EmploymentDTO, NewEmploymentRequestDTO } from "./employments.dtos";
 import { EmploymentsService } from "./employments.service";
 import { ApiOkResponse, ApiOperation } from "@nestjs/swagger";
-import { SearchAssetRequestDTO, UploadDocumentRequestDTO } from "../actorAssets/actorAssets.dtos";
-import { ActorAssetsController } from "../actorAssets/actorAssets.contorller";
+import { UploadDocumentRequestDTO } from "../actorAssets/actorAssets.dtos";
+import { DocumentLinkedAssetsController } from "../actorAssets/actorAssets.contorller";
 
 @Controller("/employments")
-export class EmploymentsController extends ActorAssetsController {
+export class EmploymentsController extends DocumentLinkedAssetsController {
     constructor(
         private readonly employmentsService: EmploymentsService
     ) {
@@ -23,15 +23,5 @@ export class EmploymentsController extends ActorAssetsController {
     })
     async createNewEmployments(@Body() newEmploymentRequestDTO: NewEmploymentRequestDTO): Promise<EmploymentDTO> {
         return await this.employmentsService.createNewEmployment(newEmploymentRequestDTO);
-    }
-
-    @Get("/")
-    async searchEmployments(@Query() query: SearchAssetRequestDTO): Promise<EmploymentDTO[]> {
-        return await this.employmentsService.searchEmployment(query.actorId, query.assetId);
-    }
-
-    @Post("/upload-document")
-    async uploadDocument(@Body() body: UploadDocumentRequestDTO): Promise<EmploymentDTO> {
-        return await this.employmentsService.uploadDocument(body.assetId, body.documentBase64);
     }
 }

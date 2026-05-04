@@ -37,7 +37,7 @@ export class ActorAssetDTO {
     }
 }
 
-export class DocumentLinkedAssedDTO extends ActorAssetDTO {
+export class DocumentLinkedAssetDTO extends ActorAssetDTO {
     @ApiProperty({
         description: `Document Identifier`,
         example: 'b69a-6b0709559596'

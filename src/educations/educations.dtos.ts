@@ -1,8 +1,8 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { IsOptional, IsString, Max, MaxLength, Min } from 'class-validator';
-import { ActorAssetDTO, CreateNewDocumentLinkedAssetRequestDTO, DocumentLinkedAssedDTO } from "../actorAssets/actorAssets.dtos";
+import { ActorAssetDTO, CreateNewDocumentLinkedAssetRequestDTO, DocumentLinkedAssetDTO } from "../actorAssets/actorAssets.dtos";
 
-export class EducationDTO extends DocumentLinkedAssedDTO {
+export class EducationDTO extends DocumentLinkedAssetDTO {
     @ApiProperty({
         description: 'Name of Insititution',
         example: `University of Beijing`

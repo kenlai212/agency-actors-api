@@ -1,7 +1,7 @@
-import { Body, Controller, Delete, Get, Logger, Post, Query } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Logger, Post, Put, Query } from "@nestjs/common";
 import { AgencyActorsService } from "./agencyActors.service";
 import { ApiOkResponse, ApiOperation } from "@nestjs/swagger";
-import { AgencyActorDTO, FindAgencyActorRequestDTO, NewAgencyActorRequestDTO } from "./agencyActors.dto";
+import { AgencyActorDTO, FindAgencyActorRequestDTO, NewAgencyActorRequestDTO, UpdateAgencyActorDTO } from "./agencyActors.dto";
 
 @Controller("/agency-actors")
 export class AgencyActorsController {
@@ -48,5 +48,10 @@ export class AgencyActorsController {
     })
     async deleteAgencyActor(@Query('actorId') actorId: string): Promise<string> {
         return await this.agencyActorsService.deleteActor(actorId);
+    }
+
+    @Put("/")
+    async updateAgencyActor(@Body() body: UpdateAgencyActorDTO): Promise<AgencyActorDTO> {
+        return await this.agencyActorsService.updateAgencyActor(body);
     }
 }

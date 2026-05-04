@@ -43,31 +43,6 @@ export class EducationsService extends DocumentLinkedAssetsService<Education, Ed
         return this.entityToDTO(education);
     }
 
-    async searchEducations(actorId?: string, educationId?: string): Promise<EducationDTO[]> {
-        if (!actorId && !educationId)
-            throw new BadRequestException(`Must provide one of actorId or educationId`);
-
-        let whereClause = {}
-        if (actorId)
-            whereClause = { actorId }
-        else
-            whereClause = { educationId }
-
-        let educations = await this.educationRepository.find({ where: whereClause })
-            .catch((error) => {
-                this.logger.error(error);
-                throw new InternalServerErrorException("searchEducations() not available");
-            });
-        this.logger.debug(`found educations : ${JSON.stringify(educations)}`);
-
-        let educationDTOs = []
-        for (let education of educations) {
-            educationDTOs.push(this.entityToDTO(education));
-        }
-
-        return educationDTOs;
-    }
-
     entityToDTO(entity: Education) {
         let dto = new EducationDTO(entity);
         dto.institutionName = entity.institutionName;

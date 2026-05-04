@@ -20,7 +20,7 @@ import { PhoneNumber } from './phoneNumbers/phoneNumber.entity';
 import { Education } from './educations/education.entity';
 import { Employment } from './employments/employment.entity';
 import { PhysicalAddress } from './physicalAddresses/physicalAddress.entity';
-import { physicalAddressModule } from './physicalAddresses/physicalAddresses.module';
+import { physicalAddressesModule } from './physicalAddresses/physicalAddresses.module';
 
 @Module({
   imports: [
@@ -52,7 +52,7 @@ import { physicalAddressModule } from './physicalAddresses/physicalAddresses.mod
     AgencyActorsModule,
     EmailAddressesModule,
     phoneNumbersModule,
-    physicalAddressModule,
+    physicalAddressesModule,
     EducationsModule,
     EmploymentsModule,
     GovIssueDocsModule,

@@ -1,10 +1,10 @@
 import { Body, Controller, Post } from "@nestjs/common";
 import { CreateResumeRequestDTO, ResumeDTO } from "./resumes.dtos";
 import { ResumesService } from "./resumes.service";
-import { ActorAssetsController } from "../actorAssets/actorAssets.contorller";
+import { DocumentLinkedAssetsController } from "../actorAssets/actorAssets.contorller";
 
 @Controller("/resume")
-export class ResumesController extends ActorAssetsController {
+export class ResumesController extends DocumentLinkedAssetsController {
     constructor(
         private readonly resumesService: ResumesService
     ) {

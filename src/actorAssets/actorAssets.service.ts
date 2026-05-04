@@ -95,11 +95,37 @@ export abstract class DocumentLinkedAssetsService<T extends DocumentLinkedAsset,
         return this.entityToDTO(asset);
     }
 
-    async callExternalDocumentStorageDeleteService(documentId: string): Promise<string> {
-        return "Successfully deleted";
-    }
-
     async callExternalDocumentStorageService(documentBase64: string): Promise<string> {
         return "https://example.com/document/12345";
+    }
+
+    async deleteAsset(assetId: string): Promise<string> {
+        const asset = await this.repository.findOneBy({ assetId } as any)
+            .catch((error) => {
+                console.error(error);
+                throw new InternalServerErrorException("deleteCertification() not available");
+            });
+
+        if (!asset) {
+            throw new BadRequestException("Certification with ID " + assetId + " not found");
+        }
+
+        if (asset.documentIdentifier) {
+            await this.repository.delete({ assetId } as any)
+                .catch((error) => {
+                    console.error(error);
+                    throw new InternalServerErrorException("deleteAsset() not available");
+                });
+
+            await this.callExternalDocumentStorageDeleteService(asset.documentIdentifier);
+        }
+
+        const msg = `Successfully deleted ${assetId}`;
+        console.log(msg);
+        return msg
+    }
+
+    async callExternalDocumentStorageDeleteService(documentId: string): Promise<string> {
+        return "Successfully deleted";
     }
 }
