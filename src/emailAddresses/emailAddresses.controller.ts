@@ -38,18 +38,6 @@ export class EmailAddressesController extends ActorAssetsController {
         return await this.emailAddressesService.searchEmailAddresses(query.actorId, query.addressString);
     }
 
-    /*@Delete("/:assetId")
-    @ApiOperation({
-        summary: 'Delete an Email Address for an Actor'
-    })
-    @ApiOkResponse({
-        description: 'Successfully DELETE response a successful message',
-        type: String,
-    })
-    async deleteEmailAddress(@Param("assetId") assetId: string): Promise<string> {
-        return await this.emailAddressesService.deleteAsset(assetId);
-    }*/
-
     @Put("/lock-email-address")
     @ApiOperation({
         summary: 'Lock an Email Address for an Actor'

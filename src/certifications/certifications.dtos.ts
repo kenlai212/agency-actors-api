@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsNotEmpty, IsString, MaxLength } from 'class-validator';
-import { ActorAssetDTO, CreateNewAssetRequestDTO, SearchAssetRequestDTO } from "../actorAssets/actorAssets.dtos";
+import { ActorAssetDTO, CreateNewAssetRequestDTO, CreateNewDocumentLinkedAssetRequestDTO, SearchAssetRequestDTO } from "../actorAssets/actorAssets.dtos";
 
 export class CertificationDTO extends ActorAssetDTO {
     @ApiProperty({
@@ -14,7 +14,7 @@ export class CertificationDTO extends ActorAssetDTO {
     documentIdentifier!: string;
 }
 
-export class NewCertificationRequestDTO extends CreateNewAssetRequestDTO {
+export class NewCertificationRequestDTO extends CreateNewDocumentLinkedAssetRequestDTO {
     @ApiProperty({
         description: 'The authority that issued the certification',
     })
@@ -45,22 +45,4 @@ export class NewCertificationRequestDTO extends CreateNewAssetRequestDTO {
     @IsNotEmpty()
     @IsString()
     issueDate: Date;
-}
-
-export class UploadDocumentRequestDTO {
-    @ApiProperty({
-        description: 'The ID of the Certification',
-        example: `96e4e28e-2404-4a4f-b69a-6b0709559596`
-    })
-    @IsNotEmpty()
-    @IsString()
-    @MaxLength(36)
-    certificationId: string;
-
-    @ApiProperty({
-        description: 'The base64-encoded license document',
-    })
-    @IsNotEmpty()
-    @IsString()
-    documentBase64: string;
 }

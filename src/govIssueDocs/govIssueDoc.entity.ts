@@ -3,14 +3,6 @@ import { ActorAsset } from "../actorAssets/actorAsset.entity";
 
 @Entity()
 export class GovIssueDoc extends ActorAsset {
-
-    @Column({
-        nullable: false,
-        type: "varchar",
-        length: 255
-    })
-    documentIdentifier: string;
-
     @Column({
         nullable: false,
         type: "varchar",

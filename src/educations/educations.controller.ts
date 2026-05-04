@@ -1,14 +1,17 @@
-import { Body, Controller, Delete, Get, Param, Post, Query } from "@nestjs/common";
+import { Body, Controller, Get, Post, Query } from "@nestjs/common";
 import { ApiOkResponse, ApiOperation } from "@nestjs/swagger";
-import { EducationDTO, NewEducationRequestDTO, UploadDocumentRequestDTO } from "./educations.dtos";
+import { EducationDTO, NewEducationRequestDTO } from "./educations.dtos";
 import { EducationsService } from "./educations.service";
-import { SearchAssetRequestDTO } from "../actorAssets/actorAssets.dtos";
+import { SearchAssetRequestDTO, UploadDocumentRequestDTO } from "../actorAssets/actorAssets.dtos";
+import { ActorAssetsController } from "../actorAssets/actorAssets.contorller";
 
 @Controller("educations")
-export class EducationsController {
+export class EducationsController extends ActorAssetsController {
     constructor(
         private readonly educationsService: EducationsService
-    ) { }
+    ) {
+        super(educationsService)
+    }
 
     @Post("/")
     @ApiOperation({
@@ -36,19 +39,6 @@ export class EducationsController {
         return await this.educationsService.searchEducations(query.actorId, query.assetId);
     }
 
-    @Delete("/:assetId")
-    @ApiOperation({
-        summary: 'Delete Education.',
-        description: `Delete Education will also delete document stored as well`
-    })
-    @ApiOkResponse({
-        description: 'Successfully DELETE response message.',
-        type: String,
-    })
-    async deleteEducation(@Param("assetId") assetId: string): Promise<string> {
-        return await this.educationsService.deleteAsset(assetId);
-    }
-
     @Post("/upload-document")
     @ApiOperation({
         summary: 'Upload Education Document',
@@ -59,6 +49,6 @@ export class EducationsController {
         type: EducationDTO,
     })
     async uploadDocument(@Body() body: UploadDocumentRequestDTO): Promise<EducationDTO> {
-        return await this.educationsService.uploadDocument(body.educationId, body.documentBase64);
+        return await this.educationsService.uploadDocument(body.assetId, body.documentBase64);
     }
 }

@@ -4,10 +4,10 @@ import { Repository } from 'typeorm';
 import { Certification } from "./certification.entity";
 import { CertificationDTO } from "./certifications.dtos";
 import { AuthoritiesService } from "./authoritries.service";
-import { ActorAssetsService } from "../actorAssets/actorAssets.service";
+import { DocumentLinkedAssetsService } from "../actorAssets/actorAssets.service";
 
 @Injectable()
-export class CertificationsService extends ActorAssetsService<Certification> {
+export class CertificationsService extends DocumentLinkedAssetsService<Certification, CertificationDTO> {
     private readonly logger: Logger = new Logger('CertificationsService')
 
     constructor(
@@ -67,62 +67,6 @@ export class CertificationsService extends ActorAssetsService<Certification> {
         }
 
         return certificationDTOs;
-    }
-
-    /*async deleteCertification(assetId: string): Promise<string> {
-        const certification = await this.certificationRepository.findOne({ where: { assetId } })
-            .catch((error) => {
-                this.logger.error(error);
-                throw new InternalServerErrorException("deleteCertification() not available");
-            });
-
-        if (!certification) {
-            throw new BadRequestException("Certification with ID " + assetId + " not found");
-        }
-
-        await this.certificationRepository.delete({ assetId })
-            .catch((error) => {
-                this.logger.error(error);
-                throw new InternalServerErrorException("deleteCertification() not available");
-            });
-
-        const msg = `Successfully deleted ${assetId}`;
-        this.logger.log(msg);
-        return msg
-    }*/
-
-    async uploadDocument(assetId: string, documentBase64: string): Promise<CertificationDTO> {
-        const certification = await this.certificationRepository.findOne({ where: { assetId } })
-            .catch((error) => {
-                this.logger.error(error);
-                throw new InternalServerErrorException("uploadDocument() not available");
-            });
-
-        if (!certification) {
-            throw new BadRequestException("Certification with ID " + assetId + " not found");
-        }
-
-        const documentUrl = await this.callExternalDocumentStorageService(documentBase64)
-            .catch((error) => {
-                this.logger.error(error);
-                throw new InternalServerErrorException("Failed to upload document to external storage service");
-            });
-        certification.documentIdentifier = documentUrl;
-
-        await this.certificationRepository.save(certification)
-            .catch((error) => {
-                this.logger.error(error);
-                throw new InternalServerErrorException("uploadDocument() not available");
-            });
-
-        let certificationDTO = this.entityToDTO(certification);
-        certificationDTO.documentIdentifier = documentUrl;
-
-        return certificationDTO;
-    }
-
-    private async callExternalDocumentStorageService(documentBase64: string): Promise<string> {
-        return "https://example.com/document/12345";
     }
 
     entityToDTO(entity: Certification): CertificationDTO {

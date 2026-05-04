@@ -1,8 +1,8 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
-import { ActorAsset } from "../actorAssets/actorAsset.entity";
+import { Column, Entity } from "typeorm";
+import { DocumentLinkedAsset } from "../actorAssets/actorAsset.entity";
 
 @Entity()
-export class Employment extends ActorAsset {
+export class Employment extends DocumentLinkedAsset {
     @Column({
         nullable: false,
         type: "varchar",

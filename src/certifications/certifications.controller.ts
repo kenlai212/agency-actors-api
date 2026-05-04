@@ -1,8 +1,8 @@
-import { Body, Controller, Delete, Get, NotFoundException, Param, Post, Query } from "@nestjs/common";
-import { CertificationDTO, NewCertificationRequestDTO, UploadDocumentRequestDTO } from "./certifications.dtos";
+import { Body, Controller, Get, NotFoundException, Post, Query } from "@nestjs/common";
+import { CertificationDTO, NewCertificationRequestDTO } from "./certifications.dtos";
 import { CertificationsService } from "./certifications.service";
 import { ApiOkResponse, ApiOperation } from "@nestjs/swagger";
-import { SearchAssetRequestDTO } from "../actorAssets/actorAssets.dtos";
+import { SearchAssetRequestDTO, UploadDocumentRequestDTO } from "../actorAssets/actorAssets.dtos";
 
 @Controller("/certifications")
 export class CertificationsController {
@@ -48,19 +48,6 @@ export class CertificationsController {
         return certifications;
     }
 
-    @Delete("/:assetId")
-    @ApiOperation({
-        summary: 'Delete Certification.',
-        description: `Delete target Certification ID, this should trigger deletion of the document also`
-    })
-    @ApiOkResponse({
-        description: 'Successfully Delete response successful message.',
-        type: CertificationDTO,
-    })
-    async deleteCertificationById(@Param('assetId') assetId: string): Promise<string> {
-        return await this.certificationsService.deleteAsset(assetId);
-    }
-
     @Post("/upload-document")
     @ApiOperation({
         summary: 'Upload the document image of the Certification',
@@ -71,6 +58,6 @@ export class CertificationsController {
         type: CertificationDTO,
     })
     async uploadDocument(@Body() body: UploadDocumentRequestDTO): Promise<CertificationDTO> {
-        return await this.certificationsService.uploadDocument(body.certificationId, body.documentBase64);
+        return await this.certificationsService.uploadDocument(body.assetId, body.documentBase64);
     }
 }

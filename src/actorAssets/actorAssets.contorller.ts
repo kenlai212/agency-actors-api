@@ -2,10 +2,12 @@ import { Delete, Param } from "@nestjs/common";
 import { ApiOkResponse, ApiOperation } from "@nestjs/swagger";
 import { ActorAssetsService } from "./actorAssets.service";
 import { ObjectLiteral } from "typeorm";
+import { ActorAssetDTO } from "./actorAssets.dtos";
+import { ActorAsset } from "./actorAsset.entity";
 
 export abstract class ActorAssetsController {
     constructor(
-        protected readonly assetsService: ActorAssetsService<ObjectLiteral>,
+        protected readonly assetsService: ActorAssetsService<ActorAsset, ActorAssetDTO>,
     ) { }
 
     @Delete("/:assetId")

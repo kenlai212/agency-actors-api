@@ -2,21 +2,19 @@ import { Body, Controller, Delete, Get, Param, Post, Query } from "@nestjs/commo
 import { ResumeDTO, UploadResumeRequestDTO } from "./resumes.dtos";
 import { SearchAssetRequestDTO } from "../actorAssets/actorAssets.dtos";
 import { ResumesService } from "./resumes.service";
+import { ActorAssetsController } from "../actorAssets/actorAssets.contorller";
 
 @Controller()
-export class ResumesController {
+export class ResumesController extends ActorAssetsController {
     constructor(
         private readonly resumesService: ResumesService
-    ) { }
+    ) {
+        super(resumesService)
+    }
 
     @Post("/resume")
     async uploadResume(@Body() body: UploadResumeRequestDTO): Promise<ResumeDTO> {
         return new ResumeDTO();
-    }
-
-    @Delete("/resume/:resumeId")
-    async deleteResume(@Param('resumeId') resumeId: string): Promise<string> {
-        return await this.resumesService.deleteAsset(resumeId);
     }
 
     @Get("/resume")

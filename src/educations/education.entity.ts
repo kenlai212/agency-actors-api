@@ -1,8 +1,8 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
-import { ActorAsset } from "../actorAssets/actorAsset.entity";
+import { Column, Entity } from "typeorm";
+import { DocumentLinkedAsset } from "../actorAssets/actorAsset.entity";
 
 @Entity()
-export class Education extends ActorAsset {
+export class Education extends DocumentLinkedAsset {
     @Column({
         nullable: true,
         type: "varchar",
@@ -35,11 +35,4 @@ export class Education extends ActorAsset {
         type: "year",
     })
     endYear!: number;
-
-    @Column({
-        nullable: true,
-        type: "varchar",
-        length: 255
-    })
-    documentIdentifier!: string;
 }

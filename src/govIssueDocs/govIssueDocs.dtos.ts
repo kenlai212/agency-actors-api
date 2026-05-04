@@ -1,23 +1,15 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsNotEmpty, IsString } from 'class-validator';
-import { ActorAssetDTO, CreateNewAssetRequestDTO } from "../actorAssets/actorAssets.dtos";
+import { ActorAssetDTO, CreateNewAssetRequestDTO, CreateNewDocumentLinkedAssetRequestDTO } from "../actorAssets/actorAssets.dtos";
 
 export class GovIssueDocDTO extends ActorAssetDTO {
-    governmentIdId: string;
     documentIdentifier: string;
     issuerCountryCode: string;
     idType: string;
     idNumber: string;
 }
 
-export class NewGovIssueDocRequestDTO extends CreateNewAssetRequestDTO {
-    @ApiProperty({
-        description: 'document base64 string',
-    })
-    @IsNotEmpty()
-    @IsString()
-    documentBase64: string;
-
+export class NewGovIssueDocRequestDTO extends CreateNewDocumentLinkedAssetRequestDTO {
     @ApiProperty({
         description: 'issuer goverment country',
     })
@@ -33,9 +25,9 @@ export class NewGovIssueDocRequestDTO extends CreateNewAssetRequestDTO {
     idType: string;
 
     @ApiProperty({
-        description: 'ID unique identifier',
+        description: 'doc unique identifier',
     })
     @IsNotEmpty()
     @IsString()
-    idNumber: string;
+    docNumber: string;
 }

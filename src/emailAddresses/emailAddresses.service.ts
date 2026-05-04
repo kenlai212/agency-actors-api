@@ -6,7 +6,7 @@ import { Repository } from "typeorm";
 import { EmailAddressDTO } from "./emailAddresses.dtos";
 
 @Injectable()
-export class EmailAdddressesService extends ActorAssetsService<EmailAddress> {
+export class EmailAdddressesService extends ActorAssetsService<EmailAddress, EmailAddressDTO> {
     private readonly logger = new Logger('EmailAddressesService');
 
     constructor(

@@ -1,12 +1,12 @@
 import { Injectable, InternalServerErrorException, Logger } from "@nestjs/common";
-import { ActorAssetsService } from "../actorAssets/actorAssets.service";
+import { ActorAssetsService, DocumentLinkedAssetsService } from "../actorAssets/actorAssets.service";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Employment } from "./employment.entity";
 import { Repository } from "typeorm";
 import { EmploymentDTO, NewEmploymentRequestDTO } from "./employments.dtos";
 
 @Injectable()
-export class EmploymentsService extends ActorAssetsService<Employment> {
+export class EmploymentsService extends DocumentLinkedAssetsService<Employment, EmploymentDTO> {
     private readonly logger = new Logger('EmploymentsService')
 
     constructor(

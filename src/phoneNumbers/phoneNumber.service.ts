@@ -6,7 +6,7 @@ import { ActorAssetsService } from "../actorAssets/actorAssets.service";
 import { PhoneNumberDTO } from "./phoneNumbers.dtos";
 
 @Injectable()
-export class PhoneNumbersService extends ActorAssetsService<PhoneNumber> {
+export class PhoneNumbersService extends ActorAssetsService<PhoneNumber, PhoneNumberDTO> {
     readonly logger = new Logger('PhoneNumbersService')
     constructor(
         @InjectRepository(PhoneNumber)
@@ -60,27 +60,6 @@ export class PhoneNumbersService extends ActorAssetsService<PhoneNumber> {
 
         return phoneNumberDTOs;
     }
-
-    /*async deletePhoneNumber(assetId: string): Promise<string> {
-        const phoneNumber = await this.phoneNumberRepository.findOne({ where: { assetId } })
-            .catch((error) => {
-                this.logger.error(error);
-                throw new InternalServerErrorException("deletePhoneNumber() not available");
-            })
-
-        if (!phoneNumber)
-            throw new BadRequestException(`Invalid phoneNumberId`)
-
-        await this.phoneNumberRepository.delete(phoneNumber)
-            .catch((error) => {
-                this.logger.error(error);
-                throw new InternalServerErrorException("deletePhoneNumber() not available");
-            })
-
-        const msg = `Successfully deleted phoneNumberId: ${assetId}`
-        this.logger.log(msg)
-        return msg
-    }*/
 
     async validateUniquePhoneNumber(countryCode: CountryCode, numberString: string) {
         let phoneNumber = await this.phoneNumberRepository.findOne({ where: { countryCode, numberString } })

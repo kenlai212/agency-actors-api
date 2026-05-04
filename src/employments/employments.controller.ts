@@ -1,15 +1,17 @@
-import { Body, Controller, Delete, Get, Param, Post, Query } from "@nestjs/common";
+import { Body, Controller, Get, Post, Query } from "@nestjs/common";
 import { EmploymentDTO, NewEmploymentRequestDTO } from "./employments.dtos";
-import { UploadDocumentRequestDTO } from "../certifications/certifications.dtos";
 import { EmploymentsService } from "./employments.service";
 import { ApiOkResponse, ApiOperation } from "@nestjs/swagger";
-import { SearchAssetRequestDTO } from "../actorAssets/actorAssets.dtos";
+import { SearchAssetRequestDTO, UploadDocumentRequestDTO } from "../actorAssets/actorAssets.dtos";
+import { ActorAssetsController } from "../actorAssets/actorAssets.contorller";
 
 @Controller("/employments")
-export class EmploymentsController {
+export class EmploymentsController extends ActorAssetsController {
     constructor(
         private readonly employmentsService: EmploymentsService
-    ) { }
+    ) {
+        super(employmentsService);
+    }
 
     @Post("/")
     @ApiOperation({
@@ -28,13 +30,8 @@ export class EmploymentsController {
         return await this.employmentsService.searchEmployment(query.actorId, query.assetId);
     }
 
-    @Delete("/:assetId")
-    async deleteEmployments(@Param("assetId") assetId: string): Promise<string> {
-        return await this.employmentsService.deleteAsset(assetId);
-    }
-
     @Post("/upload-document")
     async uploadDocument(@Body() body: UploadDocumentRequestDTO): Promise<EmploymentDTO> {
-        return new EmploymentDTO();
+        return await this.employmentsService.uploadDocument(body.assetId, body.documentBase64);
     }
 }

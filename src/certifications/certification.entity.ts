@@ -1,8 +1,8 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
-import { ActorAsset } from "../actorAssets/actorAsset.entity";
+import { Column, Entity } from "typeorm";
+import { DocumentLinkedAsset } from "../actorAssets/actorAsset.entity";
 
 @Entity()
-export class Certification extends ActorAsset {
+export class Certification extends DocumentLinkedAsset {
     @Column({
         nullable: true,
         type: "varchar",
@@ -29,11 +29,4 @@ export class Certification extends ActorAsset {
         type: "timestamp"
     })
     issueDate!: Date;
-
-    @Column({
-        nullable: true,
-        type: "varchar",
-        length: 255
-    })
-    documentIdentifier!: string;
 }
