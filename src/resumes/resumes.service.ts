@@ -55,18 +55,18 @@ export class ResumesService extends ActorAssetsService {
         return resumeDTOs;
     }
 
-    async deleteResume(resumeId: string): Promise<void> {
-        const resume = await this.resumeRepository.findOne({ where: { resumeId } })
+    async deleteResume(assetId: string): Promise<void> {
+        const resume = await this.resumeRepository.findOne({ where: { assetId } })
             .catch((error) => {
                 this.logger.error(error);
                 throw new InternalServerErrorException("deleteResume() not available");
             });
 
         if (!resume) {
-            throw new BadRequestException("Resume with ID " + resumeId + " not found");
+            throw new BadRequestException("Resume with ID " + assetId + " not found");
         }
 
-        await this.resumeRepository.delete({ resumeId })
+        await this.resumeRepository.delete({ assetId })
             .catch((error) => {
                 this.logger.error(error);
                 throw new InternalServerErrorException("deleteCertification() not available");
@@ -77,11 +77,11 @@ export class ResumesService extends ActorAssetsService {
         return "https://example.com/document/12345";
     }
 
-    private entityToDTO(resume: Resume) {
+    private entityToDTO(entity: Resume) {
         let resumeDTO = new ResumeDTO();
-        resumeDTO.resumeId = resume.resumeId;
-        resumeDTO.ownerActorId = resume.actorId;
-        resumeDTO.documentIdentifier = resume.documentIdentifier;
+        resumeDTO.resumeId = entity.assetId;
+        resumeDTO.ownerActorId = entity.actorId;
+        resumeDTO.documentIdentifier = entity.documentIdentifier;
 
         return resumeDTO;
     }

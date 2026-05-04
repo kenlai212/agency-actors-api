@@ -73,8 +73,8 @@ export class EmailAdddressesService extends ActorAssetsService {
         return emailAddressDTOs;
     }
 
-    async deleteEmailAddress(emailAddressId: string): Promise<string> {
-        const emailAddress = await this.emailAddressRepository.findOne({ where: { emailAddressId } })
+    async deleteEmailAddress(assetId: string): Promise<string> {
+        const emailAddress = await this.emailAddressRepository.findOne({ where: { assetId } })
 
         if (!emailAddress)
             throw new NotFoundException("Email address not found");
@@ -82,13 +82,13 @@ export class EmailAdddressesService extends ActorAssetsService {
         if (emailAddress.isLocked)
             throw new BadRequestException("Cannot delete a locked Email Address, it is tied to an Actor as an Identifier. Please create another locked Email Address for this Actor, before deleting this one")
 
-        await this.emailAddressRepository.delete(emailAddressId)
+        await this.emailAddressRepository.delete(assetId)
             .catch((error) => {
                 this.logger.error(error);
                 throw new InternalServerErrorException("deleteEmailAddress not available");
             });
 
-        const msg = `Successfully deleted email address with id: ${emailAddressId}`;
+        const msg = `Successfully deleted email address with id: ${assetId}`;
         this.logger.log(msg);
         return msg;
     }

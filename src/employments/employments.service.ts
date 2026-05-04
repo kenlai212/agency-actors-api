@@ -68,7 +68,7 @@ export class EmploymentsService extends ActorAssetsService {
     private entityToDTO(entity: Employment) {
         let dto = new EmploymentDTO();
         dto.ownerActorId = entity.actorId;
-        dto.employmentId = entity.employmentId;
+        dto.employmentId = entity.assetId;
         dto.companyName = entity.companyName;
         dto.jobTitle = entity.jobTitle;
         dto.location = entity.location;

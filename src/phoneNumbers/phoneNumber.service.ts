@@ -62,8 +62,8 @@ export class PhoneNumbersService extends ActorAssetsService {
         return phoneNumberDTOs;
     }
 
-    async deletePhoneNumber(phoneNumberId: string): Promise<string> {
-        const phoneNumber = await this.phoneNumberRepository.findOne({ where: { phoneNumberId } })
+    async deletePhoneNumber(assetId: string): Promise<string> {
+        const phoneNumber = await this.phoneNumberRepository.findOne({ where: { assetId } })
             .catch((error) => {
                 this.logger.error(error);
                 throw new InternalServerErrorException("deletePhoneNumber() not available");
@@ -78,7 +78,7 @@ export class PhoneNumbersService extends ActorAssetsService {
                 throw new InternalServerErrorException("deletePhoneNumber() not available");
             })
 
-        const msg = `Successfully deleted phoneNumberId: ${phoneNumberId}`
+        const msg = `Successfully deleted phoneNumberId: ${assetId}`
         this.logger.log(msg)
         return msg
     }
@@ -96,7 +96,7 @@ export class PhoneNumbersService extends ActorAssetsService {
 
     private entityToDTO(entity: PhoneNumber) {
         let dto = new PhoneNumberDTO;
-        dto.phoneNumberId = entity.phoneNumberId;
+        dto.phoneNumberId = entity.assetId;
         dto.countryCode = entity.countryCode;
         dto.numberString = entity.numberString;
         dto.phoneNumberType = entity.phoneNumberType;

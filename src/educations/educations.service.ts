@@ -68,15 +68,15 @@ export class EducationsService extends ActorAssetsService {
         return educationDTOs;
     }
 
-    async uploadDocument(educationId: string, documentBase64: string): Promise<EducationDTO> {
-        let education = await this.educationRepository.findOne({ where: { educationId } })
+    async uploadDocument(assetId: string, documentBase64: string): Promise<EducationDTO> {
+        let education = await this.educationRepository.findOne({ where: { assetId } })
             .catch((error) => {
                 this.logger.error(error);
                 throw new InternalServerErrorException("uploadDocument() not available");
             });
 
         if (!education)
-            throw new BadRequestException(`Invvalid educationId: ${educationId}`);
+            throw new BadRequestException(`Invvalid educationId: ${assetId}`);
 
         const documentIdentifier = await this.callExternalDocumentStorageService(documentBase64);
 
@@ -91,8 +91,8 @@ export class EducationsService extends ActorAssetsService {
         return this.entityToDTO(education);
     }
 
-    async deleteEducation(educationId: string): Promise<string> {
-        const education = await this.educationRepository.findOne({ where: { educationId } })
+    async deleteEducation(assetId: string): Promise<string> {
+        const education = await this.educationRepository.findOne({ where: { assetId } })
             .catch((error) => {
                 this.logger.error(error);
                 throw new InternalServerErrorException("deleteEducation() not available");
@@ -100,7 +100,7 @@ export class EducationsService extends ActorAssetsService {
         this.logger.debug(`found education: ${JSON.stringify(education)}`);
 
         if (!education)
-            throw new BadRequestException(`Invalid educationId: ${educationId}`)
+            throw new BadRequestException(`Invalid educationId: ${assetId}`)
 
         if (education.documentIdentifier) {
             await this.callExternalDocumentStorageDeleteService(education.documentIdentifier)
@@ -116,7 +116,7 @@ export class EducationsService extends ActorAssetsService {
                 throw new InternalServerErrorException("deleteEducation() not available");
             });
 
-        const msg = `Successfully deleted education with id: ${educationId}`
+        const msg = `Successfully deleted education with id: ${assetId}`
         this.logger.log(msg);
         return msg;
     }
@@ -132,7 +132,7 @@ export class EducationsService extends ActorAssetsService {
 
     private entityToDTO(entity: Education) {
         let dto = new EducationDTO;
-        dto.educationId = entity.educationId;
+        dto.educationId = entity.assetId;
         dto.ownerActorId = entity.actorId;
         dto.createdAt = entity.createdAt;
         dto.updatedAt = entity.updatedAt;

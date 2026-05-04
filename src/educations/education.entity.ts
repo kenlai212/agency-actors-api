@@ -3,9 +3,6 @@ import { ActorAsset } from "../actorAssets/actorAsset.entity";
 
 @Entity()
 export class Education extends ActorAsset {
-    @PrimaryGeneratedColumn('uuid')
-    educationId: string;
-
     @Column({
         nullable: true,
         type: "varchar",

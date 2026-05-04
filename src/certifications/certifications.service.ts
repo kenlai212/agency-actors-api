@@ -69,37 +69,37 @@ export class CertificationsService extends ActorAssetsService {
         return certificationDTOs;
     }
 
-    async deleteCertification(certificationId: string): Promise<string> {
-        const certification = await this.certificationRepository.findOne({ where: { certificationId } })
+    async deleteCertification(assetId: string): Promise<string> {
+        const certification = await this.certificationRepository.findOne({ where: { assetId } })
             .catch((error) => {
                 this.logger.error(error);
                 throw new InternalServerErrorException("deleteCertification() not available");
             });
 
         if (!certification) {
-            throw new BadRequestException("Certification with ID " + certificationId + " not found");
+            throw new BadRequestException("Certification with ID " + assetId + " not found");
         }
 
-        await this.certificationRepository.delete({ certificationId })
+        await this.certificationRepository.delete({ assetId })
             .catch((error) => {
                 this.logger.error(error);
                 throw new InternalServerErrorException("deleteCertification() not available");
             });
 
-        const msg = `Successfully deleted ${certificationId}`;
+        const msg = `Successfully deleted ${assetId}`;
         this.logger.log(msg);
         return msg
     }
 
-    async uploadDocument(certificationId: string, documentBase64: string): Promise<CertificationDTO> {
-        const certification = await this.certificationRepository.findOne({ where: { certificationId } })
+    async uploadDocument(assetId: string, documentBase64: string): Promise<CertificationDTO> {
+        const certification = await this.certificationRepository.findOne({ where: { assetId } })
             .catch((error) => {
                 this.logger.error(error);
                 throw new InternalServerErrorException("uploadDocument() not available");
             });
 
         if (!certification) {
-            throw new BadRequestException("Certification with ID " + certificationId + " not found");
+            throw new BadRequestException("Certification with ID " + assetId + " not found");
         }
 
         const documentUrl = await this.callExternalDocumentStorageService(documentBase64)
@@ -127,7 +127,7 @@ export class CertificationsService extends ActorAssetsService {
 
     private entityToDTO(entity: Certification): CertificationDTO {
         const certificationDTO = new CertificationDTO();
-        certificationDTO.certificationId = entity.certificationId;
+        certificationDTO.certificationId = entity.assetId;
         certificationDTO.ownerActorId = entity.actorId;
         certificationDTO.authority = entity.authority;
         certificationDTO.certificateName = entity.certificateName;

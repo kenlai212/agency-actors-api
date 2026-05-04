@@ -16,9 +16,6 @@ export enum CountryCode {
 
 @Entity()
 export class PhoneNumber extends ActorAsset {
-    @PrimaryGeneratedColumn('uuid')
-    phoneNumberId: string;
-
     @Column({
         nullable: false,
         type: "enum",

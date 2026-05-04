@@ -12,9 +12,6 @@ export enum SocialProvider {
 
 @Entity()
 export class SocialProfile extends ActorAsset {
-    @PrimaryGeneratedColumn('uuid')
-    socialProfileId: string
-
     @Column({
         nullable: false,
         type: "enum",

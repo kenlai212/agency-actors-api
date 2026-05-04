@@ -3,8 +3,6 @@ import { ActorAsset } from "../actorAssets/actorAsset.entity";
 
 @Entity()
 export class GovIssueDoc extends ActorAsset {
-    @PrimaryGeneratedColumn('uuid')
-    GovermentIssueDocId: string;
 
     @Column({
         nullable: false,

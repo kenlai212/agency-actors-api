@@ -64,8 +64,8 @@ export class SocialProfilesService extends ActorAssetsService {
         return socialProfiles.map((sp) => this.entityToDTO(sp));
     }
 
-    async deleteSocialProfile(socialProfileId: string): Promise<void> {
-        await this.socialProfileRepository.delete({ socialProfileId })
+    async deleteSocialProfile(assetId: string): Promise<void> {
+        await this.socialProfileRepository.delete({ assetId })
             .catch((error) => {
                 this.logger.error(error);
                 throw new InternalServerErrorException("deleteSocialProfile() not available");
@@ -87,17 +87,17 @@ export class SocialProfilesService extends ActorAssetsService {
 
     }
 
-    private entityToDTO(socialProfile: SocialProfile): SocialProfileDTO {
-        let socialProfileDTO = new SocialProfileDTO();
-        socialProfileDTO.id = socialProfile.socialProfileId;
-        socialProfileDTO.createdAt = socialProfile.createdAt;
-        socialProfileDTO.updatedAt = socialProfile.updatedAt;
-        socialProfileDTO.ownerActorId = socialProfile.actorId;
-        socialProfileDTO.socialProvider = socialProfile.provider;
-        socialProfileDTO.url = socialProfile.url;
-        socialProfileDTO.providerUserId = socialProfile.providerUserId;
-        socialProfileDTO.providerHandle = socialProfile.providerHandle;
-        return socialProfileDTO;
+    private entityToDTO(entity: SocialProfile): SocialProfileDTO {
+        let dto = new SocialProfileDTO();
+        dto.id = entity.assetId;
+        dto.createdAt = entity.createdAt;
+        dto.updatedAt = entity.updatedAt;
+        dto.ownerActorId = entity.actorId;
+        dto.socialProvider = entity.provider;
+        dto.url = entity.url;
+        dto.providerUserId = entity.providerUserId;
+        dto.providerHandle = entity.providerHandle;
+        return dto;
     }
 
 }
