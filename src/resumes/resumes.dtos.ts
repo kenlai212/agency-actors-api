@@ -1,9 +1,5 @@
-import { ActorAssetDTO, CreateNewAssetRequestDTO, SearchAssetRequestDTO } from "../actorAssets/actorAssets.dtos";
+import { CreateNewDocumentLinkedAssetRequestDTO, DocumentLinkedAssedDTO } from "../actorAssets/actorAssets.dtos";
 
-export class ResumeDTO extends ActorAssetDTO {
-    documentIdentifier: string;
-}
+export class ResumeDTO extends DocumentLinkedAssedDTO { }
 
-export class UploadResumeRequestDTO extends CreateNewAssetRequestDTO {
-    documentBase64: string;
-}
+export class CreateResumeRequestDTO extends CreateNewDocumentLinkedAssetRequestDTO { }

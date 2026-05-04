@@ -13,15 +13,6 @@ export class SocialProfilesController extends ActorAssetsController {
         super(socialProfilesService)
     }
 
-    @Get("/")
-    async getCandidateById(@Query() query: SearchSocialProfilesRequestDTO): Promise<Array<SocialProfileDTO>> {
-        return await this.socialProfilesService.findSocialProfiles(
-            query.actorId,
-            query.provider,
-            query.providerHandle
-        );
-    }
-
     @Post("/")
     async newCandidate(@Body() requestBody: PostSocialProfileRequestDTO): Promise<SocialProfileDTO> {
         return await this.socialProfilesService.createSocialProfile(

@@ -21,15 +21,16 @@ export abstract class ActorAssetsService<T extends ActorAsset, K extends ActorAs
 
         let whereClause = {}
         if (actorId)
-            whereClause = { ...whereClause, actorId }
+            whereClause = { actorId }
         else
-            whereClause = { ...whereClause, assetId }
-
+            whereClause = { assetId }
+        console.log(whereClause)
         const assets = await this.repository.find({ where: whereClause })
             .catch((error) => {
                 console.error(error);
                 throw new InternalServerErrorException("findCertifications() not available");
             });
+        console.log(assets)
 
         let dtos: Array<K> = [];
         for (const item of assets) {

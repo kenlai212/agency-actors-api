@@ -3,12 +3,15 @@ import { CertificationDTO, NewCertificationRequestDTO } from "./certifications.d
 import { CertificationsService } from "./certifications.service";
 import { ApiOkResponse, ApiOperation } from "@nestjs/swagger";
 import { SearchAssetRequestDTO, UploadDocumentRequestDTO } from "../actorAssets/actorAssets.dtos";
+import { ActorAssetsController } from "../actorAssets/actorAssets.contorller";
 
 @Controller("/certifications")
-export class CertificationsController {
+export class CertificationsController extends ActorAssetsController {
     constructor(
         private readonly certificationsService: CertificationsService
-    ) { }
+    ) {
+        super(certificationsService)
+    }
 
     @Post("/")
     @ApiOperation({
@@ -27,25 +30,6 @@ export class CertificationsController {
             body.certificateNumber,
             body.issueDate
         );
-    }
-
-    @Get("/")
-    @ApiOperation({
-        summary: 'Search Certification.',
-        description: `Can search using Certification ID, or Actor Type + Actor ID`
-    })
-    @ApiOkResponse({
-        description: 'Successfully POST response CandidateDTO.',
-        type: CertificationDTO,
-    })
-    async searchCertifications(@Query() query: SearchAssetRequestDTO): Promise<Array<CertificationDTO>> {
-        const certifications = await this.certificationsService.findCertifications(query.assetId, query.actorId);
-
-        if (certifications.length === 0) {
-            throw new NotFoundException("No certifications found for actor ID: " + query.actorId);
-        }
-
-        return certifications;
     }
 
     @Post("/upload-document")

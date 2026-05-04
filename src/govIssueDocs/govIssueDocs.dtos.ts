@@ -1,12 +1,11 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsNotEmpty, IsString } from 'class-validator';
-import { ActorAssetDTO, CreateNewAssetRequestDTO, CreateNewDocumentLinkedAssetRequestDTO } from "../actorAssets/actorAssets.dtos";
+import { CreateNewDocumentLinkedAssetRequestDTO, DocumentLinkedAssedDTO } from "../actorAssets/actorAssets.dtos";
 
-export class GovIssueDocDTO extends ActorAssetDTO {
-    documentIdentifier: string;
+export class GovIssueDocDTO extends DocumentLinkedAssedDTO {
     issuerCountryCode: string;
-    idType: string;
-    idNumber: string;
+    documentType: string;
+    documentNumber: string;
 }
 
 export class NewGovIssueDocRequestDTO extends CreateNewDocumentLinkedAssetRequestDTO {

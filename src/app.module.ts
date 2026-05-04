@@ -19,6 +19,8 @@ import { phoneNumbersModule } from './phoneNumbers/phoneNumbers.module';
 import { PhoneNumber } from './phoneNumbers/phoneNumber.entity';
 import { Education } from './educations/education.entity';
 import { Employment } from './employments/employment.entity';
+import { PhysicalAddress } from './physicalAddresses/physicalAddress.entity';
+import { physicalAddressModule } from './physicalAddresses/physicalAddresses.module';
 
 @Module({
   imports: [
@@ -41,7 +43,8 @@ import { Employment } from './employments/employment.entity';
         Resume,
         GovIssueDoc,
         SocialProfile,
-        Certification
+        Certification,
+        PhysicalAddress
       ],
       synchronize: true,
       logging: process.env.DB_LOGGING === 'true' ? ['error', 'warn', 'info', 'log'] : false,
@@ -49,6 +52,7 @@ import { Employment } from './employments/employment.entity';
     AgencyActorsModule,
     EmailAddressesModule,
     phoneNumbersModule,
+    physicalAddressModule,
     EducationsModule,
     EmploymentsModule,
     GovIssueDocsModule,

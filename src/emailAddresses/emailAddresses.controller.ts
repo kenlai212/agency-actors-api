@@ -25,19 +25,6 @@ export class EmailAddressesController extends ActorAssetsController {
         return await this.emailAddressesService.createNewEmailAddress(body.actorId, body.addressString);
     }
 
-    @Get("/")
-    @ApiOperation({
-        summary: 'Search all Email Addresses belonging to an Actor',
-        description: `If actorId is provided, the search will be limited to that Actor, if addressString is provided, the search will be limited to that address`
-    })
-    @ApiOkResponse({
-        description: 'Successfully GET response and array of EmailAddressDTOs.',
-        type: EmailAddressDTO,
-    })
-    async searchEmailAddresses(@Query() query: SearchEmailAddressesRequestDTO): Promise<EmailAddressDTO[]> {
-        return await this.emailAddressesService.searchEmailAddresses(query.actorId, query.addressString);
-    }
-
     @Put("/lock-email-address")
     @ApiOperation({
         summary: 'Lock an Email Address for an Actor'

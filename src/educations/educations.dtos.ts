@@ -1,8 +1,8 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
-import { IsBase64, IsNotEmpty, IsOptional, IsString, Max, MaxLength, Min } from 'class-validator';
-import { ActorAssetDTO, CreateNewAssetRequestDTO, CreateNewDocumentLinkedAssetRequestDTO, SearchAssetRequestDTO } from "../actorAssets/actorAssets.dtos";
+import { IsOptional, IsString, Max, MaxLength, Min } from 'class-validator';
+import { ActorAssetDTO, CreateNewDocumentLinkedAssetRequestDTO, DocumentLinkedAssedDTO } from "../actorAssets/actorAssets.dtos";
 
-export class EducationDTO extends ActorAssetDTO {
+export class EducationDTO extends DocumentLinkedAssedDTO {
     @ApiProperty({
         description: 'Name of Insititution',
         example: `University of Beijing`
@@ -32,12 +32,6 @@ export class EducationDTO extends ActorAssetDTO {
         example: `YYYY`
     })
     endYear!: number;
-
-    @ApiProperty({
-        description: 'Document ID from storage',
-        example: `96e4e28e-2404-4a4f-b69a-6b0709559596`
-    })
-    documentIdentifier!: string;
 }
 
 export class EducationDetails {

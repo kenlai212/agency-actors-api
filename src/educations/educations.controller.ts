@@ -26,19 +26,6 @@ export class EducationsController extends ActorAssetsController {
         return await this.educationsService.createNewEducation(body.actorId, body.details, body.documentBase64);
     }
 
-    @Get("/")
-    @ApiOperation({
-        summary: 'Create new Education.',
-        description: `New Education must tie to an actor.`
-    })
-    @ApiOkResponse({
-        description: 'Successfully POST response EducationDTO.',
-        type: EducationDTO,
-    })
-    async searchEducations(@Query() query: SearchAssetRequestDTO): Promise<Array<EducationDTO>> {
-        return await this.educationsService.searchEducations(query.actorId, query.assetId);
-    }
-
     @Post("/upload-document")
     @ApiOperation({
         summary: 'Upload Education Document',

@@ -9,9 +9,4 @@ export class GovIssueDocsController extends ActorAssetsController {
     async uploadGovernmentId(@Body() newGovernmentIdRequest: NewGovIssueDocRequestDTO): Promise<GovIssueDocDTO> {
         return new GovIssueDocDTO();
     }
-
-    @Get("/:candidateId")
-    async getGovernmentId(): Promise<Array<GovIssueDocDTO>> {
-        return [new GovIssueDocDTO()];
-    }
 }
