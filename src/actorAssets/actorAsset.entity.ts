@@ -18,13 +18,3 @@ export class ActorAsset {
     })
     actorId: string
 }
-
-@Entity()
-export class DocumentLinkedAsset extends ActorAsset {
-    @Column({
-        nullable: true,
-        type: "varchar",
-        length: 255
-    })
-    documentIdentifier!: string;
-}

@@ -33,8 +33,6 @@ export class ResumesService extends DocumentLinkedAssetsService<Resume, ResumeDT
 
     entityToDTO(entity: Resume) {
         let dto = new ResumeDTO(entity);
-        dto.documentIdentifier = entity.documentIdentifier;
-
         return dto;
     }
 }

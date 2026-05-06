@@ -1,7 +1,8 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsNotEmpty, IsString } from 'class-validator';
 import { IssueDocType, IssuerGoverment } from "./govIssueDoc.entity";
-import { CreateNewDocumentLinkedAssetRequestDTO, DocumentLinkedAssetDTO } from "../actorAssets/documentLinkedAssets.dtos";
+import { DocumentLinkedAssetDTO } from "../actorAssets/documentLinkedAssets.dtos";
+import { CreateNewAssetRequestDTO } from "../actorAssets/actorAssets.dtos";
 
 export class GovIssueDocDTO extends DocumentLinkedAssetDTO {
     @ApiProperty({
@@ -20,7 +21,7 @@ export class GovIssueDocDTO extends DocumentLinkedAssetDTO {
     issueDocNumber: string;
 }
 
-export class NewGovIssueDocRequestDTO extends CreateNewDocumentLinkedAssetRequestDTO {
+export class NewGovIssueDocRequestDTO extends CreateNewAssetRequestDTO {
     @ApiProperty({
         description: `Issuer Goverment : ${Object.keys(IssuerGoverment)}`,
     })

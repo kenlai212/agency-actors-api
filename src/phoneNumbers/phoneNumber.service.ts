@@ -7,7 +7,8 @@ import { PhoneNumberDTO } from "./phoneNumbers.dtos";
 
 @Injectable()
 export class PhoneNumbersService extends ActorAssetsService<PhoneNumber, PhoneNumberDTO> {
-    readonly logger = new Logger('PhoneNumbersService')
+    readonly logger = new Logger(this.constructor.name)
+
     constructor(
         @InjectRepository(PhoneNumber)
         private readonly phoneNumberRepository: Repository<PhoneNumber>,

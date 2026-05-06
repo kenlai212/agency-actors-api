@@ -2,7 +2,7 @@ import { Injectable, InternalServerErrorException, Logger } from "@nestjs/common
 import { InjectRepository } from "@nestjs/typeorm";
 import { Education } from "./education.entity";
 import { Repository } from "typeorm";
-import { EducationDetails, EducationDTO } from "./educations.dtos";
+import { EducationDTO, NewEducationRequestDTO } from "./educations.dtos";
 import { DocumentLinkedAssetsService } from "../actorAssets/documentLinkedAssets.service";
 
 @Injectable()
@@ -16,31 +16,25 @@ export class EducationsService extends DocumentLinkedAssetsService<Education, Ed
         super(educationRepository);
     }
 
-    async createNewEducation(actorId: string, details?: EducationDetails, documentBase64?: string): Promise<EducationDTO> {
-        let education = new Education();
+    async createNewEducation(dto: NewEducationRequestDTO): Promise<EducationDTO> {
+        let entity = new Education();
 
-        await this.validateActor(actorId);
-        education.actorId = actorId;
+        await this.validateActor(dto.actorId);
+        entity.actorId = dto.actorId;
 
-        if (details) {
-            education.institutionName = details.institutionName;
-            education.degree = details.degree;
-            education.fieldOfStudy = details.fieldOfStudy;
-            education.startYear = details.startYear;
-            education.endYear = details.endYear;
-        }
+        entity.institutionName = dto.institutionName;
+        entity.degree = dto.degree;
+        entity.fieldOfStudy = dto.fieldOfStudy;
+        entity.startYear = dto.startYear;
+        entity.endYear = dto.endYear;
 
-        if (documentBase64) {
-            education.documentIdentifier = await this.callExternalDocumentStorageService(documentBase64);
-        }
-
-        education = await this.educationRepository.save(education)
+        entity = await this.educationRepository.save(entity)
             .catch((error) => {
                 this.logger.error(error);
                 throw new InternalServerErrorException("createNewEducation() not available");
             });
 
-        return this.entityToDTO(education);
+        return this.entityToDTO(entity);
     }
 
     entityToDTO(entity: Education) {
@@ -50,7 +44,6 @@ export class EducationsService extends DocumentLinkedAssetsService<Education, Ed
         dto.fieldOfStudy = entity.fieldOfStudy;
         dto.startYear = entity.startYear;
         dto.endYear = entity.endYear;
-        dto.documentIdentifier = entity.documentIdentifier;
         return dto;
     }
 }

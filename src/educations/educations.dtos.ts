@@ -1,6 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
-import { IsOptional, IsString, Max, MaxLength, Min } from 'class-validator';
-import { CreateNewDocumentLinkedAssetRequestDTO, DocumentLinkedAssetDTO } from "../actorAssets/documentLinkedAssets.dtos";
+import { IsString, Max, MaxLength, Min } from 'class-validator';
+import { DocumentLinkedAssetDTO } from "../actorAssets/documentLinkedAssets.dtos";
+import { CreateNewAssetRequestDTO } from "../actorAssets/actorAssets.dtos";
 
 export class EducationDTO extends DocumentLinkedAssetDTO {
     @ApiProperty({
@@ -34,7 +35,7 @@ export class EducationDTO extends DocumentLinkedAssetDTO {
     endYear!: number;
 }
 
-export class EducationDetails {
+export class NewEducationRequestDTO extends CreateNewAssetRequestDTO {
     @ApiPropertyOptional({
         description: 'Name of Insititution',
         example: `University of Beijing`
@@ -74,12 +75,4 @@ export class EducationDetails {
     @Min(1900)
     @Max(2100)
     endYear!: number;
-}
-
-export class NewEducationRequestDTO extends CreateNewDocumentLinkedAssetRequestDTO {
-    @ApiPropertyOptional({
-        description: 'Education Details',
-    })
-    @IsOptional()
-    details: EducationDetails
 }

@@ -1,6 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsNotEmpty, IsString, MaxLength } from 'class-validator';
-import { CreateNewDocumentLinkedAssetRequestDTO, DocumentLinkedAssetDTO } from "../actorAssets/documentLinkedAssets.dtos";
+import { DocumentLinkedAssetDTO } from "../actorAssets/documentLinkedAssets.dtos";
+import { CreateNewAssetRequestDTO } from "../actorAssets/actorAssets.dtos";
 
 export class CertificationDTO extends DocumentLinkedAssetDTO {
     @ApiProperty({
@@ -13,7 +14,7 @@ export class CertificationDTO extends DocumentLinkedAssetDTO {
     issueDate!: Date;
 }
 
-export class NewCertificationRequestDTO extends CreateNewDocumentLinkedAssetRequestDTO {
+export class NewCertificationRequestDTO extends CreateNewAssetRequestDTO {
     @ApiProperty({
         description: 'The authority that issued the certification',
     })

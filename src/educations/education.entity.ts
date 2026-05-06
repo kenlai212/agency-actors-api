@@ -1,5 +1,5 @@
 import { Column, Entity } from "typeorm";
-import { DocumentLinkedAsset } from "../actorAssets/actorAsset.entity";
+import { DocumentLinkedAsset } from "../actorAssets/documentLinkedAsset.entity";
 
 @Entity()
 export class Education extends DocumentLinkedAsset {

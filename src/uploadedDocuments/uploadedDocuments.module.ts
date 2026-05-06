@@ -2,18 +2,19 @@ import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { UploadedDocument } from "./uploadedDocument.entity";
 import { AgencyActorsModule } from "../agencyActors/agencyActors.module";
-import { UploadedDocumentService } from "./uploadedDocuments.service";
+import { UploadedDocumentsService } from "./uploadedDocuments.service";
+import { UploadedDocumentsController } from "./uploadedDocuments.controller";
 
 @Module({
     imports: [
         TypeOrmModule.forFeature([UploadedDocument]),
         AgencyActorsModule
     ],
-    providers: [
-        UploadedDocumentService
+    controllers: [
+        UploadedDocumentsController
     ],
-    exports: [
-        UploadedDocumentService
+    providers: [
+        UploadedDocumentsService
     ]
 })
 export class UploadedDocumentsModule { }

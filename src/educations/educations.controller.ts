@@ -22,6 +22,6 @@ export class EducationsController extends DocumentLinkedAssetsController {
         type: EducationDTO,
     })
     async createNewEducation(@Body() body: NewEducationRequestDTO): Promise<EducationDTO> {
-        return await this.educationsService.createNewEducation(body.actorId, body.details, body.documentBase64);
+        return await this.educationsService.createNewEducation(body);
     }
 }

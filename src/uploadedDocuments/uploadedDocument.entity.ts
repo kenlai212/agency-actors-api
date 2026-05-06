@@ -1,6 +1,6 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
-export enum UploadDocumentType {
+export enum UploadedDocumentType {
     CERTIFICATION_PROOF = "CERTIFICATION_PROOF",
     EDUCATION_PROOF = "EDUCATION_PROOF",
     EMPLOYMENT_PROOF = "EMPLOYMENT_PROOF",
@@ -21,12 +21,18 @@ export class UploadedDocument {
     @PrimaryGeneratedColumn('uuid')
     uploadedDocumentId: string;
 
+    @CreateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP(6)" })
+    createdAt: Date;
+
+    @UpdateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP(6)", onUpdate: "CURRENT_TIMESTAMP(6)" })
+    updatedAt: Date;
+
     @Column({
         nullable: false,
         type: "enum",
-        enum: UploadDocumentType,
+        enum: UploadedDocumentType,
     })
-    uploadDocumentType: UploadDocumentType;
+    uploadedDocumentType: UploadedDocumentType;
 
     @Column({
         nullable: false,
@@ -48,4 +54,11 @@ export class UploadedDocument {
         length: 36
     })
     actorId: string;
+
+    @Column({
+        nullable: true,
+        type: "varchar",
+        length: 36
+    })
+    assetId!: string;
 }

@@ -1,12 +1,9 @@
-import { Body, Post } from "@nestjs/common";
-import { ApiOkResponse, ApiOperation } from "@nestjs/swagger";
-import { DocumentLinkedAsset } from "./actorAsset.entity";
 import { ActorAssetsController } from "./actorAssets.contorller";
 import { DocumentLinkedAssetsService } from "./documentLinkedAssets.service";
-import { DocumentLinkedAssetDTO, UploadDocumentRequestDTO } from "./documentLinkedAssets.dtos";
+import { DocumentLinkedAssetDTO } from "./documentLinkedAssets.dtos";
 
 export abstract class DocumentLinkedAssetsController extends ActorAssetsController {
-    constructor(
+    /*constructor(
         protected readonly documentLinkedAssetsService: DocumentLinkedAssetsService<DocumentLinkedAsset, DocumentLinkedAssetDTO>,
     ) {
         super(documentLinkedAssetsService)
@@ -23,5 +20,5 @@ export abstract class DocumentLinkedAssetsController extends ActorAssetsControll
     })
     async uploadDocument(@Body() body: UploadDocumentRequestDTO): Promise<DocumentLinkedAssetDTO> {
         return await this.documentLinkedAssetsService.uploadDocument(body.assetId, body.documentBase64);
-    }
+    }*/
 }
