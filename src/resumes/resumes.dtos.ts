@@ -1,4 +1,4 @@
-import { CreateNewDocumentLinkedAssetRequestDTO, DocumentLinkedAssetDTO } from "../actorAssets/actorAssets.dtos";
+import { CreateNewDocumentLinkedAssetRequestDTO, DocumentLinkedAssetDTO } from "../actorAssets/documentLinkedAssets.dtos";
 
 export class ResumeDTO extends DocumentLinkedAssetDTO { }
 

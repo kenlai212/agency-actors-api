@@ -1,4 +1,4 @@
-import { CreateNewDocumentLinkedAssetRequestDTO, DocumentLinkedAssetDTO } from "../actorAssets/actorAssets.dtos";
+import { CreateNewDocumentLinkedAssetRequestDTO, DocumentLinkedAssetDTO } from "../actorAssets/documentLinkedAssets.dtos";
 import { PhysicalAddressType } from "./physicalAddress.entity";
 
 export class PhysicalAddressDTO extends DocumentLinkedAssetDTO {

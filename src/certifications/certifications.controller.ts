@@ -1,9 +1,9 @@
-import { Body, Controller, Get, NotFoundException, Post, Query } from "@nestjs/common";
+import { Body, Controller, Post } from "@nestjs/common";
 import { CertificationDTO, NewCertificationRequestDTO } from "./certifications.dtos";
 import { CertificationsService } from "./certifications.service";
 import { ApiOkResponse, ApiOperation } from "@nestjs/swagger";
-import { SearchAssetRequestDTO, UploadDocumentRequestDTO } from "../actorAssets/actorAssets.dtos";
 import { ActorAssetsController } from "../actorAssets/actorAssets.contorller";
+import { UploadDocumentRequestDTO } from "../actorAssets/documentLinkedAssets.dtos";
 
 @Controller("/certifications")
 export class CertificationsController extends ActorAssetsController {

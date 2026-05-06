@@ -1,9 +1,8 @@
-import { Body, Controller, Get, Post, Query } from "@nestjs/common";
+import { Body, Controller, Post } from "@nestjs/common";
 import { ApiOkResponse, ApiOperation } from "@nestjs/swagger";
 import { EducationDTO, NewEducationRequestDTO } from "./educations.dtos";
 import { EducationsService } from "./educations.service";
-import { SearchAssetRequestDTO, UploadDocumentRequestDTO } from "../actorAssets/actorAssets.dtos";
-import { ActorAssetsController, DocumentLinkedAssetsController } from "../actorAssets/actorAssets.contorller";
+import { DocumentLinkedAssetsController } from "../actorAssets/documentLinkedAssets.controller";
 
 @Controller("educations")
 export class EducationsController extends DocumentLinkedAssetsController {

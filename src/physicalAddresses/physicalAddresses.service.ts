@@ -1,9 +1,9 @@
 import { Injectable, InternalServerErrorException, Logger } from "@nestjs/common";
-import { DocumentLinkedAssetsService } from "../actorAssets/actorAssets.service";
 import { PhysicalAddress } from "./physicalAddress.entity";
 import { CreateNewPhysicalAddressRequestDTO, PhysicalAddressDTO } from "./physicalAddresses.dtos";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
+import { DocumentLinkedAssetsService } from "../actorAssets/documentLinkedAssets.service";
 
 @Injectable()
 export class PhysicalAddressesService extends DocumentLinkedAssetsService<PhysicalAddress, PhysicalAddressDTO> {

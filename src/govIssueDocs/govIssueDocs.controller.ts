@@ -1,12 +1,26 @@
-import { Body, Controller, Delete, Get, Post } from "@nestjs/common";
+import { Body, Controller, Post } from "@nestjs/common";
 import { GovIssueDocDTO, NewGovIssueDocRequestDTO } from "./govIssueDocs.dtos";
-import { ActorAssetsController, DocumentLinkedAssetsController } from "../actorAssets/actorAssets.contorller";
+import { ApiOkResponse, ApiOperation } from "@nestjs/swagger";
+import { GovIssueDocsService } from "./govIssueDocs.service";
+import { DocumentLinkedAssetsController } from "../actorAssets/documentLinkedAssets.controller";
 
 @Controller("gov-issue-doc")
 export class GovIssueDocsController extends DocumentLinkedAssetsController {
+    constructor(
+        private readonly govIssueDocsService: GovIssueDocsService
+    ) {
+        super(govIssueDocsService);
+    }
 
     @Post("/")
-    async uploadGovernmentId(@Body() newGovernmentIdRequest: NewGovIssueDocRequestDTO): Promise<GovIssueDocDTO> {
-        return new GovIssueDocDTO();
+    @ApiOperation({
+        summary: 'Create new Goverment Issue Document for an actor'
+    })
+    @ApiOkResponse({
+        description: 'Successfully POST response GovIssueDocDTO.',
+        type: GovIssueDocDTO,
+    })
+    async uploadGovernmentId(@Body() newGovIssueDocRequest: NewGovIssueDocRequestDTO): Promise<GovIssueDocDTO> {
+        return await this.govIssueDocsService.createNewGovIssueDoc(newGovIssueDocRequest);
     }
 }

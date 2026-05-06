@@ -2,8 +2,7 @@ import { Body, Controller, Post } from "@nestjs/common";
 import { EmploymentDTO, NewEmploymentRequestDTO } from "./employments.dtos";
 import { EmploymentsService } from "./employments.service";
 import { ApiOkResponse, ApiOperation } from "@nestjs/swagger";
-import { UploadDocumentRequestDTO } from "../actorAssets/actorAssets.dtos";
-import { DocumentLinkedAssetsController } from "../actorAssets/actorAssets.contorller";
+import { DocumentLinkedAssetsController } from "../actorAssets/documentLinkedAssets.controller";
 
 @Controller("/employments")
 export class EmploymentsController extends DocumentLinkedAssetsController {

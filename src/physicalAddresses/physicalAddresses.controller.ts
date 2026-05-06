@@ -1,8 +1,8 @@
 import { Body, Controller, Post } from "@nestjs/common";
-import { DocumentLinkedAssetsController } from "../actorAssets/actorAssets.contorller";
 import { PhysicalAddressesService } from "./physicalAddresses.service";
 import { ApiOkResponse, ApiOperation } from "@nestjs/swagger";
 import { CreateNewPhysicalAddressRequestDTO, PhysicalAddressDTO } from "./physicalAddresses.dtos";
+import { DocumentLinkedAssetsController } from "../actorAssets/documentLinkedAssets.controller";
 
 @Controller("/physical-addresses")
 export class PhysicalAddressesController extends DocumentLinkedAssetsController {

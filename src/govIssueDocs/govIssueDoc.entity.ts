@@ -1,26 +1,39 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
-import { ActorAsset } from "../actorAssets/actorAsset.entity";
+import { Column, Entity } from "typeorm";
+import { DocumentLinkedAsset } from "../actorAssets/actorAsset.entity";
+
+export enum IssuerGoverment {
+    CN = "CN",
+    HK = "HK",
+    SG = "SG",
+    JP = "JP"
+}
+
+export enum IssueDocType {
+    PASSPORT = "PASSPORT",
+    IDENTITY_CARD = "IDENTITY_CARD",
+    DRIVERS_LICENSE = "DRIVERS_LICENSE"
+}
 
 @Entity()
-export class GovIssueDoc extends ActorAsset {
+export class GovIssueDoc extends DocumentLinkedAsset {
     @Column({
-        nullable: false,
-        type: "varchar",
-        length: 3
+        nullable: true,
+        type: "enum",
+        enum: IssuerGoverment
     })
-    issuerCountryCode: string;
+    issuerGoverment!: IssuerGoverment;
 
     @Column({
-        nullable: false,
+        nullable: true,
+        type: "enum",
+        enum: IssueDocType
+    })
+    issueDocType!: IssueDocType;
+
+    @Column({
+        nullable: true,
         type: "varchar",
         length: 255
     })
-    idType: string;
-
-    @Column({
-        nullable: false,
-        type: "varchar",
-        length: 255
-    })
-    idNumber: string;
+    issueDocNumber!: string;
 }

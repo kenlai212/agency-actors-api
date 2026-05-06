@@ -1,8 +1,8 @@
 import { BadRequestException, Inject, InternalServerErrorException, Logger } from "@nestjs/common";
 import { AgencyActorsService } from "../agencyActors/agencyActors.service";
 import { ActorAssetDTO } from "./actorAssets.dtos";
-import { ObjectLiteral, Repository } from "typeorm";
-import { ActorAsset, DocumentLinkedAsset } from "./actorAsset.entity";
+import { Repository } from "typeorm";
+import { ActorAsset } from "./actorAsset.entity";
 
 export abstract class ActorAssetsService<T extends ActorAsset, K extends ActorAssetDTO> {
     @Inject(AgencyActorsService) protected readonly agencyActorsService: AgencyActorsService;
@@ -63,69 +63,4 @@ export abstract class ActorAssetsService<T extends ActorAsset, K extends ActorAs
     }
 
     abstract entityToDTO(entity: T): K
-}
-
-export abstract class DocumentLinkedAssetsService<T extends DocumentLinkedAsset, K extends ActorAssetDTO> extends ActorAssetsService<T, K> {
-    constructor(
-        protected readonly repository: Repository<T>
-    ) {
-        super(repository)
-    }
-
-    async uploadDocument(assetId: string, documentBase64: string): Promise<K> {
-        let asset = await this.repository.findOne({ assetId } as any)
-            .catch((error) => {
-                console.error(error);
-                throw new InternalServerErrorException("uploadDocument() not available");
-            });
-
-        if (!asset)
-            throw new BadRequestException(`Invvalid assetId: ${assetId}`);
-
-        const documentIdentifier = await this.callExternalDocumentStorageService(documentBase64);
-
-        asset.documentIdentifier = documentIdentifier;
-
-        asset = await this.repository.save(asset)
-            .catch((error) => {
-                console.error(error);
-                throw new InternalServerErrorException("uploadDocument() not available");
-            });
-
-        return this.entityToDTO(asset);
-    }
-
-    async callExternalDocumentStorageService(documentBase64: string): Promise<string> {
-        return "https://example.com/document/12345";
-    }
-
-    async deleteAsset(assetId: string): Promise<string> {
-        const asset = await this.repository.findOneBy({ assetId } as any)
-            .catch((error) => {
-                console.error(error);
-                throw new InternalServerErrorException("deleteCertification() not available");
-            });
-
-        if (!asset) {
-            throw new BadRequestException("Certification with ID " + assetId + " not found");
-        }
-
-        if (asset.documentIdentifier) {
-            await this.repository.delete({ assetId } as any)
-                .catch((error) => {
-                    console.error(error);
-                    throw new InternalServerErrorException("deleteAsset() not available");
-                });
-
-            await this.callExternalDocumentStorageDeleteService(asset.documentIdentifier);
-        }
-
-        const msg = `Successfully deleted ${assetId}`;
-        console.log(msg);
-        return msg
-    }
-
-    async callExternalDocumentStorageDeleteService(documentId: string): Promise<string> {
-        return "Successfully deleted";
-    }
 }

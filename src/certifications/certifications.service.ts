@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { Certification } from "./certification.entity";
 import { CertificationDTO } from "./certifications.dtos";
 import { AuthoritiesService } from "./authoritries.service";
-import { DocumentLinkedAssetsService } from "../actorAssets/actorAssets.service";
+import { DocumentLinkedAssetsService } from "../actorAssets/documentLinkedAssets.service";
 
 @Injectable()
 export class CertificationsService extends DocumentLinkedAssetsService<Certification, CertificationDTO> {

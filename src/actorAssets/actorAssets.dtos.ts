@@ -37,14 +37,6 @@ export class ActorAssetDTO {
     }
 }
 
-export class DocumentLinkedAssetDTO extends ActorAssetDTO {
-    @ApiProperty({
-        description: `Document Identifier`,
-        example: 'b69a-6b0709559596'
-    })
-    documentIdentifier!: string;
-}
-
 export class CreateNewAssetRequestDTO {
     @ApiProperty({
         description: 'Actor ID',
@@ -53,15 +45,6 @@ export class CreateNewAssetRequestDTO {
     @IsString()
     @MaxLength(36)
     actorId: string;
-}
-
-export class CreateNewDocumentLinkedAssetRequestDTO extends CreateNewAssetRequestDTO {
-    @ApiPropertyOptional({
-        description: 'document base64 string',
-    })
-    @IsOptional()
-    @IsBase64()
-    documentBase64!: string;
 }
 
 export class SearchAssetRequestDTO {
@@ -80,22 +63,4 @@ export class SearchAssetRequestDTO {
     @IsString()
     @MaxLength(36)
     assetId!: string;
-}
-
-export class UploadDocumentRequestDTO {
-    @ApiProperty({
-        description: 'Asset ID',
-        example: `96e4e28e-2404-4a4f-b69a-6b0709559596`
-    })
-    @IsNotEmpty()
-    @IsString()
-    @MaxLength(36)
-    assetId: string;
-
-    @ApiProperty({
-        description: 'The base64-encoded document string',
-    })
-    @IsNotEmpty()
-    @IsBase64()
-    documentBase64: string;
 }

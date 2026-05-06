@@ -7,7 +7,7 @@ export enum Gender {
 }
 
 export enum AgencyActorType {
-    CANDIDATE = "CANADATE",
+    CANDIDATE = "CANDIDATE",
     AGENT = "AGENT",
     BROKER = "BROKER"
 }

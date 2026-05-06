@@ -1,32 +1,42 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsNotEmpty, IsString } from 'class-validator';
-import { CreateNewDocumentLinkedAssetRequestDTO, DocumentLinkedAssetDTO } from "../actorAssets/actorAssets.dtos";
+import { IssueDocType, IssuerGoverment } from "./govIssueDoc.entity";
+import { CreateNewDocumentLinkedAssetRequestDTO, DocumentLinkedAssetDTO } from "../actorAssets/documentLinkedAssets.dtos";
 
 export class GovIssueDocDTO extends DocumentLinkedAssetDTO {
-    issuerCountryCode: string;
-    documentType: string;
-    documentNumber: string;
+    @ApiProperty({
+        description: `Issuer Goverment : ${Object.keys(IssuerGoverment)}`,
+    })
+    issuerGoverment: IssuerGoverment;
+
+    @ApiProperty({
+        description: `Document Type : ${Object.keys(IssueDocType)}`,
+    })
+    issueDocType: IssueDocType;
+
+    @ApiProperty({
+        description: `Issued Document Number`,
+    })
+    issueDocNumber: string;
 }
 
 export class NewGovIssueDocRequestDTO extends CreateNewDocumentLinkedAssetRequestDTO {
     @ApiProperty({
-        description: 'issuer goverment country',
+        description: `Issuer Goverment : ${Object.keys(IssuerGoverment)}`,
     })
     @IsNotEmpty()
-    @IsString()
-    issuerCountryCode: string;
+    issuerGoverment: IssuerGoverment;
 
     @ApiProperty({
-        description: 'Type of Goverment issued ID',
+        description: `Issue Document Type : ${Object.keys(IssueDocType)}`,
     })
     @IsNotEmpty()
-    @IsString()
-    idType: string;
+    issueDocType: IssueDocType;
 
     @ApiProperty({
         description: 'doc unique identifier',
     })
     @IsNotEmpty()
     @IsString()
-    docNumber: string;
+    issueDocNumber: string;
 }

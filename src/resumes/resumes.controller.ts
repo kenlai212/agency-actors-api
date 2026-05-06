@@ -1,7 +1,7 @@
 import { Body, Controller, Post } from "@nestjs/common";
 import { CreateResumeRequestDTO, ResumeDTO } from "./resumes.dtos";
 import { ResumesService } from "./resumes.service";
-import { DocumentLinkedAssetsController } from "../actorAssets/actorAssets.contorller";
+import { DocumentLinkedAssetsController } from "../actorAssets/documentLinkedAssets.controller";
 
 @Controller("/resume")
 export class ResumesController extends DocumentLinkedAssetsController {

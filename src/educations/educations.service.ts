@@ -1,9 +1,9 @@
-import { BadRequestException, Injectable, InternalServerErrorException, Logger } from "@nestjs/common";
-import { ActorAssetsService, DocumentLinkedAssetsService } from "../actorAssets/actorAssets.service";
+import { Injectable, InternalServerErrorException, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Education } from "./education.entity";
 import { Repository } from "typeorm";
 import { EducationDetails, EducationDTO } from "./educations.dtos";
+import { DocumentLinkedAssetsService } from "../actorAssets/documentLinkedAssets.service";
 
 @Injectable()
 export class EducationsService extends DocumentLinkedAssetsService<Education, EducationDTO> {
