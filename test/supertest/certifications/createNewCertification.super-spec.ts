@@ -1,13 +1,13 @@
 import { describe, it, expect, beforeAll, afterAll } from '@jest/globals';
 import request from 'supertest';
 
-const host = "localhost:8080";
+const API_URL = "localhost:8080";
 let actorId = "";
 let assetId = ""
 
 describe(`Create New Certification Super test`, () => {
     beforeAll(async () => {
-        await request(host)
+        await request(API_URL)
             .post("/agency-actors")
             .send({
                 "agencyActorType": "CANDIDATE",
@@ -20,17 +20,17 @@ describe(`Create New Certification Super test`, () => {
     })
 
     afterAll(async () => {
-        await request(host)
+        await request(API_URL)
             .delete(`/certifications/${assetId}`)
             .expect(200)
 
-        await request(host)
+        await request(API_URL)
             .delete(`/agency-actors/${actorId}`)
             .expect(200)
     });
 
     it(`Successfully create a new Certification`, () => {
-        return request(host)
+        return request(API_URL)
             .post("/certifications")
             .send({
                 "actorId": actorId,

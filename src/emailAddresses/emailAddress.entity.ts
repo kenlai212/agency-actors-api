@@ -16,5 +16,5 @@ export class EmailAddress extends ActorAsset {
         type: "boolean",
         default: false
     })
-    isLocked: boolean;
+    isDefault: boolean;
 }
