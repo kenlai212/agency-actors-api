@@ -1,4 +1,4 @@
-import { BadRequestException, Inject, InternalServerErrorException, Logger } from "@nestjs/common";
+import { BadRequestException, Inject, InternalServerErrorException, Logger, NotFoundException } from "@nestjs/common";
 import { AgencyActorsService } from "../agencyActors/agencyActors.service";
 import { ActorAssetDTO } from "./actorAssets.dtos";
 import { Repository } from "typeorm";
@@ -60,6 +60,20 @@ export abstract class ActorAssetsService<T extends ActorAsset, K extends ActorAs
         const msg = `Successfully deleted ${assetId}`;
         console.log(msg);
         return msg
+    }
+
+    async validateAssetId(assetId: string): Promise<T> {
+        const asset = await this.repository.findOneBy({ assetId } as any)
+            .catch((error) => {
+                console.error(error);
+                throw new InternalServerErrorException("deleteCertification() not available");
+            });
+
+        if (!asset) {
+            throw new NotFoundException("Certification with ID " + assetId + " not found");
+        }
+
+        return asset;
     }
 
     abstract entityToDTO(entity: T): K

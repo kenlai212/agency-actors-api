@@ -1,27 +1,43 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { IsNotEmpty, IsString, MaxLength } from 'class-validator';
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
+import { IsDateString, IsEnum, IsNotEmpty, IsOptional, IsString, MaxLength } from 'class-validator';
 import { DocumentLinkedAssetDTO } from "../actorAssets/documentLinkedAssets.dtos";
-import { CreateNewAssetRequestDTO } from "../actorAssets/actorAssets.dtos";
+import { CreateNewAssetRequestDTO, UpdateAssetRequestDTO } from "../actorAssets/actorAssets.dtos";
+import { CertificationAuthority } from "./certification.entity";
 
 export class CertificationDTO extends DocumentLinkedAssetDTO {
     @ApiProperty({
-        description: 'Cerfication record ID',
-        example: "96e4e28e-2404-4a4f-b69a-6b0709559596"
+        description: `Certification Authority ${Object.values(CertificationAuthority)}`,
+        enum: CertificationAuthority,
+        enumName: "CertificationAuthority"
     })
-    authority!: string;
-    certificateName!: string;
-    certificateNumber!: string;
-    issueDate!: Date;
+    certificationAuthority: CertificationAuthority;
+
+    @ApiProperty({
+        description: 'Certification Name',
+    })
+    certificateName: string;
+
+    @ApiProperty({
+        description: 'Certification Name',
+    })
+    certificateNumber: string;
+
+    @ApiProperty({
+        description: 'Certification Issue Date',
+    })
+    issueDate: Date;
 }
 
 export class NewCertificationRequestDTO extends CreateNewAssetRequestDTO {
     @ApiProperty({
-        description: 'The authority that issued the certification',
+        description: `Certification Authority ${Object.values(CertificationAuthority)}`,
+        example: CertificationAuthority.AMAZON,
+        enum: CertificationAuthority,
+        enumName: "CertificationAuthority"
     })
     @IsNotEmpty()
-    @IsString()
-    @MaxLength(255)
-    authority: string;
+    @IsEnum(CertificationAuthority)
+    certificationAuthority: CertificationAuthority;
 
     @ApiProperty({
         description: 'The name of the certificate',
@@ -45,4 +61,39 @@ export class NewCertificationRequestDTO extends CreateNewAssetRequestDTO {
     @IsNotEmpty()
     @IsString()
     issueDate: Date;
+}
+
+export class UpdateCertificationRequestDTO extends UpdateAssetRequestDTO {
+    @ApiPropertyOptional({
+        description: `Certification Authority ${Object.values(CertificationAuthority)}`,
+        example: CertificationAuthority.AMAZON,
+        enum: CertificationAuthority,
+        enumName: "CertificationAuthority"
+    })
+    @IsOptional()
+    @IsEnum(CertificationAuthority)
+    certificationAuthority!: CertificationAuthority;
+
+    @ApiProperty({
+        description: 'The name of the certificate',
+    })
+    @IsOptional()
+    @IsString()
+    @MaxLength(255)
+    certificateName!: string;
+
+    @ApiProperty({
+        description: 'Certificate number or identifier',
+    })
+    @IsOptional()
+    @IsString()
+    @MaxLength(255)
+    certificateNumber!: string;
+
+    @ApiProperty({
+        description: 'The issue date of the certification',
+    })
+    @IsOptional()
+    @IsDateString()
+    issueDate!: Date;
 }

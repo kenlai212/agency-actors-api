@@ -46,14 +46,6 @@ export class UploadedDocumentDTO {
 }
 
 export class UploadDocumentRequestDTO {
-    @ApiPropertyOptional({
-        description: `Uploaded Document belong to this Asset ID`,
-    })
-    @IsOptional()
-    @IsString()
-    @MaxLength(36)
-    assetId: string;
-
     @ApiProperty({
         description: `Uploaded Document belong to this Actor Id`,
     })

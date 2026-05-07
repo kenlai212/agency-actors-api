@@ -3,7 +3,6 @@ import { CertificationsController } from "./certifications.controller";
 import { CertificationsService } from "./certifications.service";
 import { Certification } from "./certification.entity";
 import { TypeOrmModule } from "@nestjs/typeorm/dist/typeorm.module";
-import { AuthoritiesService } from "./authoritries.service";
 import { AgencyActorsModule } from "../agencyActors/agencyActors.module";
 
 @Module({
@@ -15,7 +14,7 @@ import { AgencyActorsModule } from "../agencyActors/agencyActors.module";
         CertificationsController
     ],
     providers: [
-        CertificationsService, AuthoritiesService
+        CertificationsService
     ]
 
 })

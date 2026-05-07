@@ -47,6 +47,16 @@ export class CreateNewAssetRequestDTO {
     actorId: string;
 }
 
+export class UpdateAssetRequestDTO {
+    @ApiProperty({
+        description: 'Asset ID',
+    })
+    @IsNotEmpty()
+    @IsString()
+    @MaxLength(36)
+    assetId: string;
+}
+
 export class SearchAssetRequestDTO {
     @ApiPropertyOptional({
         description: 'Actor ID',

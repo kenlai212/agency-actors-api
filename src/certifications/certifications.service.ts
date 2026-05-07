@@ -2,8 +2,7 @@ import { BadRequestException, Injectable, InternalServerErrorException, Logger }
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from 'typeorm';
 import { Certification } from "./certification.entity";
-import { CertificationDTO } from "./certifications.dtos";
-import { AuthoritiesService } from "./authoritries.service";
+import { CertificationDTO, NewCertificationRequestDTO, UpdateCertificationRequestDTO } from "./certifications.dtos";
 import { DocumentLinkedAssetsService } from "../actorAssets/documentLinkedAssets.service";
 
 @Injectable()
@@ -12,31 +11,24 @@ export class CertificationsService extends DocumentLinkedAssetsService<Certifica
 
     constructor(
         @InjectRepository(Certification)
-        private readonly certificationRepository: Repository<Certification>,
-        private readonly authortiesService: AuthoritiesService,
+        private readonly entityRepository: Repository<Certification>
     ) {
-        super(certificationRepository);
+        super(entityRepository);
     }
 
-    async createCertification(actorId: string, authority?: string, certificateName?: string, certificateNumber?: string, issueDate?: Date): Promise<CertificationDTO> {
+    async createCertification(dto: NewCertificationRequestDTO): Promise<CertificationDTO> {
         let certification = new Certification();
 
         // Validate actor ID
-        await this.validateActor(actorId)
-        certification.actorId = actorId;
+        await this.validateActor(dto.actorId)
+        certification.actorId = dto.actorId;
 
-        // Validate authority and certificate name
-        this.authortiesService.validateAuthority(authority);
-        certification.authority = authority;
+        certification.certificationAuthority = dto.certificationAuthority;
+        certification.certificateName = dto.certificateName;
+        certification.certificateNumber = dto.certificateNumber;
+        certification.issueDate = dto.issueDate;
 
-        // Validate certificate name
-        this.authortiesService.validateCertificateName(certificateName);
-        certification.certificateName = certificateName;
-
-        certification.certificateNumber = certificateNumber;
-        certification.issueDate = issueDate;
-
-        await this.certificationRepository.save(certification)
+        await this.entityRepository.save(certification)
             .catch((error) => {
                 this.logger.error(error);
                 throw new InternalServerErrorException("createCertification() not available");
@@ -45,33 +37,34 @@ export class CertificationsService extends DocumentLinkedAssetsService<Certifica
         return this.entityToDTO(certification);
     }
 
-    async findCertifications(certificationId?: string, actorId?: string): Promise<Array<CertificationDTO>> {
-        if (!certificationId && !actorId)
-            throw new BadRequestException(`Must provide at lease one of certificationId, actorType, actorId`);
+    async updateCertification(dto: UpdateCertificationRequestDTO): Promise<CertificationDTO> {
+        let entity = await this.validateAssetId(dto.assetId)
 
-        let whereClause = {}
-        if (certificationId)
-            whereClause = { ...whereClause, certificationId }
-        else
-            whereClause = { ...whereClause, actorId }
+        if (dto.certificationAuthority)
+            entity.certificationAuthority = dto.certificationAuthority;
 
-        const certifications = await this.certificationRepository.find({ where: whereClause })
+        if (dto.certificateName)
+            entity.certificateName = dto.certificateName;
+
+        if (dto.certificateNumber)
+            entity.certificateNumber = dto.certificateNumber;
+
+        if (dto.issueDate)
+            entity.issueDate = dto.issueDate;
+
+        entity = await this.entityRepository.save(entity)
             .catch((error) => {
                 this.logger.error(error);
-                throw new InternalServerErrorException("findCertifications() not available");
+                throw new InternalServerErrorException("updateCertification() not available");
             });
 
-        let certificationDTOs: Array<CertificationDTO> = [];
-        for (const certification of certifications) {
-            certificationDTOs.push(this.entityToDTO(certification));
-        }
+        return this.entityToDTO(entity);
 
-        return certificationDTOs;
     }
 
     entityToDTO(entity: Certification): CertificationDTO {
         const dto = new CertificationDTO(entity);
-        dto.authority = entity.authority;
+        dto.certificationAuthority = entity.certificationAuthority;
         dto.certificateName = entity.certificateName;
         dto.certificateNumber = entity.certificateNumber;
         dto.issueDate = entity.issueDate;

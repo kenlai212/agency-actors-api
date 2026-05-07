@@ -15,6 +15,9 @@ import { UploadedDocumentsController } from "./uploadedDocuments.controller";
     ],
     providers: [
         UploadedDocumentsService
+    ],
+    exports: [
+        UploadedDocumentsService
     ]
 })
 export class UploadedDocumentsModule { }

@@ -1,7 +1,8 @@
-import { IsBase64, IsNotEmpty, IsOptional, IsString, MaxLength } from 'class-validator';
+import { IsBase64, IsEnum, IsNotEmpty, IsOptional, IsString, MaxLength } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { ActorAssetDTO, CreateNewAssetRequestDTO } from './actorAssets.dtos';
 import { DocumentLinkedAsset } from './documentLinkedAsset.entity';
+import { UploadedDocumentType } from '../uploadedDocuments/uploadedDocument.entity';
 
 export class DocumentLinkedAssetDTO extends ActorAssetDTO {
     @ApiProperty({
@@ -25,23 +26,24 @@ export class DocumentLinkedAssetDTO extends ActorAssetDTO {
     }
 }
 
-/*export class CreateNewDocumentLinkedAssetRequestDTO extends CreateNewAssetRequestDTO {
-    @ApiPropertyOptional({
-        description: 'document base64 string',
-    })
-    @IsOptional()
-    @IsBase64()
-    documentBase64!: string;
-}
-
 export class UploadDocumentRequestDTO {
-    @ApiPropertyOptional({
+    @ApiProperty({
+        description: 'Actor ID',
+        example: `96e4e28e-2404-4a4f-b69a-6b0709559596`
+    })
+    @IsString()
+    @IsNotEmpty()
+    @MaxLength(36)
+    actorId: string;
+
+    @ApiProperty({
         description: 'Asset ID',
         example: `96e4e28e-2404-4a4f-b69a-6b0709559596`
     })
     @IsString()
+    @IsNotEmpty()
     @MaxLength(36)
-    assetId!: string;
+    assetId: string;
 
     @ApiProperty({
         description: 'The base64-encoded document string',
@@ -49,4 +51,13 @@ export class UploadDocumentRequestDTO {
     @IsNotEmpty()
     @IsBase64()
     documentBase64: string;
-}*/
+
+    @ApiProperty({
+        description: `Uploaded Document Type ${Object.values(UploadedDocumentType)}`,
+        enum: UploadedDocumentType,
+        enumName: "UploadedDocumentType"
+    })
+    @IsEnum(UploadedDocumentType)
+    @IsNotEmpty()
+    uploadedDocumentType: UploadedDocumentType;
+}

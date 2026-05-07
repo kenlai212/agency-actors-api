@@ -12,13 +12,13 @@ export class UploadedDocumentsController {
     @Post("/")
     @ApiOperation({
         summary: 'Upload Document',
-        description: `Upload a document (e.g pdf, image) to an existing ActorId or AssetId. Will send to storage facility`
+        description: `Upload a document (e.g pdf, image) to an existing ActorId. Will send for virus scan, storage facility, data abstraction`
     })
     @ApiOkResponse({
         description: 'Successfully POST response UploadedDocumentDTO',
         type: UploadedDocumentDTO,
     })
     async uploadDocument(@Body() body: UploadDocumentRequestDTO): Promise<UploadedDocumentDTO> {
-        return await this.uploadedDocumentsService.uploadNewDocument(body.assetId, body.uploadedDocumentType, body.documentBase64, body.assetId);
+        return await this.uploadedDocumentsService.uploadNewDocument(body.actorId, body.uploadedDocumentType, body.documentBase64);
     }
 }
