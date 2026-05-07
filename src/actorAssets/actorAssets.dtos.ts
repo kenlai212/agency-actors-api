@@ -57,20 +57,20 @@ export class UpdateAssetRequestDTO {
     assetId: string;
 }
 
-export class SearchAssetRequestDTO {
-    @ApiPropertyOptional({
+export class FindAssetRequestDTO {
+    /*@ApiPropertyOptional({
         description: 'Actor ID',
     })
     @IsOptional()
     @IsString()
     @MaxLength(36)
-    actorId!: string;
+    actorId!: string;*/
 
-    @ApiPropertyOptional({
+    @ApiProperty({
         description: 'Asset ID',
     })
-    @IsOptional()
+    @IsNotEmpty()
     @IsString()
     @MaxLength(36)
-    assetId!: string;
+    assetId: string;
 }

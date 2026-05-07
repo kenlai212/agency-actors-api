@@ -1,5 +1,5 @@
-import { Body, Controller, Post, Put } from "@nestjs/common";
-import { CreateNewEmailAddressRequestDTO, EmailAddressDTO, SetDefaultEmailAddressRequestDTO } from "./emailAddresses.dtos";
+import { Body, Controller, Get, Post, Put, Query } from "@nestjs/common";
+import { CreateNewEmailAddressRequestDTO, EmailAddressDTO, FindEmailAddressRequestDTO, SetDefaultEmailAddressRequestDTO } from "./emailAddresses.dtos";
 import { ApiOkResponse, ApiOperation } from "@nestjs/swagger";
 import { EmailAdddressesService } from "./emailAddresses.service";
 import { ActorAssetsController } from "../actorAssets/actorAssets.contorller";
@@ -35,5 +35,18 @@ export class EmailAddressesController extends ActorAssetsController {
     })
     async setLockEmailAddress(@Body() body: SetDefaultEmailAddressRequestDTO): Promise<EmailAddressDTO[]> {
         return await this.emailAddressesService.setDdfault(body.actorId, body.addressString);
+    }
+
+    @Get("/")
+    @ApiOperation({
+        summary: 'Find Asset.',
+        description: `Search by assetId, returns single asset record`
+    })
+    @ApiOkResponse({
+        description: 'Successfully POST response ActorAssetDTO.',
+        type: EmailAddressDTO,
+    })
+    async searchAssets(@Query() query: FindEmailAddressRequestDTO): Promise<EmailAddressDTO> {
+        return await this.emailAddressesService.findEmailAddress(query);
     }
 }

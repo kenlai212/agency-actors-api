@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
-import { ActorAssetDTO, CreateNewAssetRequestDTO, SearchAssetRequestDTO } from "../actorAssets/actorAssets.dtos";
+import { ActorAssetDTO, CreateNewAssetRequestDTO, FindAssetRequestDTO } from "../actorAssets/actorAssets.dtos";
 import { IsEmail, IsOptional, IsString, MaxLength } from "class-validator";
 
 export class EmailAddressDTO extends ActorAssetDTO {
@@ -24,7 +24,15 @@ export class CreateNewEmailAddressRequestDTO extends CreateNewAssetRequestDTO {
     addressString: string;
 }
 
-export class SearchEmailAddressesRequestDTO extends SearchAssetRequestDTO {
+export class FindEmailAddressRequestDTO {
+    @ApiPropertyOptional({
+        description: 'Asset ID',
+    })
+    @IsOptional()
+    @IsString()
+    @MaxLength(36)
+    assetId: string;
+
     @ApiPropertyOptional({
         description: `Actor's Email Address`,
         example: "john.smith@test.com"

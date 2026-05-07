@@ -15,22 +15,25 @@ export abstract class ActorAssetsService<T extends ActorAsset, K extends ActorAs
         await this.agencyActorsService.validateActorId(actorId);
     }
 
-    async searchAssets(actorId?: string, assetId?: string) {
-        if (!actorId && !assetId)
-            throw new BadRequestException(`Must provide either one of actorId or assetId`);
-
-        let whereClause = {}
-        if (actorId)
-            whereClause = { actorId }
-        else
-            whereClause = { assetId }
-        console.log(whereClause)
-        const assets = await this.repository.find({ where: whereClause })
+    async findAsset(assetId?: string): Promise<K> {
+        const asset = await this.repository.findOne({ assetId } as any)
             .catch((error) => {
                 console.error(error);
                 throw new InternalServerErrorException("findCertifications() not available");
             });
-        console.log(assets)
+
+        if (!asset)
+            throw new NotFoundException(`Asset ${assetId} not found`);
+
+        return this.entityToDTO(asset);
+    }
+
+    async searchAssetsByActorId(actorId?: string): Promise<K[]> {
+        const assets = await this.repository.find({ where: { actorId } as any })
+            .catch((error) => {
+                console.error(error);
+                throw new InternalServerErrorException("findCertifications() not available");
+            });
 
         let dtos: Array<K> = [];
         for (const item of assets) {
@@ -40,7 +43,7 @@ export abstract class ActorAssetsService<T extends ActorAsset, K extends ActorAs
         return dtos;
     }
 
-    async deleteAsset(assetId: string) {
+    async deleteAsset(assetId: string): Promise<string> {
         const asset = await this.repository.findOneBy({ assetId } as any)
             .catch((error) => {
                 console.error(error);
