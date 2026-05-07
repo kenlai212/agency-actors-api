@@ -43,7 +43,7 @@ export class EmailAddressesController extends ActorAssetsController {
         description: `Search by assetId, returns single asset record`
     })
     @ApiOkResponse({
-        description: 'Successfully POST response ActorAssetDTO.',
+        description: 'Successfully GET response ActorAssetDTO.',
         type: EmailAddressDTO,
     })
     async searchAssets(@Query() query: FindEmailAddressRequestDTO): Promise<EmailAddressDTO> {

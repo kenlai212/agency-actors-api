@@ -1,9 +1,10 @@
-import { BadRequestException, Injectable, InternalServerErrorException, Logger } from "@nestjs/common";
+import { BadRequestException, Injectable, InternalServerErrorException, Logger, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { CountryCode, PhoneNumber, PhoneNumberType } from "./phoneNumber.entity";
 import { Repository } from "typeorm";
 import { ActorAssetsService } from "../actorAssets/actorAssets.service";
-import { PhoneNumberDTO } from "./phoneNumbers.dtos";
+import { FindPhoneNumberRequestDTO, PhoneNumberDTO } from "./phoneNumbers.dtos";
+import { NotFoundError } from "rxjs";
 
 @Injectable()
 export class PhoneNumbersService extends ActorAssetsService<PhoneNumber, PhoneNumberDTO> {
@@ -11,9 +12,9 @@ export class PhoneNumbersService extends ActorAssetsService<PhoneNumber, PhoneNu
 
     constructor(
         @InjectRepository(PhoneNumber)
-        private readonly phoneNumberRepository: Repository<PhoneNumber>,
+        private readonly entityRepository: Repository<PhoneNumber>,
     ) {
-        super(phoneNumberRepository);
+        super(entityRepository);
     }
 
     async createNewPhoneNumber(actorId: string, countryCode: CountryCode, numberString: string, phoneNumberType: PhoneNumberType): Promise<PhoneNumberDTO> {
@@ -28,7 +29,7 @@ export class PhoneNumbersService extends ActorAssetsService<PhoneNumber, PhoneNu
 
         phoneNumber.phoneNumberType = phoneNumberType;
 
-        phoneNumber = await this.phoneNumberRepository.save(phoneNumber)
+        phoneNumber = await this.entityRepository.save(phoneNumber)
             .catch((error) => {
                 this.logger.error(error);
                 throw new InternalServerErrorException("createNewPhoneNumber() not available");
@@ -37,33 +38,30 @@ export class PhoneNumbersService extends ActorAssetsService<PhoneNumber, PhoneNu
         return this.entityToDTO(phoneNumber);
     }
 
-    async searchPhoneNuber(actorId?: string, countryCode?: CountryCode, numberString?: string): Promise<PhoneNumberDTO[]> {
-        if (!actorId && !countryCode && !numberString)
+    async findPhoneNumber(dto: FindPhoneNumberRequestDTO): Promise<PhoneNumberDTO> {
+        if (!dto.assetId && !dto.countryCode && !dto.numberString)
             throw new BadRequestException("Must provide at least one search parameter");
 
         let whereClause = {}
-        if (actorId)
-            whereClause = { actorId };
+        if (dto.assetId)
+            whereClause = { assetId: dto.assetId };
         else
-            whereClause = { countryCode, numberString };
+            whereClause = { countryCode: dto.countryCode, numberString: dto.numberString };
 
-        const phoneNumbers = await this.phoneNumberRepository.find({ where: whereClause })
+        const phoneNumber = await this.entityRepository.findOne({ where: whereClause })
             .catch((error) => {
                 this.logger.error(error);
                 throw new InternalServerErrorException("searchPhoneNuber() not available");
             })
 
-        let phoneNumberDTOs = []
-        for (let phoneNumber of phoneNumbers) {
-            phoneNumberDTOs.push();
-            phoneNumberDTOs.push(this.entityToDTO(phoneNumber));
-        }
+        if (!phoneNumber)
+            throw new NotFoundException(`Phone Number not found`);
 
-        return phoneNumberDTOs;
+        return this.entityToDTO(phoneNumber);
     }
 
     async validateUniquePhoneNumber(countryCode: CountryCode, numberString: string) {
-        let phoneNumber = await this.phoneNumberRepository.findOne({ where: { countryCode, numberString } })
+        let phoneNumber = await this.entityRepository.findOne({ where: { countryCode, numberString } })
             .catch((error) => {
                 this.logger.error(error);
                 throw new InternalServerErrorException("createNewPhoneNumber() not available");

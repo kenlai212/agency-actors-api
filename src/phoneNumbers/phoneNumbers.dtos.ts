@@ -62,7 +62,15 @@ export class CreatePhoneNumberRequestDTO extends CreateNewAssetRequestDTO {
     phoneNumberType: PhoneNumberType;
 }
 
-export class SearchPhoneNumberDTO {
+export class FindPhoneNumberRequestDTO {
+    @ApiPropertyOptional({
+        description: 'Asset ID',
+    })
+    @IsOptional()
+    @IsString()
+    @MaxLength(36)
+    assetId!: string;
+
     @ApiPropertyOptional({
         description: `Phone Number Country Code ${Object.values(CountryCode)}`,
         example: CountryCode.HK,

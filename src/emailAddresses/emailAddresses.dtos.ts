@@ -31,7 +31,7 @@ export class FindEmailAddressRequestDTO {
     @IsOptional()
     @IsString()
     @MaxLength(36)
-    assetId: string;
+    assetId!: string;
 
     @ApiPropertyOptional({
         description: `Actor's Email Address`,
