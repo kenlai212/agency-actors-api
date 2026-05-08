@@ -7,8 +7,6 @@ import { DocumentLinkedAssetsService } from "../actorAssets/documentLinkedAssets
 
 @Injectable()
 export class GovIssueDocsService extends DocumentLinkedAssetsService<GovIssueDoc, GovIssueDocDTO> {
-    private readonly logger = new Logger('GovIssueDocsService')
-
     constructor(
         @InjectRepository(GovIssueDoc)
         private readonly entityRepository: Repository<GovIssueDoc>,

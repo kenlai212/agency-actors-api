@@ -18,7 +18,7 @@ export abstract class DocumentLinkedAssetsService<T extends DocumentLinkedAsset,
     async uploadDocument(actorId: string, assetId: string, documentBase64: string, uploadedDocumentType: UploadedDocumentType): Promise<K> {
         let asset = await this.repository.findOneBy({ assetId } as any)
             .catch((error) => {
-                console.error(error);
+                this.logger.error(error);
                 throw new InternalServerErrorException("updateUploadedDocumentId() not available");
             });
 
@@ -31,7 +31,7 @@ export abstract class DocumentLinkedAssetsService<T extends DocumentLinkedAsset,
 
         asset = await this.repository.save(asset)
             .catch((error) => {
-                console.error(error);
+                this.logger.error(error);
                 throw new InternalServerErrorException("updateUploadedDocumentId() not available");
             });
 

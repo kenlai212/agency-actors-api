@@ -4,12 +4,9 @@ import { CountryCode, PhoneNumber, PhoneNumberType } from "./phoneNumber.entity"
 import { Repository } from "typeorm";
 import { ActorAssetsService } from "../actorAssets/actorAssets.service";
 import { FindPhoneNumberRequestDTO, PhoneNumberDTO } from "./phoneNumbers.dtos";
-import { NotFoundError } from "rxjs";
 
 @Injectable()
 export class PhoneNumbersService extends ActorAssetsService<PhoneNumber, PhoneNumberDTO> {
-    readonly logger = new Logger(this.constructor.name)
-
     constructor(
         @InjectRepository(PhoneNumber)
         private readonly entityRepository: Repository<PhoneNumber>,

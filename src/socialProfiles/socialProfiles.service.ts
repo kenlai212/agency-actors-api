@@ -7,8 +7,6 @@ import { ActorAssetsService } from "../actorAssets/actorAssets.service";
 
 @Injectable()
 export class SocialProfilesService extends ActorAssetsService<SocialProfile, SocialProfileDTO> {
-    readonly logger: Logger = new Logger('SocialProfilesService')
-
     constructor(
         @InjectRepository(SocialProfile)
         private readonly socialProfileRepository: Repository<SocialProfile>,

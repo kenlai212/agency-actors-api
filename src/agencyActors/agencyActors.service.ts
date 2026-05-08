@@ -10,7 +10,7 @@ export class AgencyActorsService {
 
     constructor(
         @InjectRepository(AgencyActor)
-        private readonly agencyActorRepository: Repository<AgencyActor>,
+        private readonly entityRepository: Repository<AgencyActor>,
     ) { }
 
     async createAgencyActor(dto: NewAgencyActorRequestDTO): Promise<AgencyActorDTO> {
@@ -24,7 +24,7 @@ export class AgencyActorsService {
         agencyActor.agencyActorType = dto.agencyActorType;
         agencyActor.residencyStatus = dto.residencyStatus;
 
-        await this.agencyActorRepository.save(agencyActor)
+        await this.entityRepository.save(agencyActor)
             .catch((error) => {
                 this.logger.error(error);
                 throw new InternalServerErrorException("createCandidate() not available");
@@ -34,7 +34,7 @@ export class AgencyActorsService {
     }
 
     async findAgencyActor(agencyActorType: AgencyActorType, actorId: string): Promise<AgencyActorDTO> {
-        let agencyActor = await this.agencyActorRepository.findOne({ where: { actorId, agencyActorType } })
+        let agencyActor = await this.entityRepository.findOne({ where: { actorId, agencyActorType } })
             .catch((error) => {
                 this.logger.error(error);
                 throw new InternalServerErrorException("getCandidateById() not available");
@@ -48,7 +48,7 @@ export class AgencyActorsService {
     }
 
     async deleteActor(actorId: string): Promise<string> {
-        let actor = await this.agencyActorRepository.findOne({ where: { actorId } })
+        let actor = await this.entityRepository.findOne({ where: { actorId } })
             .catch((error) => {
                 this.logger.error(error);
                 throw new InternalServerErrorException("deleteCandidate() not available");
@@ -57,7 +57,7 @@ export class AgencyActorsService {
         if (!actor) {
             throw new NotFoundException("Candidate not found");
         }
-        await this.agencyActorRepository.remove(actor)
+        await this.entityRepository.remove(actor)
             .catch((error) => {
                 this.logger.error(error);
                 throw new InternalServerErrorException("deleteCandidate() not available");
@@ -71,7 +71,7 @@ export class AgencyActorsService {
     }
 
     async updateAgencyActor(dto: UpdateAgencyActorDTO): Promise<AgencyActorDTO> {
-        let agencyActor = await this.agencyActorRepository.findOne({ where: { actorId: dto.actorId } })
+        let agencyActor = await this.entityRepository.findOne({ where: { actorId: dto.actorId } })
             .catch((error) => {
                 this.logger.error(error);
                 throw new InternalServerErrorException("updateAgencyActor() not available");
@@ -98,7 +98,7 @@ export class AgencyActorsService {
         if (dto.nationality)
             agencyActor.nationality = dto.nationality;
 
-        agencyActor = await this.agencyActorRepository.save(agencyActor)
+        agencyActor = await this.entityRepository.save(agencyActor)
             .catch((error) => {
                 this.logger.error(error);
                 throw new InternalServerErrorException("updateAgencyActor() not available");
@@ -108,7 +108,7 @@ export class AgencyActorsService {
     }
 
     async validateActorId(actorId: string) {
-        const candidate = await this.agencyActorRepository.findOne({ where: { actorId } })
+        const candidate = await this.entityRepository.findOne({ where: { actorId } })
             .catch((error) => {
                 this.logger.error(error);
                 throw new InternalServerErrorException("validateActorId() not available");

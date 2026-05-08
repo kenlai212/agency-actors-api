@@ -1,7 +1,8 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
-import { IsString, Max, MaxLength, Min } from 'class-validator';
+import { IsEnum, IsString, Max, MaxLength, Min } from 'class-validator';
 import { DocumentLinkedAssetDTO } from "../actorAssets/documentLinkedAssets.dtos";
 import { CreateNewAssetRequestDTO } from "../actorAssets/actorAssets.dtos";
+import { LevelOfEducation } from "./education.entity";
 
 export class EducationDTO extends DocumentLinkedAssetDTO {
     @ApiProperty({
@@ -11,10 +12,12 @@ export class EducationDTO extends DocumentLinkedAssetDTO {
     institutionName!: string;
 
     @ApiProperty({
-        description: 'Name of the Degree',
-        example: `Bachelor of Science`
+        description: `Level of Education : ${Object.keys(LevelOfEducation)}`,
+        example: LevelOfEducation.MASTERS,
+        enum: LevelOfEducation,
+        enumName: "LevelOfEducation"
     })
-    degree!: string;
+    levelOfEducation!: LevelOfEducation;
 
     @ApiProperty({
         description: 'Field of Study',
@@ -36,21 +39,22 @@ export class EducationDTO extends DocumentLinkedAssetDTO {
 }
 
 export class NewEducationRequestDTO extends CreateNewAssetRequestDTO {
-    @ApiPropertyOptional({
+    @ApiProperty({
         description: 'Name of Insititution',
         example: `University of Beijing`
     })
     @IsString()
     @MaxLength(255)
-    institutionName!: string;
+    institutionName: string;
 
-    @ApiPropertyOptional({
-        description: 'Name of Degree',
-        example: `Bachelor of Science`
+    @ApiProperty({
+        description: `Level of Education : ${Object.keys(LevelOfEducation)}`,
+        example: LevelOfEducation.MASTERS,
+        enum: LevelOfEducation,
+        enumName: "LevelOfEducation"
     })
-    @IsString()
-    @MaxLength(255)
-    degree!: string;
+    @IsEnum(LevelOfEducation)
+    levelOfEducation: LevelOfEducation;
 
     @ApiPropertyOptional({
         description: 'Field of Study',

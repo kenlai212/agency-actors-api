@@ -7,8 +7,6 @@ import { DocumentLinkedAssetsService } from "../actorAssets/documentLinkedAssets
 
 @Injectable()
 export class PhysicalAddressesService extends DocumentLinkedAssetsService<PhysicalAddress, PhysicalAddressDTO> {
-    private readonly logger = new Logger('PhysicalAddressesService')
-
     constructor(
         @InjectRepository(PhysicalAddress)
         private readonly physicalAddressesRepository: Repository<PhysicalAddress>,

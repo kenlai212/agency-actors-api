@@ -7,8 +7,6 @@ import { DocumentLinkedAssetsService } from "../actorAssets/documentLinkedAssets
 
 @Injectable()
 export class CertificationsService extends DocumentLinkedAssetsService<Certification, CertificationDTO> {
-    private readonly logger: Logger = new Logger('CertificationsService')
-
     constructor(
         @InjectRepository(Certification)
         private readonly entityRepository: Repository<Certification>

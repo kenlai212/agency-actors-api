@@ -7,40 +7,38 @@ import { DocumentLinkedAssetsService } from "../actorAssets/documentLinkedAssets
 
 @Injectable()
 export class EmploymentsService extends DocumentLinkedAssetsService<Employment, EmploymentDTO> {
-    private readonly logger = new Logger('EmploymentsService')
-
     constructor(
         @InjectRepository(Employment)
-        private readonly employmentRepository: Repository<Employment>,
+        private readonly entityRepository: Repository<Employment>,
     ) {
-        super(employmentRepository);
+        super(entityRepository);
     }
 
     async createNewEmployment(dto: NewEmploymentRequestDTO): Promise<EmploymentDTO> {
-        let employment = new Employment();
+        let entity = new Employment();
 
         await this.validateActor(dto.actorId);
-        employment.actorId = dto.actorId;
+        entity.actorId = dto.actorId;
 
-        employment.companyName = dto.companyName;
-        employment.jobTitle = dto.jobTitle;
-        employment.location = dto.location;
-        employment.startDate = dto.startDate;
+        entity.companyName = dto.companyName;
+        entity.jobTitle = dto.jobTitle;
+        entity.location = dto.location;
+        entity.startDate = dto.startDate;
 
         if (dto.endDate) {
-            employment.endDate = dto.endDate;
-            employment.isCurrent = false;
+            entity.endDate = dto.endDate;
+            entity.isCurrent = false;
         } else {
-            employment.isCurrent = true;
+            entity.isCurrent = true;
         }
 
-        employment = await this.employmentRepository.save(employment)
+        entity = await this.entityRepository.save(entity)
             .catch((error) => {
                 this.logger.error(error);
                 throw new InternalServerErrorException("createNewEmployment() not available");
             })
 
-        return this.entityToDTO(employment);
+        return this.entityToDTO(entity);
     }
 
     entityToDTO(entity: Employment) {

@@ -7,8 +7,6 @@ import { DocumentLinkedAssetsService } from "../actorAssets/documentLinkedAssets
 
 @Injectable()
 export class EducationsService extends DocumentLinkedAssetsService<Education, EducationDTO> {
-    readonly logger: Logger = new Logger('EducationsService')
-
     constructor(
         @InjectRepository(Education)
         private readonly educationRepository: Repository<Education>,
@@ -23,7 +21,7 @@ export class EducationsService extends DocumentLinkedAssetsService<Education, Ed
         entity.actorId = dto.actorId;
 
         entity.institutionName = dto.institutionName;
-        entity.degree = dto.degree;
+        entity.levelOfEducation = dto.levelOfEducation;
         entity.fieldOfStudy = dto.fieldOfStudy;
         entity.startYear = dto.startYear;
         entity.endYear = dto.endYear;
@@ -40,7 +38,7 @@ export class EducationsService extends DocumentLinkedAssetsService<Education, Ed
     entityToDTO(entity: Education) {
         let dto = new EducationDTO(entity);
         dto.institutionName = entity.institutionName;
-        dto.degree = entity.degree;
+        dto.levelOfEducation = entity.levelOfEducation;
         dto.fieldOfStudy = entity.fieldOfStudy;
         dto.startYear = entity.startYear;
         dto.endYear = entity.endYear;

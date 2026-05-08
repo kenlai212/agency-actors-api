@@ -1,4 +1,4 @@
-import { Module } from "@nestjs/common";
+import { Logger, Module } from "@nestjs/common";
 import { CertificationsController } from "./certifications.controller";
 import { CertificationsService } from "./certifications.service";
 import { Certification } from "./certification.entity";
@@ -8,7 +8,7 @@ import { AgencyActorsModule } from "../agencyActors/agencyActors.module";
 @Module({
     imports: [
         TypeOrmModule.forFeature([Certification]),
-        AgencyActorsModule
+        AgencyActorsModule,
     ],
     controllers: [
         CertificationsController

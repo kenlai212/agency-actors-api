@@ -1,21 +1,29 @@
 import { Column, Entity } from "typeorm";
 import { DocumentLinkedAsset } from "../actorAssets/documentLinkedAsset.entity";
 
+export enum LevelOfEducation {
+    DEPLOMA = "DEPLOMA",
+    UNDERGRADUATE = "UNDERGRADUATE",
+    POSTGRADUATE = "POSTGRADUATE",
+    MASTERS = "MASTERS",
+    DOCTORATE = "DOCTORATE"
+}
+
 @Entity()
 export class Education extends DocumentLinkedAsset {
     @Column({
-        nullable: true,
+        nullable: false,
         type: "varchar",
         length: 255
     })
-    institutionName!: string;
+    institutionName: string;
 
     @Column({
-        nullable: true,
-        type: "varchar",
-        length: 255
+        nullable: false,
+        type: "enum",
+        enum: LevelOfEducation
     })
-    degree!: string;
+    levelOfEducation: LevelOfEducation;
 
     @Column({
         nullable: true,

@@ -21,7 +21,7 @@ describe(`Create New Email Address Super test`, () => {
 
     afterAll(async () => {
         await request(API_URL)
-            .delete(`/email-addresses/${assetId}`)
+            .delete(`/educations/${assetId}`)
             .expect(200)
 
         await request(API_URL)
@@ -29,12 +29,16 @@ describe(`Create New Email Address Super test`, () => {
             .expect(200)
     });
 
-    it(`Successfully create a new Email Address`, async () => {
+    it(`Successfully create a new Education`, async () => {
         const response = await request(API_URL)
-            .post("/email-addresses")
+            .post("/educations")
             .send({
                 "actorId": actorId,
-                "addressString": "jane.smith@test.com"
+                "institutionName": "University of Beijing",
+                "levelOfEducation": "MASTERS",
+                "fieldOfStudy": "Science",
+                "startYear": 2004,
+                "endYear": 2008
             })
 
         //console.log(response);
@@ -47,7 +51,10 @@ describe(`Create New Email Address Super test`, () => {
         expect(body.assetId).toBeDefined();
         expect(body.createdAt).toBeDefined();
         expect(body.updatedAt).toBeDefined();
-        expect(body.isDefault).toBeTruthy();
-        expect(body.addressString).toEqual("jane.smith@test.com")
+        expect(body.institutionName).toEqual("University of Beijing");
+        expect(body.levelOfEducation).toEqual("MASTERS");
+        expect(body.fieldOfStudy).toEqual("Science");
+        expect(body.startYear).toEqual(2004);
+        expect(body.endYear).toEqual(2008);
     });
 });

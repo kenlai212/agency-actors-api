@@ -5,6 +5,7 @@ import { Repository } from "typeorm";
 import { ActorAsset } from "./actorAsset.entity";
 
 export abstract class ActorAssetsService<T extends ActorAsset, K extends ActorAssetDTO> {
+    protected readonly logger: Logger = new Logger(this.constructor.name)
     @Inject(AgencyActorsService) protected readonly agencyActorsService: AgencyActorsService;
 
     constructor(
@@ -18,7 +19,7 @@ export abstract class ActorAssetsService<T extends ActorAsset, K extends ActorAs
     async findAsset(assetId?: string): Promise<K> {
         const asset = await this.repository.findOne({ assetId } as any)
             .catch((error) => {
-                console.error(error);
+                this.logger.error(error);
                 throw new InternalServerErrorException("findCertifications() not available");
             });
 
@@ -31,7 +32,7 @@ export abstract class ActorAssetsService<T extends ActorAsset, K extends ActorAs
     async searchAssetsByActorId(actorId?: string): Promise<K[]> {
         const assets = await this.repository.find({ where: { actorId } as any })
             .catch((error) => {
-                console.error(error);
+                this.logger.error(error);
                 throw new InternalServerErrorException("findCertifications() not available");
             });
 
@@ -46,7 +47,7 @@ export abstract class ActorAssetsService<T extends ActorAsset, K extends ActorAs
     async deleteAsset(assetId: string): Promise<string> {
         const asset = await this.repository.findOneBy({ assetId } as any)
             .catch((error) => {
-                console.error(error);
+                this.logger.error(error);
                 throw new InternalServerErrorException("deleteCertification() not available");
             });
 
@@ -56,19 +57,19 @@ export abstract class ActorAssetsService<T extends ActorAsset, K extends ActorAs
 
         await this.repository.delete({ assetId } as any)
             .catch((error) => {
-                console.error(error);
+                this.logger.error(error);
                 throw new InternalServerErrorException("deleteAsset() not available");
             });
 
         const msg = `Successfully deleted ${assetId}`;
-        console.log(msg);
+        this.logger.log(msg);
         return msg
     }
 
     async validateAssetId(assetId: string): Promise<T> {
         const asset = await this.repository.findOneBy({ assetId } as any)
             .catch((error) => {
-                console.error(error);
+                this.logger.error(error);
                 throw new InternalServerErrorException("deleteCertification() not available");
             });
 

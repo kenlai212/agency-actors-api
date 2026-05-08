@@ -5,6 +5,8 @@ const API_URL = "localhost:8080";
 let actorId = "";
 let certificationId1 = ""
 let certificationId2 = ""
+let educationId1 = ""
+let educationId2 = ""
 
 describe(`Create New Certification Super test`, () => {
     beforeAll(async () => {
@@ -46,9 +48,47 @@ describe(`Create New Certification Super test`, () => {
             .expect((res) => {
                 certificationId2 = res.body.assetId;
             })
+
+        await request(API_URL)
+            .post("/educations")
+            .send({
+                "actorId": actorId,
+                "institutionName": "University of Beijing",
+                "levelOfEducation": "MASTERS",
+                "fieldOfStudy": "Science",
+                "startYear": 2009,
+                "endYear": 2012
+            })
+            .expect(201)
+            .expect((res) => {
+                educationId1 = res.body.assetId;
+            })
+
+        await request(API_URL)
+            .post("/educations")
+            .send({
+                "actorId": actorId,
+                "institutionName": "University of Beijing",
+                "levelOfEducation": "UNDERGRADUATE",
+                "fieldOfStudy": "Science",
+                "startYear": 2004,
+                "endYear": 2008
+            })
+            .expect(201)
+            .expect((res) => {
+                educationId2 = res.body.assetId;
+            })
     })
 
     afterAll(async () => {
+        await request(API_URL)
+            .delete(`/educations/${educationId1}`)
+            .expect(200)
+
+        await request(API_URL)
+            .delete(`/educations/${educationId2}`)
+            .expect(200)
+
         await request(API_URL)
             .delete(`/certifications/${certificationId1}`)
             .expect(200)
@@ -68,7 +108,7 @@ describe(`Create New Certification Super test`, () => {
             .expect(200)
 
         const body = response.body;
-        console.log(body);
+        //console.log(body);
 
     });
 });

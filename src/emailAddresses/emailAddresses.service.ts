@@ -7,8 +7,6 @@ import { EmailAddressDTO, FindEmailAddressRequestDTO } from "./emailAddresses.dt
 
 @Injectable()
 export class EmailAdddressesService extends ActorAssetsService<EmailAddress, EmailAddressDTO> {
-    private readonly logger = new Logger('EmailAddressesService');
-
     constructor(
         @InjectRepository(EmailAddress)
         private readonly entityRepository: Repository<EmailAddress>
