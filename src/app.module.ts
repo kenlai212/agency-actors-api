@@ -23,6 +23,7 @@ import { PhysicalAddress } from './physicalAddresses/physicalAddress.entity';
 import { physicalAddressesModule } from './physicalAddresses/physicalAddresses.module';
 import { UploadedDocument } from './uploadedDocuments/uploadedDocument.entity';
 import { UploadedDocumentsModule } from './uploadedDocuments/uploadedDocuments.module';
+import { AgencyActorsReadModule } from './agencyActorsRead/agencyActorsRead.module';
 
 @Module({
   imports: [
@@ -52,6 +53,7 @@ import { UploadedDocumentsModule } from './uploadedDocuments/uploadedDocuments.m
       synchronize: true,
       logging: process.env.DB_LOGGING === 'true' ? ['error', 'warn', 'info', 'log'] : false,
     }),
+    AgencyActorsReadModule,
     AgencyActorsModule,
     EmailAddressesModule,
     phoneNumbersModule,

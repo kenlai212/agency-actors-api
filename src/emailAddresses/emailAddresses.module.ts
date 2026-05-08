@@ -15,6 +15,9 @@ import { TypeOrmModule } from "@nestjs/typeorm";
     ],
     providers: [
         EmailAdddressesService
+    ],
+    exports: [
+        EmailAdddressesService
     ]
 })
 export class EmailAddressesModule { }

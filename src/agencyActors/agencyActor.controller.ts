@@ -5,7 +5,7 @@ import { AgencyActorDTO, FindAgencyActorRequestDTO, NewAgencyActorRequestDTO, Up
 
 @Controller("/agency-actors")
 export class AgencyActorsController {
-    logger = new Logger('AgencyActorsController');
+    logger = new Logger(this.constructor.name);
 
     constructor(
         private readonly agencyActorsService: AgencyActorsService,

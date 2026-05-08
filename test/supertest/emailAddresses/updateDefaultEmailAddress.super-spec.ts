@@ -62,8 +62,8 @@ describe(`Create New Email Address Super test`, () => {
 
         const email2 = await request(API_URL)
             .get(`/email-addresses?addressString=jill.smith@test.com`)
-        //    .expect(200)
-        console.log(email2);
+            .expect(200)
+
         expect(email2.body.isDefault).toBe(false);
     });
 });

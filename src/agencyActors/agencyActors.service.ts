@@ -6,7 +6,7 @@ import { AgencyActorDTO, NewAgencyActorRequestDTO, UpdateAgencyActorDTO } from "
 
 @Injectable()
 export class AgencyActorsService {
-    private readonly logger = new Logger('AgencyActorsService');
+    private readonly logger = new Logger(this.constructor.name);
 
     constructor(
         @InjectRepository(AgencyActor)

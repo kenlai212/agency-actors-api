@@ -15,7 +15,9 @@ import { AgencyActorsModule } from "../agencyActors/agencyActors.module";
     ],
     providers: [
         CertificationsService
+    ],
+    exports: [
+        CertificationsService
     ]
-
 })
 export class CertificationsModule { }

@@ -15,6 +15,9 @@ import { EducationsService } from "./educations.service";
     ],
     providers: [
         EducationsService
+    ],
+    exports: [
+        EducationsService
     ]
 })
 export class EducationsModule { }
