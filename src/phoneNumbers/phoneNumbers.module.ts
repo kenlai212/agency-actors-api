@@ -15,6 +15,9 @@ import { PhoneNumbersService } from "./phoneNumber.service";
     ],
     providers: [
         PhoneNumbersService
+    ],
+    exports: [
+        PhoneNumbersService
     ]
 })
 export class phoneNumbersModule { }

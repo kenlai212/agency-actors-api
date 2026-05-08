@@ -15,6 +15,9 @@ import { AgencyActorsModule } from "../agencyActors/agencyActors.module";
     ],
     providers: [
         SocialProfilesService
+    ],
+    exports: [
+        SocialProfilesService
     ]
 })
 export class SocialProfilesModule { }

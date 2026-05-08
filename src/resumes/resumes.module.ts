@@ -13,6 +13,7 @@ import { AgencyActorsModule } from "../agencyActors/agencyActors.module";
     controllers: [ResumesController],
     providers: [
         ResumesService
-    ]
+    ],
+    exports: [ResumesService]
 })
 export class ResumesModule { }

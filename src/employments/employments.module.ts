@@ -15,6 +15,9 @@ import { EmploymentsService } from "./employments.service";
     ],
     providers: [
         EmploymentsService
+    ],
+    exports: [
+        EmploymentsService
     ]
 })
 export class EmploymentsModule { }

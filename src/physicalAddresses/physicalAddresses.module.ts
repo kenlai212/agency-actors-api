@@ -15,6 +15,9 @@ import { PhysicalAddressesService } from "./physicalAddresses.service";
     ],
     providers: [
         PhysicalAddressesService
+    ],
+    exports: [
+        PhysicalAddressesService
     ]
 })
 export class physicalAddressesModule { }

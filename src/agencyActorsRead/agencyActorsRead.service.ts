@@ -4,6 +4,8 @@ import { CertificationsService } from "../certifications/certifications.service"
 import { EducationsService } from "../educations/educations.service";
 import { AgencyActorReadDTO } from "./agencyActorsRead.dtos";
 import { AgencyActorType } from "../agencyActors/agencyActor.entity";
+import { EmailAdddressesService } from "../emailAddresses/emailAddresses.service";
+import { EmploymentsService } from "../employments/employments.service";
 
 @Injectable()
 export class AgencyActorsReadService {
@@ -12,7 +14,9 @@ export class AgencyActorsReadService {
     constructor(
         private readonly agencyActorsService: AgencyActorsService,
         private readonly certificationsService: CertificationsService,
-        private readonly educationsService: EducationsService
+        private readonly educationsService: EducationsService,
+        private readonly emailAddressesService: EmailAdddressesService,
+        private readonly employmentsService: EmploymentsService
     ) { }
 
     async findActor(actorId: string): Promise<AgencyActorReadDTO> {
@@ -31,6 +35,10 @@ export class AgencyActorsReadService {
         dto.certifications = await this.certificationsService.searchAssetsByActorId(actorId);
 
         dto.educations = await this.educationsService.searchAssetsByActorId(actorId);
+
+        dto.emailAddresses = await this.emailAddressesService.searchAssetsByActorId(actorId);
+
+        dto.employments = await this.employmentsService.searchAssetsByActorId(actorId);
 
         return dto;
     }

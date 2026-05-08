@@ -9,9 +9,9 @@ import { ActorAssetsService } from "../actorAssets/actorAssets.service";
 export class SocialProfilesService extends ActorAssetsService<SocialProfile, SocialProfileDTO> {
     constructor(
         @InjectRepository(SocialProfile)
-        private readonly socialProfileRepository: Repository<SocialProfile>,
+        private readonly entityRepository: Repository<SocialProfile>,
     ) {
-        super(socialProfileRepository)
+        super(entityRepository)
     }
 
     async createSocialProfile(actorId: string, provider: SocialProvider, providerHandle: string, url?: string, providerUserId?: string): Promise<SocialProfileDTO> {
@@ -34,7 +34,7 @@ export class SocialProfilesService extends ActorAssetsService<SocialProfile, Soc
             socialProfile.providerUserId = providerUserId;
         }
 
-        await this.socialProfileRepository.save(socialProfile)
+        await this.entityRepository.save(socialProfile)
             .catch((error) => {
                 this.logger.error(error);
                 throw new InternalServerErrorException("createSocialProfile() not available");
@@ -58,12 +58,12 @@ export class SocialProfilesService extends ActorAssetsService<SocialProfile, Soc
             whereClause.providerHandle = providerHandle;
         }
 
-        const socialProfiles = await this.socialProfileRepository.find({ where: whereClause });
+        const socialProfiles = await this.entityRepository.find({ where: whereClause });
         return socialProfiles.map((sp) => this.entityToDTO(sp));
     }
 
     private async checkSocialProfileUnique(provider: SocialProvider, providerHandle: string): Promise<boolean> {
-        return await this.socialProfileRepository.findOne({
+        return await this.entityRepository.findOne({
             where: { providerHandle: providerHandle, provider: provider }
         })
             .then((socialProfile) => {

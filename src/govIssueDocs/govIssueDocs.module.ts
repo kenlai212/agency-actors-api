@@ -13,6 +13,9 @@ import { GovIssueDocsService } from "./govIssueDocs.service";
     controllers: [GovIssueDocsController],
     providers: [
         GovIssueDocsService
+    ],
+    exports: [
+        GovIssueDocsService
     ]
 })
 export class GovIssueDocsModule { }
