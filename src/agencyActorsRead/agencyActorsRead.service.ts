@@ -6,6 +6,7 @@ import { AgencyActorReadDTO } from "./agencyActorsRead.dtos";
 import { AgencyActorType } from "../agencyActors/agencyActor.entity";
 import { EmailAdddressesService } from "../emailAddresses/emailAddresses.service";
 import { EmploymentsService } from "../employments/employments.service";
+import { GovIssueDocsService } from "../govIssueDocs/govIssueDocs.service";
 
 @Injectable()
 export class AgencyActorsReadService {
@@ -16,7 +17,8 @@ export class AgencyActorsReadService {
         private readonly certificationsService: CertificationsService,
         private readonly educationsService: EducationsService,
         private readonly emailAddressesService: EmailAdddressesService,
-        private readonly employmentsService: EmploymentsService
+        private readonly employmentsService: EmploymentsService,
+        private readonly govIssueDocsService: GovIssueDocsService
     ) { }
 
     async findActor(actorId: string): Promise<AgencyActorReadDTO> {
@@ -39,6 +41,8 @@ export class AgencyActorsReadService {
         dto.emailAddresses = await this.emailAddressesService.searchAssetsByActorId(actorId);
 
         dto.employments = await this.employmentsService.searchAssetsByActorId(actorId);
+
+        dto.govIssueDocs = await this.govIssueDocsService.searchAssetsByActorId(actorId);
 
         return dto;
     }

@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException, Logger } from "@nestjs/common";
+import { BadRequestException, Injectable, InternalServerErrorException, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { StorageFacility, UploadedDocumentType, UploadedDocument } from "./uploadedDocument.entity";
 import { Repository } from "typeorm";
@@ -43,6 +43,17 @@ export class UploadedDocumentsService {
 
     async callExternalStorageService(documentBase64: string, identifier: string): Promise<string> {
         return "https://example.com/document/12345";
+    }
+
+    async validateUploadedDocumentId(uploadedDocumentId: string) {
+        const uploadedDocument = await this.entityRepository.findOne({ where: { uploadedDocumentId } })
+            .catch((error) => {
+                console.error(error);
+                throw new InternalServerErrorException("validateUploadedDocumentId() not available");
+            });
+
+        if (!uploadedDocument)
+            throw new BadRequestException(`Invalid uploadedDocumentId : ${uploadedDocumentId}`);
     }
 
     entityToDTO(entity: UploadedDocument): UploadedDocumentDTO {

@@ -24,6 +24,7 @@ import { physicalAddressesModule } from './physicalAddresses/physicalAddresses.m
 import { UploadedDocument } from './uploadedDocuments/uploadedDocument.entity';
 import { UploadedDocumentsModule } from './uploadedDocuments/uploadedDocuments.module';
 import { AgencyActorsReadModule } from './agencyActorsRead/agencyActorsRead.module';
+import { SemanticsData } from './uploadedDocuments/semanticsData.entity';
 
 @Module({
   imports: [
@@ -48,7 +49,8 @@ import { AgencyActorsReadModule } from './agencyActorsRead/agencyActorsRead.modu
         SocialProfile,
         Certification,
         PhysicalAddress,
-        UploadedDocument
+        UploadedDocument,
+        SemanticsData
       ],
       synchronize: true,
       logging: process.env.DB_LOGGING === 'true' ? ['error', 'warn', 'info', 'log'] : false,

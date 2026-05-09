@@ -51,16 +51,16 @@ export class AgencyActorsService {
         let actor = await this.entityRepository.findOne({ where: { actorId } })
             .catch((error) => {
                 this.logger.error(error);
-                throw new InternalServerErrorException("deleteCandidate() not available");
+                throw new InternalServerErrorException("deleteActor() not available");
             });
 
         if (!actor) {
-            throw new NotFoundException("Candidate not found");
+            throw new NotFoundException("Actor not found");
         }
         await this.entityRepository.remove(actor)
             .catch((error) => {
                 this.logger.error(error);
-                throw new InternalServerErrorException("deleteCandidate() not available");
+                throw new InternalServerErrorException("deleteActor() not available");
             });
 
         //delete assets

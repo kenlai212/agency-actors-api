@@ -4,7 +4,7 @@ import { ApiOkResponse, ApiOperation } from "@nestjs/swagger";
 import { GovIssueDocsService } from "./govIssueDocs.service";
 import { DocumentLinkedAssetsController } from "../actorAssets/documentLinkedAssets.controller";
 
-@Controller("gov-issue-doc")
+@Controller("gov-issue-docs")
 export class GovIssueDocsController extends DocumentLinkedAssetsController {
     constructor(
         private readonly govIssueDocsService: GovIssueDocsService

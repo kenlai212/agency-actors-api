@@ -24,18 +24,21 @@ export class GovIssueDocDTO extends DocumentLinkedAssetDTO {
 export class NewGovIssueDocRequestDTO extends CreateNewAssetRequestDTO {
     @ApiProperty({
         description: `Issuer Goverment : ${Object.keys(IssuerGoverment)}`,
+        example: IssuerGoverment.HK
     })
     @IsNotEmpty()
     issuerGoverment: IssuerGoverment;
 
     @ApiProperty({
         description: `Issue Document Type : ${Object.keys(IssueDocType)}`,
+        example: IssueDocType.IDENTITY_CARD
     })
     @IsNotEmpty()
     issueDocType: IssueDocType;
 
     @ApiProperty({
         description: 'doc unique identifier',
+        example: "HK12345"
     })
     @IsNotEmpty()
     @IsString()

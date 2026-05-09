@@ -11,6 +11,8 @@ let emailAddressId1 = ""
 let emailAddressId2 = ""
 let employmentId1 = ""
 let employmentId2 = ""
+let govIssueDocId1 = ""
+let govIssueDocId2 = ""
 
 describe(`Create New Certification Super test`, () => {
     beforeAll(async () => {
@@ -134,9 +136,44 @@ describe(`Create New Certification Super test`, () => {
             .expect((res) => {
                 employmentId2 = res.body.assetId;
             })
+
+        await request(API_URL)
+            .post("/gov-issue-docs")
+            .send({
+                "actorId": actorId,
+                "issuerGoverment": "HK",
+                "issueDocType": "IDENTITY_CARD",
+                "issueDocNumber": "HK12345"
+            })
+            .expect(201)
+            .expect((res) => {
+                govIssueDocId1 = res.body.assetId;
+            })
+
+        await request(API_URL)
+            .post("/gov-issue-docs")
+            .send({
+                "actorId": actorId,
+                "issuerGoverment": "SG",
+                "issueDocType": "IDENTITY_CARD",
+                "issueDocNumber": "SG2345"
+            })
+            .expect(201)
+            .expect((res) => {
+                govIssueDocId2 = res.body.assetId;
+            })
     })
 
     afterAll(async () => {
+        const res = await request(API_URL)
+            .delete(`/gov-issue-ids/${govIssueDocId1}`)
+        //.expect(200)
+        console.log(res)
+
+        await request(API_URL)
+            .delete(`/gov-issue-ids/${govIssueDocId2}`)
+            .expect(200)
+
         await request(API_URL)
             .delete(`/employments/${employmentId1}`)
             .expect(200)
