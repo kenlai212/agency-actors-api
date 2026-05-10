@@ -1,8 +1,9 @@
-import { Body, Controller, Post, Put } from "@nestjs/common";
+import { Body, Controller, Post, Put, UseGuards } from "@nestjs/common";
 import { CertificationDTO, NewCertificationRequestDTO, UpdateCertificationRequestDTO } from "./certifications.dtos";
 import { CertificationsService } from "./certifications.service";
-import { ApiCreatedResponse, ApiOkResponse, ApiOperation } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiOperation } from "@nestjs/swagger";
 import { ActorAssetsController } from "../actorAssets/actorAssets.contorller";
+import { AuthGuard } from "../auth.guard";
 
 @Controller("/certifications")
 export class CertificationsController extends ActorAssetsController {
@@ -12,6 +13,8 @@ export class CertificationsController extends ActorAssetsController {
         super(certificationsService)
     }
 
+    @UseGuards(AuthGuard)
+    @ApiBearerAuth()
     @Post("/")
     @ApiOperation({
         summary: 'Create new Certification.',
@@ -25,6 +28,8 @@ export class CertificationsController extends ActorAssetsController {
         return this.certificationsService.createCertification(body);
     }
 
+    @UseGuards(AuthGuard)
+    @ApiBearerAuth()
     @Put("/")
     @ApiOperation({
         summary: 'Update Certification.',

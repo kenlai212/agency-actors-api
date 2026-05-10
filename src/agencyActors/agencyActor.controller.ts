@@ -1,7 +1,8 @@
-import { Body, Controller, Delete, Get, Logger, Post, Put, Query } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Logger, Post, Put, Query, UseGuards } from "@nestjs/common";
 import { AgencyActorsService } from "./agencyActors.service";
-import { ApiOkResponse, ApiOperation } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiOkResponse, ApiOperation } from "@nestjs/swagger";
 import { AgencyActorDTO, FindAgencyActorRequestDTO, NewAgencyActorRequestDTO, UpdateAgencyActorDTO } from "./agencyActors.dto";
+import { AuthGuard } from "../auth.guard";
 
 @Controller("/agency-actors")
 export class AgencyActorsController {
@@ -11,6 +12,8 @@ export class AgencyActorsController {
         private readonly agencyActorsService: AgencyActorsService,
     ) { }
 
+    @UseGuards(AuthGuard)
+    @ApiBearerAuth()
     @Get("/")
     @ApiOperation({
         summary: 'Find Agency Actor',
@@ -24,6 +27,8 @@ export class AgencyActorsController {
         return await this.agencyActorsService.findAgencyActor(query.agencyActorType, query.actorId);
     }
 
+    @UseGuards(AuthGuard)
+    @ApiBearerAuth()
     @Post("/")
     @ApiOperation({
         summary: 'Create new Agency Actor',
@@ -37,6 +42,8 @@ export class AgencyActorsController {
         return await this.agencyActorsService.createAgencyActor(requestBody);
     }
 
+    @UseGuards(AuthGuard)
+    @ApiBearerAuth()
     @Delete("/:actorId")
     @ApiOperation({
         summary: 'Delete target Agency Actor',
@@ -50,6 +57,8 @@ export class AgencyActorsController {
         return await this.agencyActorsService.deleteActor(actorId);
     }
 
+    @UseGuards(AuthGuard)
+    @ApiBearerAuth()
     @Put("/")
     async updateAgencyActor(@Body() body: UpdateAgencyActorDTO): Promise<AgencyActorDTO> {
         return await this.agencyActorsService.updateAgencyActor(body);

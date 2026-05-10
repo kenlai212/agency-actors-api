@@ -1,8 +1,9 @@
-import { Body, Controller, Post } from "@nestjs/common";
-import { ApiOkResponse, ApiOperation } from "@nestjs/swagger";
+import { Body, Controller, Post, UseGuards } from "@nestjs/common";
+import { ApiBearerAuth, ApiOkResponse, ApiOperation } from "@nestjs/swagger";
 import { EducationDTO, NewEducationRequestDTO } from "./educations.dtos";
 import { EducationsService } from "./educations.service";
 import { DocumentLinkedAssetsController } from "../actorAssets/documentLinkedAssets.controller";
+import { AuthGuard } from "../auth.guard";
 
 @Controller("educations")
 export class EducationsController extends DocumentLinkedAssetsController {
@@ -12,6 +13,8 @@ export class EducationsController extends DocumentLinkedAssetsController {
         super(educationsService)
     }
 
+    @UseGuards(AuthGuard)
+    @ApiBearerAuth()
     @Post("/")
     @ApiOperation({
         summary: 'Create new Education.',

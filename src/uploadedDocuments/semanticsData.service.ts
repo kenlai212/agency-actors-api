@@ -21,7 +21,7 @@ export class SemanticsDataService {
         entity.uploadedDocumentId = uploadedDocumentId;
         entity.abstractedResult = abstractedResult;
 
-        return await this.entityRepository.save(entity)
+        await this.entityRepository.save(entity)
             .catch((error) => {
                 console.error(error);
                 throw new InternalServerErrorException("createNewSymanticsData() not available");

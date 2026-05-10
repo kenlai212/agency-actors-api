@@ -1,5 +1,5 @@
 import { Logger, Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Resume } from './resumes/resume.entity';
 import { GovIssueDoc } from './govIssueDocs/govIssueDoc.entity';
@@ -25,35 +25,41 @@ import { UploadedDocument } from './uploadedDocuments/uploadedDocument.entity';
 import { UploadedDocumentsModule } from './uploadedDocuments/uploadedDocuments.module';
 import { AgencyActorsReadModule } from './agencyActorsRead/agencyActorsRead.module';
 import { SemanticsData } from './uploadedDocuments/semanticsData.entity';
+import configuration from './configuration';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
-      isGlobal: true
+      isGlobal: true,
+      load: [configuration],
     }),
-    TypeOrmModule.forRoot({
-      type: 'mysql',
-      host: process.env.DB_HOST,
-      port: parseInt(process.env.DB_PORT || '3306'),
-      username: process.env.DB_USERNAME,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_NAME,
-      entities: [
-        AgencyActor,
-        EmailAddress,
-        PhoneNumber,
-        Education,
-        Employment,
-        Resume,
-        GovIssueDoc,
-        SocialProfile,
-        Certification,
-        PhysicalAddress,
-        UploadedDocument,
-        SemanticsData
-      ],
-      synchronize: true,
-      logging: process.env.DB_LOGGING === 'true' ? ['error', 'warn', 'info', 'log'] : false,
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => ({
+        type: 'mysql',
+        host: configService.get("database.host"),
+        port: configService.get("database.port"),
+        username: configService.get("database.userName"),
+        password: configService.get("database.password"),
+        database: configService.get("database.databaseName"),
+        entities: [
+          AgencyActor,
+          EmailAddress,
+          PhoneNumber,
+          Education,
+          Employment,
+          Resume,
+          GovIssueDoc,
+          SocialProfile,
+          Certification,
+          PhysicalAddress,
+          UploadedDocument,
+          SemanticsData
+        ],
+        synchronize: true,
+        logging: configService.get("database.logging"),
+      }),
+      inject: [ConfigService]
     }),
     AgencyActorsReadModule,
     AgencyActorsModule,

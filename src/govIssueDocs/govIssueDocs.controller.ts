@@ -1,8 +1,9 @@
-import { Body, Controller, Post } from "@nestjs/common";
+import { Body, Controller, Post, UseGuards } from "@nestjs/common";
 import { GovIssueDocDTO, NewGovIssueDocRequestDTO } from "./govIssueDocs.dtos";
-import { ApiOkResponse, ApiOperation } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiOkResponse, ApiOperation } from "@nestjs/swagger";
 import { GovIssueDocsService } from "./govIssueDocs.service";
 import { DocumentLinkedAssetsController } from "../actorAssets/documentLinkedAssets.controller";
+import { AuthGuard } from "../auth.guard";
 
 @Controller("gov-issue-docs")
 export class GovIssueDocsController extends DocumentLinkedAssetsController {
@@ -12,6 +13,8 @@ export class GovIssueDocsController extends DocumentLinkedAssetsController {
         super(govIssueDocsService);
     }
 
+    @UseGuards(AuthGuard)
+    @ApiBearerAuth()
     @Post("/")
     @ApiOperation({
         summary: 'Create new Goverment Issue Document for an actor'

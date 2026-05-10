@@ -1,8 +1,9 @@
-import { Body, Controller, Get, Post, Query } from "@nestjs/common";
+import { Body, Controller, Get, Post, Query, UseGuards } from "@nestjs/common";
 import { CreatePhoneNumberRequestDTO, FindPhoneNumberRequestDTO, PhoneNumberDTO } from "./phoneNumbers.dtos";
-import { ApiOkResponse, ApiOperation } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiOkResponse, ApiOperation } from "@nestjs/swagger";
 import { PhoneNumbersService } from "./phoneNumber.service";
 import { ActorAssetsController } from "../actorAssets/actorAssets.contorller";
+import { AuthGuard } from "../auth.guard";
 
 @Controller("/phone-numbers")
 export class PhoneNumbersController extends ActorAssetsController {
@@ -12,6 +13,8 @@ export class PhoneNumbersController extends ActorAssetsController {
         super(phoneNumbersService);
     }
 
+    @UseGuards(AuthGuard)
+    @ApiBearerAuth()
     @Post("/")
     @ApiOperation({
         summary: 'Create new Phone Number for an Actor',
@@ -25,6 +28,8 @@ export class PhoneNumbersController extends ActorAssetsController {
         return await this.phoneNumbersService.createNewPhoneNumber(body.actorId, body.countryCode, body.numberString, body.phoneNumberType)
     }
 
+    @UseGuards(AuthGuard)
+    @ApiBearerAuth()
     @Get("/")
     @ApiOperation({
         summary: 'Find Asset.',

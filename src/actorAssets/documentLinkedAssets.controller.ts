@@ -1,9 +1,10 @@
 import { ActorAssetsController } from "./actorAssets.contorller";
 import { DocumentLinkedAssetsService } from "./documentLinkedAssets.service";
 import { DocumentLinkedAssetDTO, UploadDocumentRequestDTO } from "./documentLinkedAssets.dtos";
-import { Body, Post } from "@nestjs/common";
-import { ApiOkResponse, ApiOperation } from "@nestjs/swagger";
+import { Body, Post, UseGuards } from "@nestjs/common";
+import { ApiBearerAuth, ApiOkResponse, ApiOperation } from "@nestjs/swagger";
 import { DocumentLinkedAsset } from "./documentLinkedAsset.entity";
+import { AuthGuard } from "../auth.guard";
 
 export abstract class DocumentLinkedAssetsController extends ActorAssetsController {
     constructor(
@@ -12,6 +13,8 @@ export abstract class DocumentLinkedAssetsController extends ActorAssetsControll
         super(documentLinkedAssetsService)
     }
 
+    @UseGuards(AuthGuard)
+    @ApiBearerAuth()
     @Post("/upload-document")
     @ApiOperation({
         summary: 'Upload Document',

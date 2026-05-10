@@ -1,7 +1,8 @@
-import { Body, Controller, Post } from "@nestjs/common";
-import { ApiOkResponse, ApiOperation } from "@nestjs/swagger";
+import { Body, Controller, Post, UseGuards } from "@nestjs/common";
+import { ApiBearerAuth, ApiOkResponse, ApiOperation } from "@nestjs/swagger";
 import { UploadDocumentRequestDTO, UploadedDocumentDTO } from "./uploadedDocuments.dtos";
 import { UploadedDocumentsService } from "./uploadedDocuments.service";
+import { AuthGuard } from "../auth.guard";
 
 @Controller("/upload-documents")
 export class UploadedDocumentsController {
@@ -9,6 +10,8 @@ export class UploadedDocumentsController {
         private readonly uploadedDocumentsService: UploadedDocumentsService
     ) { }
 
+    @UseGuards(AuthGuard)
+    @ApiBearerAuth()
     @Post("/")
     @ApiOperation({
         summary: 'Upload Document',

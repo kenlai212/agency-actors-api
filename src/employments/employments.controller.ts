@@ -1,8 +1,9 @@
-import { Body, Controller, Post } from "@nestjs/common";
+import { Body, Controller, Post, UseGuards } from "@nestjs/common";
 import { EmploymentDTO, NewEmploymentRequestDTO } from "./employments.dtos";
 import { EmploymentsService } from "./employments.service";
-import { ApiOkResponse, ApiOperation } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiOkResponse, ApiOperation } from "@nestjs/swagger";
 import { DocumentLinkedAssetsController } from "../actorAssets/documentLinkedAssets.controller";
+import { AuthGuard } from "../auth.guard";
 
 @Controller("/employments")
 export class EmploymentsController extends DocumentLinkedAssetsController {
@@ -12,6 +13,8 @@ export class EmploymentsController extends DocumentLinkedAssetsController {
         super(employmentsService);
     }
 
+    @UseGuards(AuthGuard)
+    @ApiBearerAuth()
     @Post("/")
     @ApiOperation({
         summary: 'Create new Employment for an Actor'

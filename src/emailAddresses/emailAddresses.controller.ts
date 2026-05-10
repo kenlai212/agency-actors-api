@@ -1,8 +1,9 @@
-import { Body, Controller, Get, Post, Put, Query } from "@nestjs/common";
+import { Body, Controller, Get, Post, Put, Query, UseGuards } from "@nestjs/common";
 import { CreateNewEmailAddressRequestDTO, EmailAddressDTO, FindEmailAddressRequestDTO, SetDefaultEmailAddressRequestDTO } from "./emailAddresses.dtos";
-import { ApiOkResponse, ApiOperation } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiOkResponse, ApiOperation } from "@nestjs/swagger";
 import { EmailAdddressesService } from "./emailAddresses.service";
 import { ActorAssetsController } from "../actorAssets/actorAssets.contorller";
+import { AuthGuard } from "../auth.guard";
 
 @Controller("/email-addresses")
 export class EmailAddressesController extends ActorAssetsController {
@@ -12,6 +13,8 @@ export class EmailAddressesController extends ActorAssetsController {
         super(emailAddressesService)
     }
 
+    @UseGuards(AuthGuard)
+    @ApiBearerAuth()
     @Post("/")
     @ApiOperation({
         summary: 'Create new Email Address for an Actor',
@@ -25,9 +28,11 @@ export class EmailAddressesController extends ActorAssetsController {
         return await this.emailAddressesService.createNewEmailAddress(body.actorId, body.addressString);
     }
 
-    @Put("/lock-email-address")
+    @UseGuards(AuthGuard)
+    @ApiBearerAuth()
+    @Put("/set-default")
     @ApiOperation({
-        summary: 'Lock an Email Address for an Actor'
+        summary: 'Set default Email Address for an Actor'
     })
     @ApiOkResponse({
         description: 'Successfully PUT response list of EmailAddressDTOs belonging to the actor',
@@ -37,6 +42,8 @@ export class EmailAddressesController extends ActorAssetsController {
         return await this.emailAddressesService.setDdfault(body.actorId, body.addressString);
     }
 
+    @UseGuards(AuthGuard)
+    @ApiBearerAuth()
     @Get("/")
     @ApiOperation({
         summary: 'Find Asset.',

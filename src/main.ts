@@ -26,7 +26,7 @@ async function bootstrap() {
   SwaggerModule.setup('', app, documentFactory);
 
   ////////////////////start server
-  const port = process.env.PORT || 8080;
+  const port = process.env.APP_PORT || 8080;
   await app.listen(port, '0.0.0.0', () => {
     logger.log(`Express web server started: http://localhost:${port}`);
   });
