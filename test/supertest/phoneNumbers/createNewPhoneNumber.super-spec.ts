@@ -20,7 +20,7 @@ describe(`Create New Phone Number Super test`, () => {
             .expect(200)
     });
 
-    it(`Successfully create a new Email Address`, async () => {
+    it(`Successfully create a new PhoneNumber`, async () => {
         const response = await request(CommonTest.API_HOST)
             .post("/phone-numbers")
             .send({

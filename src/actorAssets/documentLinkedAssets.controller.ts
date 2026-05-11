@@ -1,10 +1,9 @@
 import { ActorAssetsController } from "./actorAssets.contorller";
 import { DocumentLinkedAssetsService } from "./documentLinkedAssets.service";
-import { DocumentLinkedAssetDTO, UploadDocumentRequestDTO } from "./documentLinkedAssets.dtos";
-import { Body, Post, UseGuards } from "@nestjs/common";
-import { ApiBearerAuth, ApiOkResponse, ApiOperation } from "@nestjs/swagger";
+import { DocumentLinkedAssetDTO, UpdateDocumentIdRequestDTO } from "./documentLinkedAssets.dtos";
+import { Body, Post } from "@nestjs/common";
+import { ApiOkResponse, ApiOperation } from "@nestjs/swagger";
 import { DocumentLinkedAsset } from "./documentLinkedAsset.entity";
-import { AuthGuard } from "../auth.guard";
 
 export abstract class DocumentLinkedAssetsController extends ActorAssetsController {
     constructor(
@@ -13,16 +12,16 @@ export abstract class DocumentLinkedAssetsController extends ActorAssetsControll
         super(documentLinkedAssetsService)
     }
 
-    @Post("/upload-document")
+    @Post("/update-document-id")
     @ApiOperation({
-        summary: 'Upload Document',
-        description: `Upload a document (e.g pdf, image) to an existing Asset. Will send to storage facility`
+        summary: 'Update Uploaded Document ID',
+        description: `Update Uploaded Document ID`
     })
     @ApiOkResponse({
         description: 'Successfully POST response ActorAssetDTO',
         type: DocumentLinkedAssetDTO,
     })
-    async uploadDocument(@Body() body: UploadDocumentRequestDTO): Promise<DocumentLinkedAssetDTO> {
-        return await this.documentLinkedAssetsService.uploadDocument(body.actorId, body.assetId, body.documentBase64, body.uploadedDocumentType);
+    async uploadDocument(@Body() body: UpdateDocumentIdRequestDTO): Promise<DocumentLinkedAssetDTO> {
+        return await this.documentLinkedAssetsService.uploadDocument(body.assetId, body.uploadedDocumentId);
     }
 }
