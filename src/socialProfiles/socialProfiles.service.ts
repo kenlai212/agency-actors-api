@@ -2,8 +2,9 @@ import { BadRequestException, Injectable, InternalServerErrorException, Logger, 
 import { SocialProvider, SocialProfile } from "./socialProfile.entity";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from 'typeorm';
-import { SocialProfileDTO } from "./socialProfiles.dtos";
+import { NewSocialProfileRequestDTO, SocialProfileDTO } from "./socialProfiles.dtos";
 import { ActorAssetsService } from "../actorAssets/actorAssets.service";
+import { CreateNewAssetRequestDTO, UpdateAssetRequestDTO } from "../actorAssets/actorAssets.dtos";
 
 @Injectable()
 export class SocialProfilesService extends ActorAssetsService<SocialProfile, SocialProfileDTO> {
@@ -12,35 +13,6 @@ export class SocialProfilesService extends ActorAssetsService<SocialProfile, Soc
         private readonly entityRepository: Repository<SocialProfile>,
     ) {
         super(entityRepository)
-    }
-
-    async createSocialProfile(actorId: string, provider: SocialProvider, providerHandle: string, url?: string, providerUserId?: string): Promise<SocialProfileDTO> {
-        if (!await this.checkSocialProfileUnique(provider, providerHandle)) {
-            throw new BadRequestException("Social profile with the same provider and provider handle already exists");
-        }
-
-        let socialProfile = new SocialProfile();
-
-        await this.validateActor(actorId);
-        socialProfile.actorId = actorId;
-
-        socialProfile.provider = provider;
-        socialProfile.providerHandle = providerHandle;
-
-        if (url) {
-            socialProfile.url = url;
-        }
-        if (providerUserId) {
-            socialProfile.providerUserId = providerUserId;
-        }
-
-        await this.entityRepository.save(socialProfile)
-            .catch((error) => {
-                this.logger.error(error);
-                throw new InternalServerErrorException("createSocialProfile() not available");
-            });
-
-        return this.entityToDTO(socialProfile);
     }
 
     async findSocialProfiles(actorId: string, provider?: string, providerHandle?: string): Promise<Array<SocialProfileDTO>> {
@@ -75,6 +47,29 @@ export class SocialProfilesService extends ActorAssetsService<SocialProfile, Soc
                 throw new InternalServerErrorException("checkSocialProfileUnique() not available");
             });
 
+    }
+
+    async createNewAssetDtoToEntity(dto: NewSocialProfileRequestDTO): Promise<SocialProfile> {
+        if (!await this.checkSocialProfileUnique(dto.provider, dto.providerHandle)) {
+            throw new BadRequestException("Social profile with the same provider and provider handle already exists");
+        }
+
+        let socialProfile = new SocialProfile();
+
+        await this.validateActor(dto.actorId);
+        socialProfile.actorId = dto.actorId;
+
+        socialProfile.provider = dto.provider;
+        socialProfile.providerHandle = dto.providerHandle;
+
+        if (dto.url) {
+            socialProfile.url = dto.url;
+        }
+        if (dto.providerUserId) {
+            socialProfile.providerUserId = dto.providerUserId;
+        }
+
+        return socialProfile;
     }
 
     entityToDTO(entity: SocialProfile): SocialProfileDTO {

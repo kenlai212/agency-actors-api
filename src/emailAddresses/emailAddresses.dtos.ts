@@ -15,7 +15,7 @@ export class EmailAddressDTO extends ActorAssetDTO {
     isDefault: boolean;
 }
 
-export class CreateNewEmailAddressRequestDTO extends CreateNewAssetRequestDTO {
+export class NewEmailAddressRequestDTO extends CreateNewAssetRequestDTO {
     @ApiProperty({
         description: 'Actor emailAddress',
         example: "john.smith@test.com"

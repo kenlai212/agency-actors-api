@@ -2,7 +2,7 @@ import { Injectable, InternalServerErrorException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from 'typeorm';
 import { Certification } from "./certification.entity";
-import { CertificationDTO, UpdateCertificationRequestDTO } from "./certifications.dtos";
+import { CertificationDTO, NewCertificationRequestDTO, UpdateCertificationRequestDTO } from "./certifications.dtos";
 import { DocumentLinkedAssetsService } from "../actorAssets/documentLinkedAssets.service";
 
 @Injectable()
@@ -14,7 +14,7 @@ export class CertificationsService extends DocumentLinkedAssetsService<Certifica
         super(entityRepository);
     }
 
-    async updateCertification(dto: UpdateCertificationRequestDTO): Promise<CertificationDTO> {
+    async updateAssetDtoToEntity(dto: UpdateCertificationRequestDTO): Promise<Certification> {
         let entity = await this.validateAssetId(dto.assetId)
 
         if (dto.certificationAuthority)
@@ -29,7 +29,21 @@ export class CertificationsService extends DocumentLinkedAssetsService<Certifica
         if (dto.issueDate)
             entity.issueDate = dto.issueDate;
 
-        return await this.updateAsset(entity);
+        return entity;
+    }
+
+    async createNewAssetDtoToEntity(dto: NewCertificationRequestDTO): Promise<Certification> {
+        let entity = new Certification();
+
+        await this.validateActor(dto.actorId);
+        entity.actorId = dto.actorId;
+
+        entity.certificationAuthority = dto.certificationAuthority;
+        entity.certificateName = dto.certificateName;
+        entity.certificateNumber = dto.certificateNumber;
+        entity.issueDate = dto.issueDate;
+
+        return entity;
     }
 
     entityToDTO(entity: Certification): CertificationDTO {

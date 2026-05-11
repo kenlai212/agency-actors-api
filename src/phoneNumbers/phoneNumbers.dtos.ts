@@ -31,7 +31,7 @@ export class PhoneNumberDTO extends ActorAssetDTO {
     phoneNumberType: PhoneNumberType;
 }
 
-export class CreatePhoneNumberRequestDTO extends CreateNewAssetRequestDTO {
+export class NewPhoneNumberRequestDTO extends CreateNewAssetRequestDTO {
     @ApiProperty({
         description: `Phone Number Country Code ${Object.values(CountryCode)}`,
         example: CountryCode.HK,

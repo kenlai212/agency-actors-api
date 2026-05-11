@@ -3,7 +3,8 @@ import { ActorAssetsService } from "../actorAssets/actorAssets.service";
 import { InjectRepository } from "@nestjs/typeorm";
 import { EmailAddress } from "./emailAddress.entity";
 import { Repository } from "typeorm";
-import { EmailAddressDTO, FindEmailAddressRequestDTO } from "./emailAddresses.dtos";
+import { NewEmailAddressRequestDTO, EmailAddressDTO, FindEmailAddressRequestDTO } from "./emailAddresses.dtos";
+import { CreateNewAssetRequestDTO } from "../actorAssets/actorAssets.dtos";
 
 @Injectable()
 export class EmailAdddressesService extends ActorAssetsService<EmailAddress, EmailAddressDTO> {
@@ -12,24 +13,6 @@ export class EmailAdddressesService extends ActorAssetsService<EmailAddress, Ema
         private readonly entityRepository: Repository<EmailAddress>
     ) {
         super(entityRepository);
-    }
-
-    async createNewEmailAddress(actorId: string, addressString: string): Promise<EmailAddressDTO> {
-        let emailAddressEntity = new EmailAddress();
-        emailAddressEntity.addressString = addressString;
-        emailAddressEntity.actorId = actorId;
-
-        //find actor's other emailAddresses.
-        const actorOtherEmailAddresses = await this.entityRepository.find({ where: { actorId } })
-            .catch((error) => {
-                this.logger.error(error);
-                throw new InternalServerErrorException("createNewEmailAddress() not available");
-            });
-
-        if (!actorOtherEmailAddresses || actorOtherEmailAddresses.length === 0)
-            emailAddressEntity.isDefault = true;
-
-        return await this.createAsset(emailAddressEntity);
     }
 
     async findEmailAddress(dto: FindEmailAddressRequestDTO): Promise<EmailAddressDTO> {
@@ -100,6 +83,24 @@ export class EmailAdddressesService extends ActorAssetsService<EmailAddress, Ema
 
         if (existingEmailAddress)
             throw new BadRequestException("Email address already exists");
+    }
+
+    async createNewAssetDtoToEntity(dto: NewEmailAddressRequestDTO): Promise<EmailAddress> {
+        let entity = new EmailAddress();
+        entity.addressString = dto.addressString;
+        entity.actorId = dto.actorId;
+
+        //find actor's other emailAddresses.
+        const actorOtherEmailAddresses = await this.entityRepository.find({ where: { actorId: dto.actorId } })
+            .catch((error) => {
+                this.logger.error(error);
+                throw new InternalServerErrorException("createNewEmailAddress() not available");
+            });
+
+        if (!actorOtherEmailAddresses || actorOtherEmailAddresses.length === 0)
+            entity.isDefault = true;
+
+        return entity;
     }
 
     entityToDTO(entity: EmailAddress): EmailAddressDTO {

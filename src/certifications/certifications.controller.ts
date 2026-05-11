@@ -2,8 +2,7 @@ import { Body, Controller, Post, Put } from "@nestjs/common";
 import { CertificationDTO, NewCertificationRequestDTO, UpdateCertificationRequestDTO } from "./certifications.dtos";
 import { CertificationsService } from "./certifications.service";
 import { ApiCreatedResponse, ApiOkResponse, ApiOperation } from "@nestjs/swagger";
-import { ActorAssetsController } from "../actorAssets/actorAssets.contorller";
-import { Certification } from "./certification.entity";
+import { ActorAssetsController } from "../actorAssets/actorAssets.controller";
 
 @Controller("/certifications")
 export class CertificationsController extends ActorAssetsController {
@@ -19,19 +18,11 @@ export class CertificationsController extends ActorAssetsController {
         description: `New Certification must tie to an actor.`
     })
     @ApiCreatedResponse({
-        description: 'Successfully POST response CertificationDTO.',
-        type: CertificationDTO,
+        description: `Successfully POST response ${CertificationDTO.name}.`,
+        type: NewCertificationRequestDTO
     })
-    async newCertification(@Body() dto: NewCertificationRequestDTO): Promise<CertificationDTO> {
-        let entity = new Certification();
-        entity.actorId = dto.actorId;
-
-        entity.certificationAuthority = dto.certificationAuthority;
-        entity.certificateName = dto.certificateName;
-        entity.certificateNumber = dto.certificateNumber;
-        entity.issueDate = dto.issueDate;
-
-        return this.certificationsService.createAsset(entity);
+    async newAsset(@Body() dto: NewCertificationRequestDTO) {
+        return this.assetsService.createAsset(dto);
     }
 
     @Put("/")
@@ -43,7 +34,7 @@ export class CertificationsController extends ActorAssetsController {
         description: 'Successfully POST response CertificationDTO.',
         type: CertificationDTO,
     })
-    async updateCertification(@Body() body: UpdateCertificationRequestDTO): Promise<CertificationDTO> {
-        return this.certificationsService.updateCertification(body);
+    async updateAsset(@Body() body: UpdateCertificationRequestDTO): Promise<CertificationDTO> {
+        return this.certificationsService.updateAsset(body);
     }
 }

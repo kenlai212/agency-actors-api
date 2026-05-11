@@ -3,7 +3,8 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { CountryCode, PhoneNumber } from "./phoneNumber.entity";
 import { Repository } from "typeorm";
 import { ActorAssetsService } from "../actorAssets/actorAssets.service";
-import { FindPhoneNumberRequestDTO, PhoneNumberDTO } from "./phoneNumbers.dtos";
+import { FindPhoneNumberRequestDTO, NewPhoneNumberRequestDTO, PhoneNumberDTO } from "./phoneNumbers.dtos";
+import { CreateNewAssetRequestDTO } from "../actorAssets/actorAssets.dtos";
 
 @Injectable()
 export class PhoneNumbersService extends ActorAssetsService<PhoneNumber, PhoneNumberDTO> {
@@ -45,6 +46,19 @@ export class PhoneNumbersService extends ActorAssetsService<PhoneNumber, PhoneNu
 
         if (phoneNumber)
             throw new BadRequestException(`Phone Number ${countryCode} ${numberString} already exist`);
+    }
+
+    async createNewAssetDtoToEntity(dto: NewPhoneNumberRequestDTO): Promise<PhoneNumber> {
+        let entity = new PhoneNumber();
+        entity.actorId = dto.actorId;
+
+        await this.validateUniquePhoneNumber(dto.countryCode, dto.numberString);
+        entity.countryCode = dto.countryCode;
+        entity.numberString = dto.numberString;
+
+        entity.phoneNumberType = dto.phoneNumberType;
+
+        return entity;
     }
 
     entityToDTO(entity: PhoneNumber) {

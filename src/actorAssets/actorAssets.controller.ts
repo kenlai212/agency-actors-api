@@ -1,14 +1,14 @@
-import { Delete, Get, Param, Query, UseGuards } from "@nestjs/common";
-import { ApiBearerAuth, ApiOkResponse, ApiOperation } from "@nestjs/swagger";
+import { Body, Delete, Get, Param, Post, Query, Type } from "@nestjs/common";
+import { ApiCreatedResponse, ApiOkResponse, ApiOperation, getSchemaPath } from "@nestjs/swagger";
 import { ActorAssetsService } from "./actorAssets.service";
-import { ActorAssetDTO, FindAssetRequestDTO } from "./actorAssets.dtos";
+import { ActorAssetDTO, CreateNewAssetRequestDTO, FindAssetRequestDTO } from "./actorAssets.dtos";
 import { ActorAsset } from "./actorAsset.entity";
-import { AuthGuard } from "../auth.guard";
 
 export abstract class ActorAssetsController {
     constructor(
-        protected readonly assetsService: ActorAssetsService<ActorAsset, ActorAssetDTO>,
+        protected readonly assetsService: ActorAssetsService<ActorAsset, ActorAssetDTO>
     ) { }
+
 
     @Delete("/:assetId")
     @ApiOperation({

@@ -1,9 +1,8 @@
-import { Body, Controller, Post } from "@nestjs/common";
-import { EmploymentDTO, NewEmploymentRequestDTO } from "./employments.dtos";
+import { Body, Controller, Post, Put } from "@nestjs/common";
 import { EmploymentsService } from "./employments.service";
-import { ApiOkResponse, ApiOperation } from "@nestjs/swagger";
 import { DocumentLinkedAssetsController } from "../actorAssets/documentLinkedAssets.controller";
-import { Employment } from "./employment.entity";
+import { ApiCreatedResponse, ApiOkResponse, ApiOperation } from "@nestjs/swagger";
+import { EmploymentDTO, NewEmploymentRequestDTO, UpdateEmploymentRequestDTO } from "./employments.dtos";
 
 @Controller("/employments")
 export class EmploymentsController extends DocumentLinkedAssetsController {
@@ -15,33 +14,27 @@ export class EmploymentsController extends DocumentLinkedAssetsController {
 
     @Post("/")
     @ApiOperation({
-        summary: 'Create new Employment for an Actor'
+        summary: 'Create new Employment.',
+        description: `New Employment must tie to an actor.`
+    })
+    @ApiCreatedResponse({
+        description: `Successfully POST response ${EmploymentDTO.name}.`,
+        type: NewEmploymentRequestDTO
+    })
+    async newAsset(@Body() dto: NewEmploymentRequestDTO) {
+        return this.assetsService.createAsset(dto);
+    }
+
+    @Put("/")
+    @ApiOperation({
+        summary: 'Update Employment.',
+        description: `Update Employment`
     })
     @ApiOkResponse({
-        description: 'Successfully POST response EmmploymentDTO.',
+        description: `Successfully POST response ${EmploymentDTO.name}`,
         type: EmploymentDTO,
     })
-    async createNewEmployments(@Body() dto: NewEmploymentRequestDTO): Promise<EmploymentDTO> {
-        let entity = new Employment();
-        entity.actorId = dto.actorId;
-        entity.companyName = dto.companyName;
-
-        if (dto.jobTitle)
-            entity.jobTitle = dto.jobTitle;
-
-        if (dto.location)
-            entity.location = dto.location;
-
-        if (dto.startDate)
-            entity.startDate = dto.startDate;
-
-        if (dto.endDate) {
-            entity.endDate = dto.endDate;
-            entity.isCurrent = false;
-        } else {
-            entity.isCurrent = true;
-        }
-
-        return await this.employmentsService.createAsset(entity);
+    async updateAsset(@Body() body: UpdateEmploymentRequestDTO): Promise<EmploymentDTO> {
+        return this.employmentsService.updateAsset(body);
     }
 }

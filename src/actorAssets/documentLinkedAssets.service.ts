@@ -3,6 +3,7 @@ import { Repository } from "typeorm";
 import { ActorAssetsService } from "./actorAssets.service";
 import { DocumentLinkedAssetDTO } from "./documentLinkedAssets.dtos";
 import { DocumentLinkedAsset } from "./documentLinkedAsset.entity";
+import { UpdateAssetRequestDTO } from "./actorAssets.dtos";
 
 export abstract class DocumentLinkedAssetsService<T extends DocumentLinkedAsset, K extends DocumentLinkedAssetDTO> extends ActorAssetsService<T, K> {
     constructor(
@@ -31,4 +32,18 @@ export abstract class DocumentLinkedAssetsService<T extends DocumentLinkedAsset,
 
         return this.entityToDTO(asset);
     }
+
+    async updateAsset(dto: UpdateAssetRequestDTO): Promise<K> {
+        let entity: T = await this.updateAssetDtoToEntity(dto);
+
+        entity = await this.repository.save(entity)
+            .catch((error) => {
+                this.logger.error(error);
+                throw new InternalServerErrorException("updateAsset() not available");
+            });
+
+        return this.entityToDTO(entity);
+    }
+
+    abstract updateAssetDtoToEntity(dto: UpdateAssetRequestDTO): Promise<T>
 }

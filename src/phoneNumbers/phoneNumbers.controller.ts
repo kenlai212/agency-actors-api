@@ -1,9 +1,8 @@
 import { Body, Controller, Get, Post, Query } from "@nestjs/common";
-import { CreatePhoneNumberRequestDTO, FindPhoneNumberRequestDTO, PhoneNumberDTO } from "./phoneNumbers.dtos";
-import { ApiOkResponse, ApiOperation } from "@nestjs/swagger";
+import { FindPhoneNumberRequestDTO, NewPhoneNumberRequestDTO, PhoneNumberDTO } from "./phoneNumbers.dtos";
+import { ApiCreatedResponse, ApiOkResponse, ApiOperation } from "@nestjs/swagger";
 import { PhoneNumbersService } from "./phoneNumber.service";
-import { ActorAssetsController } from "../actorAssets/actorAssets.contorller";
-import { PhoneNumber } from "./phoneNumber.entity";
+import { ActorAssetsController } from "../actorAssets/actorAssets.controller";
 
 @Controller("/phone-numbers")
 export class PhoneNumbersController extends ActorAssetsController {
@@ -15,24 +14,15 @@ export class PhoneNumbersController extends ActorAssetsController {
 
     @Post("/")
     @ApiOperation({
-        summary: 'Create new Phone Number for an Actor',
-        description: `Actor can have multiple phone numbers`
+        summary: 'Create new Phone Number.',
+        description: `New Phone Number must tie to an actor.`
     })
-    @ApiOkResponse({
-        description: 'Successfully POST response PhoneNumberDTO.',
-        type: PhoneNumberDTO,
+    @ApiCreatedResponse({
+        description: `Successfully POST response ${PhoneNumberDTO.name}.`,
+        type: NewPhoneNumberRequestDTO
     })
-    async createPhoneNumber(@Body() dto: CreatePhoneNumberRequestDTO): Promise<PhoneNumberDTO> {
-        let entity = new PhoneNumber();
-        entity.actorId = dto.actorId;
-
-        await this.phoneNumbersService.validateUniquePhoneNumber(dto.countryCode, dto.numberString);
-        entity.countryCode = dto.countryCode;
-        entity.numberString = dto.numberString;
-
-        entity.phoneNumberType = dto.phoneNumberType;
-
-        return await this.phoneNumbersService.createAsset(entity);
+    async newAsset(@Body() dto: NewPhoneNumberRequestDTO) {
+        return this.assetsService.createAsset(dto);
     }
 
     @Get("/")

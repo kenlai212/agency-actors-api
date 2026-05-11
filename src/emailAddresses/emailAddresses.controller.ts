@@ -1,8 +1,8 @@
 import { Body, Controller, Get, Post, Put, Query, UseGuards } from "@nestjs/common";
-import { CreateNewEmailAddressRequestDTO, EmailAddressDTO, FindEmailAddressRequestDTO, SetDefaultEmailAddressRequestDTO } from "./emailAddresses.dtos";
-import { ApiBearerAuth, ApiOkResponse, ApiOperation } from "@nestjs/swagger";
+import { NewEmailAddressRequestDTO, EmailAddressDTO, FindEmailAddressRequestDTO, SetDefaultEmailAddressRequestDTO } from "./emailAddresses.dtos";
+import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiOperation } from "@nestjs/swagger";
 import { EmailAdddressesService } from "./emailAddresses.service";
-import { ActorAssetsController } from "../actorAssets/actorAssets.contorller";
+import { ActorAssetsController } from "../actorAssets/actorAssets.controller";
 import { AuthGuard } from "../auth.guard";
 
 @Controller("/email-addresses")
@@ -15,15 +15,15 @@ export class EmailAddressesController extends ActorAssetsController {
 
     @Post("/")
     @ApiOperation({
-        summary: 'Create new Email Address for an Actor',
-        description: `Email Address must be unique for each Actor.`
+        summary: 'Create new Email Address.',
+        description: `New Email Address must tie to an actor.`
     })
-    @ApiOkResponse({
-        description: 'Successfully PUT response EmailAddressDTO.',
-        type: EmailAddressDTO,
+    @ApiCreatedResponse({
+        description: `Successfully POST response ${EmailAddressDTO.name}.`,
+        type: NewEmailAddressRequestDTO
     })
-    async createNewEmailAddress(@Body() body: CreateNewEmailAddressRequestDTO): Promise<EmailAddressDTO> {
-        return await this.emailAddressesService.createNewEmailAddress(body.actorId, body.addressString);
+    async newAsset(@Body() dto: NewEmailAddressRequestDTO) {
+        return this.assetsService.createAsset(dto);
     }
 
     @Put("/set-default")

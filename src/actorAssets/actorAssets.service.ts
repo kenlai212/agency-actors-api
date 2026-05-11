@@ -1,6 +1,6 @@
 import { BadRequestException, Inject, InternalServerErrorException, Logger, NotFoundException } from "@nestjs/common";
 import { AgencyActorsService } from "../agencyActors/agencyActors.service";
-import { ActorAssetDTO } from "./actorAssets.dtos";
+import { ActorAssetDTO, CreateNewAssetRequestDTO, UpdateAssetRequestDTO } from "./actorAssets.dtos";
 import { Repository } from "typeorm";
 import { ActorAsset } from "./actorAsset.entity";
 
@@ -16,8 +16,8 @@ export abstract class ActorAssetsService<T extends ActorAsset, K extends ActorAs
         await this.agencyActorsService.validateActorId(actorId);
     }
 
-    async createAsset(entity: T): Promise<K> {
-        await this.validateActor(entity.actorId);
+    async createAsset(dto: CreateNewAssetRequestDTO): Promise<K> {
+        let entity: T = await this.createNewAssetDtoToEntity(dto);
 
         entity = await this.repository.save(entity)
             .catch((error) => {
@@ -26,18 +26,6 @@ export abstract class ActorAssetsService<T extends ActorAsset, K extends ActorAs
             });
 
         this.logger.log(`Created new ${this.repository.metadata.name} ${entity.assetId}`)
-
-        return this.entityToDTO(entity);
-    }
-
-    async updateAsset(entity: T): Promise<K> {
-        await this.validateAssetId(entity.assetId)
-
-        entity = await this.repository.save(entity)
-            .catch((error) => {
-                this.logger.error(error);
-                throw new InternalServerErrorException("updateAsset() not available");
-            });
 
         return this.entityToDTO(entity);
     }
@@ -106,5 +94,6 @@ export abstract class ActorAssetsService<T extends ActorAsset, K extends ActorAs
         return asset;
     }
 
+    abstract createNewAssetDtoToEntity(dto: CreateNewAssetRequestDTO): Promise<T>
     abstract entityToDTO(entity: T): K
 }

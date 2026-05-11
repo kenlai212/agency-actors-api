@@ -1,4 +1,4 @@
-import { ActorAssetsController } from "./actorAssets.contorller";
+import { ActorAssetsController } from "./actorAssets.controller";
 import { DocumentLinkedAssetsService } from "./documentLinkedAssets.service";
 import { DocumentLinkedAssetDTO, UpdateDocumentIdRequestDTO } from "./documentLinkedAssets.dtos";
 import { Body, Post } from "@nestjs/common";

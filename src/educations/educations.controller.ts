@@ -1,9 +1,9 @@
-import { Body, Controller, Post, UseGuards } from "@nestjs/common";
-import { ApiOkResponse, ApiOperation } from "@nestjs/swagger";
-import { EducationDTO, NewEducationRequestDTO } from "./educations.dtos";
+import { Body, Controller, Post, Put } from "@nestjs/common";
 import { EducationsService } from "./educations.service";
 import { DocumentLinkedAssetsController } from "../actorAssets/documentLinkedAssets.controller";
-import { Education } from "./education.entity";
+import { ApiCreatedResponse, ApiOkResponse, ApiOperation } from "@nestjs/swagger";
+import { EducationDTO, NewEducationRequestDTO, UpdateEducationRequestDTO } from "./educations.dtos";
+import { CertificationDTO } from "../certifications/certifications.dtos";
 
 @Controller("educations")
 export class EducationsController extends DocumentLinkedAssetsController {
@@ -18,27 +18,24 @@ export class EducationsController extends DocumentLinkedAssetsController {
         summary: 'Create new Education.',
         description: `New Education must tie to an actor.`
     })
+    @ApiCreatedResponse({
+        description: `Successfully POST response ${EducationDTO.name}.`,
+        type: NewEducationRequestDTO
+    })
+    async newAsset(@Body() dto: NewEducationRequestDTO) {
+        return this.assetsService.createAsset(dto);
+    }
+
+    @Put("/")
+    @ApiOperation({
+        summary: 'Update Education.',
+        description: `Update Education`
+    })
     @ApiOkResponse({
-        description: 'Successfully POST response EducationDTO.',
+        description: `Successfully POST response ${EducationDTO.name}`,
         type: EducationDTO,
     })
-    async createNewEducation(@Body() dto: NewEducationRequestDTO): Promise<EducationDTO> {
-        let entity = new Education();
-        entity.actorId = dto.actorId;
-        entity.institutionName = dto.institutionName;
-
-        if (dto.levelOfEducation)
-            entity.levelOfEducation = dto.levelOfEducation;
-
-        if (dto.fieldOfStudy)
-            entity.fieldOfStudy = dto.fieldOfStudy;
-
-        if (dto.startYear)
-            entity.startYear = dto.startYear;
-
-        if (dto.endYear)
-            entity.endYear = dto.endYear;
-
-        return await this.educationsService.createAsset(entity);
+    async updateAsset(@Body() body: UpdateEducationRequestDTO): Promise<EducationDTO> {
+        return this.educationsService.updateAsset(body);
     }
 }
