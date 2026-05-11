@@ -74,7 +74,7 @@ export class UpdateCertificationRequestDTO extends UpdateAssetRequestDTO {
     @IsEnum(CertificationAuthority)
     certificationAuthority!: CertificationAuthority;
 
-    @ApiProperty({
+    @ApiPropertyOptional({
         description: 'The name of the certificate',
     })
     @IsOptional()
@@ -82,7 +82,7 @@ export class UpdateCertificationRequestDTO extends UpdateAssetRequestDTO {
     @MaxLength(255)
     certificateName!: string;
 
-    @ApiProperty({
+    @ApiPropertyOptional({
         description: 'Certificate number or identifier',
     })
     @IsOptional()
@@ -90,7 +90,7 @@ export class UpdateCertificationRequestDTO extends UpdateAssetRequestDTO {
     @MaxLength(255)
     certificateNumber!: string;
 
-    @ApiProperty({
+    @ApiPropertyOptional({
         description: 'The issue date of the certification',
     })
     @IsOptional()

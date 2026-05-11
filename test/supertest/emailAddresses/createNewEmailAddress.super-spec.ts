@@ -15,9 +15,7 @@ describe(`Create New Email Address Super test`, () => {
             .delete(`/email-addresses/${assetId}`)
             .expect(200)
 
-        await request(CommonTest.API_HOST)
-            .delete(`/agency-actors/${actorId}`)
-            .expect(200)
+        await CommonTest.deleteJaneSmith(actorId);
     });
 
     it(`Successfully create a new Email Address`, async () => {

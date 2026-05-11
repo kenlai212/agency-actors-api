@@ -1,9 +1,8 @@
 import { Body, Controller, Post, UseGuards } from "@nestjs/common";
-import { ApiBearerAuth, ApiOkResponse, ApiOperation } from "@nestjs/swagger";
+import { ApiOkResponse, ApiOperation } from "@nestjs/swagger";
 import { EducationDTO, NewEducationRequestDTO } from "./educations.dtos";
 import { EducationsService } from "./educations.service";
 import { DocumentLinkedAssetsController } from "../actorAssets/documentLinkedAssets.controller";
-import { AuthGuard } from "../auth.guard";
 import { Education } from "./education.entity";
 
 @Controller("educations")

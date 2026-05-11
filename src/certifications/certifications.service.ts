@@ -29,14 +29,7 @@ export class CertificationsService extends DocumentLinkedAssetsService<Certifica
         if (dto.issueDate)
             entity.issueDate = dto.issueDate;
 
-        entity = await this.entityRepository.save(entity)
-            .catch((error) => {
-                this.logger.error(error);
-                throw new InternalServerErrorException("updateCertification() not available");
-            });
-
-        return this.entityToDTO(entity);
-
+        return await this.updateAsset(entity);
     }
 
     entityToDTO(entity: Certification): CertificationDTO {
