@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException, Logger } from "@nestjs/common";
+import { Injectable, InternalServerErrorException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Employment } from "./employment.entity";
 import { Repository } from "typeorm";
@@ -12,33 +12,6 @@ export class EmploymentsService extends DocumentLinkedAssetsService<Employment, 
         private readonly entityRepository: Repository<Employment>,
     ) {
         super(entityRepository);
-    }
-
-    async createNewEmployment(dto: NewEmploymentRequestDTO): Promise<EmploymentDTO> {
-        let entity = new Employment();
-
-        await this.validateActor(dto.actorId);
-        entity.actorId = dto.actorId;
-
-        entity.companyName = dto.companyName;
-        entity.jobTitle = dto.jobTitle;
-        entity.location = dto.location;
-        entity.startDate = dto.startDate;
-
-        if (dto.endDate) {
-            entity.endDate = dto.endDate;
-            entity.isCurrent = false;
-        } else {
-            entity.isCurrent = true;
-        }
-
-        entity = await this.entityRepository.save(entity)
-            .catch((error) => {
-                this.logger.error(error);
-                throw new InternalServerErrorException("createNewEmployment() not available");
-            })
-
-        return this.entityToDTO(entity);
     }
 
     entityToDTO(entity: Employment) {

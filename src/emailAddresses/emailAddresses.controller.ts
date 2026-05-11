@@ -13,8 +13,6 @@ export class EmailAddressesController extends ActorAssetsController {
         super(emailAddressesService)
     }
 
-    @UseGuards(AuthGuard)
-    @ApiBearerAuth()
     @Post("/")
     @ApiOperation({
         summary: 'Create new Email Address for an Actor',
@@ -28,8 +26,6 @@ export class EmailAddressesController extends ActorAssetsController {
         return await this.emailAddressesService.createNewEmailAddress(body.actorId, body.addressString);
     }
 
-    @UseGuards(AuthGuard)
-    @ApiBearerAuth()
     @Put("/set-default")
     @ApiOperation({
         summary: 'Set default Email Address for an Actor'
@@ -42,8 +38,6 @@ export class EmailAddressesController extends ActorAssetsController {
         return await this.emailAddressesService.setDdfault(body.actorId, body.addressString);
     }
 
-    @UseGuards(AuthGuard)
-    @ApiBearerAuth()
     @Get("/")
     @ApiOperation({
         summary: 'Find Asset.',

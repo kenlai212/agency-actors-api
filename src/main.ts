@@ -14,15 +14,16 @@ async function bootstrap() {
   ////////////////////middle ware
   app.useGlobalPipes(new ValidationPipe({ stopAtFirstError: true }));
 
-  const config = new DocumentBuilder()
-    .setTitle(process.env.APP_TITLE || '')
+  const swaggerConfig = new DocumentBuilder()
+    .setTitle(`Agency Actors API`)
     .addServer(process.env.SWAGGER_SERVER_PREFIX || '')
-    .setDescription(process.env.DESCRIPTION || '')
-    .setVersion(process.env.VERSION || '0.0.0')
+    .setDescription(`This API manages an agency actor (Candidate or Agent), and its assets (e.g. Cerrifications, Educations, etc.)`)
+    .setVersion(`0.0.2`)
     .addTag('Agency Actor API', 'Manage the life cycle of the Agency Actor, including details and assets')
     .addBearerAuth()
+    .addSecurityRequirements('bearer')
     .build();
-  const documentFactory = () => SwaggerModule.createDocument(app, config);
+  const documentFactory = () => SwaggerModule.createDocument(app, swaggerConfig);
   SwaggerModule.setup('', app, documentFactory);
 
   ////////////////////start server

@@ -13,8 +13,6 @@ export abstract class DocumentLinkedAssetsController extends ActorAssetsControll
         super(documentLinkedAssetsService)
     }
 
-    @UseGuards(AuthGuard)
-    @ApiBearerAuth()
     @Post("/upload-document")
     @ApiOperation({
         summary: 'Upload Document',

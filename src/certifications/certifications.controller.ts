@@ -1,9 +1,9 @@
-import { Body, Controller, Post, Put, UseGuards } from "@nestjs/common";
+import { Body, Controller, Post, Put } from "@nestjs/common";
 import { CertificationDTO, NewCertificationRequestDTO, UpdateCertificationRequestDTO } from "./certifications.dtos";
 import { CertificationsService } from "./certifications.service";
-import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiOperation } from "@nestjs/swagger";
+import { ApiCreatedResponse, ApiOkResponse, ApiOperation } from "@nestjs/swagger";
 import { ActorAssetsController } from "../actorAssets/actorAssets.contorller";
-import { AuthGuard } from "../auth.guard";
+import { Certification } from "./certification.entity";
 
 @Controller("/certifications")
 export class CertificationsController extends ActorAssetsController {
@@ -13,8 +13,6 @@ export class CertificationsController extends ActorAssetsController {
         super(certificationsService)
     }
 
-    @UseGuards(AuthGuard)
-    @ApiBearerAuth()
     @Post("/")
     @ApiOperation({
         summary: 'Create new Certification.',
@@ -24,12 +22,18 @@ export class CertificationsController extends ActorAssetsController {
         description: 'Successfully POST response CertificationDTO.',
         type: CertificationDTO,
     })
-    async newCertification(@Body() body: NewCertificationRequestDTO): Promise<CertificationDTO> {
-        return this.certificationsService.createCertification(body);
+    async newCertification(@Body() dto: NewCertificationRequestDTO): Promise<CertificationDTO> {
+        let entity = new Certification();
+        entity.actorId = dto.actorId;
+
+        entity.certificationAuthority = dto.certificationAuthority;
+        entity.certificateName = dto.certificateName;
+        entity.certificateNumber = dto.certificateNumber;
+        entity.issueDate = dto.issueDate;
+
+        return this.certificationsService.createAsset(entity);
     }
 
-    @UseGuards(AuthGuard)
-    @ApiBearerAuth()
     @Put("/")
     @ApiOperation({
         summary: 'Update Certification.',

@@ -19,7 +19,7 @@ export class Education extends DocumentLinkedAsset {
     institutionName: string;
 
     @Column({
-        nullable: false,
+        nullable: true,
         type: "enum",
         enum: LevelOfEducation
     })

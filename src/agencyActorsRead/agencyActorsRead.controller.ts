@@ -10,8 +10,6 @@ export class AgencyActorsReadController {
         private readonly agencyActorsReadService: AgencyActorsReadService,
     ) { }
 
-    @UseGuards(AuthGuard)
-    @ApiBearerAuth()
     @Get("/")
     async findAgencyActor(@Query() query: FindAgencyActorReadRequestDTO): Promise<AgencyActorReadDTO> {
         return await this.agencyActorsReadService.findActor(query.actorId);

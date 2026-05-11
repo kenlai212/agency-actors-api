@@ -16,11 +16,7 @@ export class EmailAdddressesService extends ActorAssetsService<EmailAddress, Ema
 
     async createNewEmailAddress(actorId: string, addressString: string): Promise<EmailAddressDTO> {
         let emailAddressEntity = new EmailAddress();
-
-        await this.validateUniqueEmailAddress(addressString);
         emailAddressEntity.addressString = addressString;
-
-        await this.validateActor(actorId);
         emailAddressEntity.actorId = actorId;
 
         //find actor's other emailAddresses.
@@ -33,13 +29,7 @@ export class EmailAdddressesService extends ActorAssetsService<EmailAddress, Ema
         if (!actorOtherEmailAddresses || actorOtherEmailAddresses.length === 0)
             emailAddressEntity.isDefault = true;
 
-        emailAddressEntity = await this.entityRepository.save(emailAddressEntity)
-            .catch((error) => {
-                this.logger.error(error);
-                throw new InternalServerErrorException("createNewEmailAddress() not available");
-            });
-
-        return this.entityToDTO(emailAddressEntity);
+        return await this.createAsset(emailAddressEntity);
     }
 
     async findEmailAddress(dto: FindEmailAddressRequestDTO): Promise<EmailAddressDTO> {

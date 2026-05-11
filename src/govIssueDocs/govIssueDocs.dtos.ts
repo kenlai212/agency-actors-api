@@ -1,5 +1,5 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { IsNotEmpty, IsString } from 'class-validator';
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { IssueDocType, IssuerGoverment } from "./govIssueDoc.entity";
 import { DocumentLinkedAssetDTO } from "../actorAssets/documentLinkedAssets.dtos";
 import { CreateNewAssetRequestDTO } from "../actorAssets/actorAssets.dtos";
@@ -29,18 +29,18 @@ export class NewGovIssueDocRequestDTO extends CreateNewAssetRequestDTO {
     @IsNotEmpty()
     issuerGoverment: IssuerGoverment;
 
-    @ApiProperty({
+    @ApiPropertyOptional({
         description: `Issue Document Type : ${Object.keys(IssueDocType)}`,
         example: IssueDocType.IDENTITY_CARD
     })
-    @IsNotEmpty()
+    @IsOptional()
     issueDocType: IssueDocType;
 
-    @ApiProperty({
+    @ApiPropertyOptional({
         description: 'doc unique identifier',
         example: "HK12345"
     })
-    @IsNotEmpty()
+    @IsOptional()
     @IsString()
     issueDocNumber: string;
 }

@@ -1,9 +1,8 @@
-import { Body, Controller, Post, UseGuards } from "@nestjs/common";
+import { Body, Controller, Post } from "@nestjs/common";
 import { PhysicalAddressesService } from "./physicalAddresses.service";
-import { ApiBearerAuth, ApiOkResponse, ApiOperation } from "@nestjs/swagger";
+import { ApiOkResponse, ApiOperation } from "@nestjs/swagger";
 import { CreateNewPhysicalAddressRequestDTO, PhysicalAddressDTO } from "./physicalAddresses.dtos";
 import { DocumentLinkedAssetsController } from "../actorAssets/documentLinkedAssets.controller";
-import { AuthGuard } from "../auth.guard";
 
 @Controller("/physical-addresses")
 export class PhysicalAddressesController extends DocumentLinkedAssetsController {
@@ -13,8 +12,6 @@ export class PhysicalAddressesController extends DocumentLinkedAssetsController 
         super(physicalAddressesService);
     }
 
-    @UseGuards(AuthGuard)
-    @ApiBearerAuth()
     @Post("/")
     @ApiOperation({
         summary: 'Create new Physical Address for an Actor'

@@ -1,6 +1,6 @@
 import { BadRequestException, Inject, InternalServerErrorException, Logger, NotFoundException } from "@nestjs/common";
 import { AgencyActorsService } from "../agencyActors/agencyActors.service";
-import { ActorAssetDTO } from "./actorAssets.dtos";
+import { ActorAssetDTO, CreateNewAssetRequestDTO } from "./actorAssets.dtos";
 import { Repository } from "typeorm";
 import { ActorAsset } from "./actorAsset.entity";
 
@@ -14,6 +14,20 @@ export abstract class ActorAssetsService<T extends ActorAsset, K extends ActorAs
 
     protected async validateActor(actorId: string) {
         await this.agencyActorsService.validateActorId(actorId);
+    }
+
+    async createAsset(entity: T): Promise<K> {
+        await this.validateActor(entity.actorId);
+
+        entity = await this.repository.save(entity)
+            .catch((error) => {
+                this.logger.error(error);
+                throw new InternalServerErrorException("createAsset() not available");
+            });
+
+        this.logger.log(`Created new ${this.repository.metadata.name} ${entity.assetId}`)
+
+        return this.entityToDTO(entity);
     }
 
     async findAsset(assetId?: string): Promise<K> {
@@ -61,7 +75,7 @@ export abstract class ActorAssetsService<T extends ActorAsset, K extends ActorAs
                 throw new InternalServerErrorException("deleteAsset() not available");
             });
 
-        const msg = `Successfully deleted ${assetId}`;
+        const msg = `Successfully deleted ${this.repository.metadata.name} ${assetId}`;
         this.logger.log(msg);
         return msg
     }

@@ -10,8 +10,6 @@ export abstract class ActorAssetsController {
         protected readonly assetsService: ActorAssetsService<ActorAsset, ActorAssetDTO>,
     ) { }
 
-    @UseGuards(AuthGuard)
-    @ApiBearerAuth()
     @Delete("/:assetId")
     @ApiOperation({
         summary: `Delete Asset`
@@ -24,8 +22,6 @@ export abstract class ActorAssetsController {
         return await this.assetsService.deleteAsset(assetId);
     }
 
-    @UseGuards(AuthGuard)
-    @ApiBearerAuth()
     @Get("/")
     @ApiOperation({
         summary: 'Find Asset.',

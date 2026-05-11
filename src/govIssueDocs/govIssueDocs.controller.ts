@@ -1,9 +1,9 @@
-import { Body, Controller, Post, UseGuards } from "@nestjs/common";
+import { Body, Controller, Post } from "@nestjs/common";
 import { GovIssueDocDTO, NewGovIssueDocRequestDTO } from "./govIssueDocs.dtos";
-import { ApiBearerAuth, ApiOkResponse, ApiOperation } from "@nestjs/swagger";
+import { ApiOkResponse, ApiOperation } from "@nestjs/swagger";
 import { GovIssueDocsService } from "./govIssueDocs.service";
 import { DocumentLinkedAssetsController } from "../actorAssets/documentLinkedAssets.controller";
-import { AuthGuard } from "../auth.guard";
+import { GovIssueDoc } from "./govIssueDoc.entity";
 
 @Controller("gov-issue-docs")
 export class GovIssueDocsController extends DocumentLinkedAssetsController {
@@ -13,8 +13,6 @@ export class GovIssueDocsController extends DocumentLinkedAssetsController {
         super(govIssueDocsService);
     }
 
-    @UseGuards(AuthGuard)
-    @ApiBearerAuth()
     @Post("/")
     @ApiOperation({
         summary: 'Create new Goverment Issue Document for an actor'
@@ -23,7 +21,17 @@ export class GovIssueDocsController extends DocumentLinkedAssetsController {
         description: 'Successfully POST response GovIssueDocDTO.',
         type: GovIssueDocDTO,
     })
-    async uploadGovernmentId(@Body() newGovIssueDocRequest: NewGovIssueDocRequestDTO): Promise<GovIssueDocDTO> {
-        return await this.govIssueDocsService.createNewGovIssueDoc(newGovIssueDocRequest);
+    async uploadGovernmentId(@Body() dto: NewGovIssueDocRequestDTO): Promise<GovIssueDocDTO> {
+        let entity = new GovIssueDoc();
+        entity.actorId = dto.actorId;
+        entity.issuerGoverment = dto.issuerGoverment;
+
+        if (dto.issueDocType)
+            entity.issueDocType = dto.issueDocType;
+
+        if (dto.issueDocNumber)
+            entity.issueDocNumber = dto.issueDocNumber;
+
+        return await this.govIssueDocsService.createAsset(entity);
     }
 }

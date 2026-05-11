@@ -1,8 +1,8 @@
-import { BadRequestException, Injectable, InternalServerErrorException, Logger } from "@nestjs/common";
+import { Injectable, InternalServerErrorException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from 'typeorm';
 import { Certification } from "./certification.entity";
-import { CertificationDTO, NewCertificationRequestDTO, UpdateCertificationRequestDTO } from "./certifications.dtos";
+import { CertificationDTO, UpdateCertificationRequestDTO } from "./certifications.dtos";
 import { DocumentLinkedAssetsService } from "../actorAssets/documentLinkedAssets.service";
 
 @Injectable()
@@ -12,27 +12,6 @@ export class CertificationsService extends DocumentLinkedAssetsService<Certifica
         private readonly entityRepository: Repository<Certification>
     ) {
         super(entityRepository);
-    }
-
-    async createCertification(dto: NewCertificationRequestDTO): Promise<CertificationDTO> {
-        let certification = new Certification();
-
-        // Validate actor ID
-        await this.validateActor(dto.actorId)
-        certification.actorId = dto.actorId;
-
-        certification.certificationAuthority = dto.certificationAuthority;
-        certification.certificateName = dto.certificateName;
-        certification.certificateNumber = dto.certificateNumber;
-        certification.issueDate = dto.issueDate;
-
-        await this.entityRepository.save(certification)
-            .catch((error) => {
-                this.logger.error(error);
-                throw new InternalServerErrorException("createCertification() not available");
-            });
-
-        return this.entityToDTO(certification);
     }
 
     async updateCertification(dto: UpdateCertificationRequestDTO): Promise<CertificationDTO> {

@@ -39,26 +39,26 @@ export class NewCertificationRequestDTO extends CreateNewAssetRequestDTO {
     @IsEnum(CertificationAuthority)
     certificationAuthority: CertificationAuthority;
 
-    @ApiProperty({
+    @ApiPropertyOptional({
         description: 'The name of the certificate',
     })
-    @IsNotEmpty()
+    @IsOptional()
     @IsString()
     @MaxLength(255)
     certificateName: string;
 
-    @ApiProperty({
+    @ApiPropertyOptional({
         description: 'Certificate number or identifier',
     })
-    @IsNotEmpty()
+    @IsOptional()
     @IsString()
     @MaxLength(255)
     certificateNumber: string;
 
-    @ApiProperty({
+    @ApiPropertyOptional({
         description: 'The issue date of the certification',
     })
-    @IsNotEmpty()
+    @IsOptional()
     @IsString()
     issueDate: Date;
 }

@@ -1,6 +1,6 @@
-import { BadRequestException, Injectable, InternalServerErrorException, Logger, NotFoundException } from "@nestjs/common";
+import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { CountryCode, PhoneNumber, PhoneNumberType } from "./phoneNumber.entity";
+import { CountryCode, PhoneNumber } from "./phoneNumber.entity";
 import { Repository } from "typeorm";
 import { ActorAssetsService } from "../actorAssets/actorAssets.service";
 import { FindPhoneNumberRequestDTO, PhoneNumberDTO } from "./phoneNumbers.dtos";
@@ -12,27 +12,6 @@ export class PhoneNumbersService extends ActorAssetsService<PhoneNumber, PhoneNu
         private readonly entityRepository: Repository<PhoneNumber>,
     ) {
         super(entityRepository);
-    }
-
-    async createNewPhoneNumber(actorId: string, countryCode: CountryCode, numberString: string, phoneNumberType: PhoneNumberType): Promise<PhoneNumberDTO> {
-        let phoneNumber = new PhoneNumber();
-
-        await this.validateActor(actorId);
-        phoneNumber.actorId = actorId;
-
-        await this.validateUniquePhoneNumber(countryCode, numberString);
-        phoneNumber.countryCode = countryCode;
-        phoneNumber.numberString = numberString;
-
-        phoneNumber.phoneNumberType = phoneNumberType;
-
-        phoneNumber = await this.entityRepository.save(phoneNumber)
-            .catch((error) => {
-                this.logger.error(error);
-                throw new InternalServerErrorException("createNewPhoneNumber() not available");
-            })
-
-        return this.entityToDTO(phoneNumber);
     }
 
     async findPhoneNumber(dto: FindPhoneNumberRequestDTO): Promise<PhoneNumberDTO> {

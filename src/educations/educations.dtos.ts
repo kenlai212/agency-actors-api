@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
-import { IsEnum, IsString, Max, MaxLength, Min } from 'class-validator';
+import { IsEnum, IsOptional, IsString, Max, MaxLength, Min } from 'class-validator';
 import { DocumentLinkedAssetDTO } from "../actorAssets/documentLinkedAssets.dtos";
 import { CreateNewAssetRequestDTO } from "../actorAssets/actorAssets.dtos";
 import { LevelOfEducation } from "./education.entity";
@@ -47,13 +47,14 @@ export class NewEducationRequestDTO extends CreateNewAssetRequestDTO {
     @MaxLength(255)
     institutionName: string;
 
-    @ApiProperty({
+    @ApiPropertyOptional({
         description: `Level of Education : ${Object.keys(LevelOfEducation)}`,
         example: LevelOfEducation.MASTERS,
         enum: LevelOfEducation,
         enumName: "LevelOfEducation"
     })
     @IsEnum(LevelOfEducation)
+    @IsOptional()
     levelOfEducation: LevelOfEducation;
 
     @ApiPropertyOptional({

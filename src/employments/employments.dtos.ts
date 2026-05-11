@@ -51,29 +51,29 @@ export class NewEmploymentRequestDTO extends CreateNewAssetRequestDTO {
     @MaxLength(128)
     companyName: string;
 
-    @ApiProperty({
+    @ApiPropertyOptional({
         description: 'Job Title',
         example: 'Software Engineer'
     })
-    @IsNotEmpty()
+    @IsOptional()
     @IsString()
     @MaxLength(128)
     jobTitle: string;
 
-    @ApiProperty({
+    @ApiPropertyOptional({
         description: 'Office location',
         example: '123 Main Street, New York, USA'
     })
-    @IsNotEmpty()
+    @IsOptional()
     @IsString()
     @MaxLength(255)
     location: string;
 
-    @ApiProperty({
+    @ApiPropertyOptional({
         description: 'Start date of employment',
         example: 'YYYY-MM-DD'
     })
-    @IsNotEmpty()
+    @IsOptional()
     @IsDateString()
     startDate: Date;
 
