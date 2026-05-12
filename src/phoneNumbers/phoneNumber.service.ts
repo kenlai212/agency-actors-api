@@ -1,9 +1,10 @@
-import { BadRequestException, Injectable, InternalServerErrorException, Logger, NotFoundException } from "@nestjs/common";
+import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { CountryCode, PhoneNumber, PhoneNumberType } from "./phoneNumber.entity";
+import { CountryCode, PhoneNumber } from "./phoneNumber.entity";
 import { Repository } from "typeorm";
 import { ActorAssetsService } from "../actorAssets/actorAssets.service";
-import { FindPhoneNumberRequestDTO, PhoneNumberDTO } from "./phoneNumbers.dtos";
+import { FindPhoneNumberRequestDTO, NewPhoneNumberRequestDTO, PhoneNumberDTO } from "./phoneNumbers.dtos";
+import { CreateNewAssetRequestDTO } from "../actorAssets/actorAssets.dtos";
 
 @Injectable()
 export class PhoneNumbersService extends ActorAssetsService<PhoneNumber, PhoneNumberDTO> {
@@ -12,27 +13,6 @@ export class PhoneNumbersService extends ActorAssetsService<PhoneNumber, PhoneNu
         private readonly entityRepository: Repository<PhoneNumber>,
     ) {
         super(entityRepository);
-    }
-
-    async createNewPhoneNumber(actorId: string, countryCode: CountryCode, numberString: string, phoneNumberType: PhoneNumberType): Promise<PhoneNumberDTO> {
-        let phoneNumber = new PhoneNumber();
-
-        await this.validateActor(actorId);
-        phoneNumber.actorId = actorId;
-
-        await this.validateUniquePhoneNumber(countryCode, numberString);
-        phoneNumber.countryCode = countryCode;
-        phoneNumber.numberString = numberString;
-
-        phoneNumber.phoneNumberType = phoneNumberType;
-
-        phoneNumber = await this.entityRepository.save(phoneNumber)
-            .catch((error) => {
-                this.logger.error(error);
-                throw new InternalServerErrorException("createNewPhoneNumber() not available");
-            })
-
-        return this.entityToDTO(phoneNumber);
     }
 
     async findPhoneNumber(dto: FindPhoneNumberRequestDTO): Promise<PhoneNumberDTO> {
@@ -66,6 +46,19 @@ export class PhoneNumbersService extends ActorAssetsService<PhoneNumber, PhoneNu
 
         if (phoneNumber)
             throw new BadRequestException(`Phone Number ${countryCode} ${numberString} already exist`);
+    }
+
+    async createNewAssetDtoToEntity(dto: NewPhoneNumberRequestDTO): Promise<PhoneNumber> {
+        let entity = new PhoneNumber();
+        entity.actorId = dto.actorId;
+
+        await this.validateUniquePhoneNumber(dto.countryCode, dto.numberString);
+        entity.countryCode = dto.countryCode;
+        entity.numberString = dto.numberString;
+
+        entity.phoneNumberType = dto.phoneNumberType;
+
+        return entity;
     }
 
     entityToDTO(entity: PhoneNumber) {

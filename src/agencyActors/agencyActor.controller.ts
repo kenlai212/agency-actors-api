@@ -27,8 +27,6 @@ export class AgencyActorsController {
         return await this.agencyActorsService.findAgencyActor(query.agencyActorType, query.actorId);
     }
 
-    @UseGuards(AuthGuard)
-    @ApiBearerAuth()
     @Post("/")
     @ApiOperation({
         summary: 'Create new Agency Actor',
@@ -42,8 +40,6 @@ export class AgencyActorsController {
         return await this.agencyActorsService.createAgencyActor(requestBody);
     }
 
-    @UseGuards(AuthGuard)
-    @ApiBearerAuth()
     @Delete("/:actorId")
     @ApiOperation({
         summary: 'Delete target Agency Actor',
@@ -57,8 +53,6 @@ export class AgencyActorsController {
         return await this.agencyActorsService.deleteActor(actorId);
     }
 
-    @UseGuards(AuthGuard)
-    @ApiBearerAuth()
     @Put("/")
     async updateAgencyActor(@Body() body: UpdateAgencyActorDTO): Promise<AgencyActorDTO> {
         return await this.agencyActorsService.updateAgencyActor(body);

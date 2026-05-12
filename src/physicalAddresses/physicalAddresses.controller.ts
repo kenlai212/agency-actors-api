@@ -1,9 +1,8 @@
-import { Body, Controller, Post, UseGuards } from "@nestjs/common";
+import { Body, Controller, Post, Put } from "@nestjs/common";
 import { PhysicalAddressesService } from "./physicalAddresses.service";
-import { ApiBearerAuth, ApiOkResponse, ApiOperation } from "@nestjs/swagger";
-import { CreateNewPhysicalAddressRequestDTO, PhysicalAddressDTO } from "./physicalAddresses.dtos";
 import { DocumentLinkedAssetsController } from "../actorAssets/documentLinkedAssets.controller";
-import { AuthGuard } from "../auth.guard";
+import { ApiCreatedResponse, ApiOkResponse, ApiOperation } from "@nestjs/swagger";
+import { NewPhysicalAddressRequestDTO, PhysicalAddressDTO, UpdatePhysicalAddressRequestDTO } from "./physicalAddresses.dtos";
 
 @Controller("/physical-addresses")
 export class PhysicalAddressesController extends DocumentLinkedAssetsController {
@@ -13,17 +12,29 @@ export class PhysicalAddressesController extends DocumentLinkedAssetsController 
         super(physicalAddressesService);
     }
 
-    @UseGuards(AuthGuard)
-    @ApiBearerAuth()
     @Post("/")
     @ApiOperation({
-        summary: 'Create new Physical Address for an Actor'
+        summary: 'Create new Physical Address.',
+        description: `New Physical Address must tie to an actor.`
+    })
+    @ApiCreatedResponse({
+        description: `Successfully POST response ${PhysicalAddressDTO.name}.`,
+        type: NewPhysicalAddressRequestDTO
+    })
+    async newAsset(@Body() dto: NewPhysicalAddressRequestDTO) {
+        return this.assetsService.createAsset(dto);
+    }
+
+    @Put("/")
+    @ApiOperation({
+        summary: 'Update Physical Address',
+        description: `Update Physical Address Issue Document`
     })
     @ApiOkResponse({
-        description: 'Successfully POST response PhysicalAddressDTO.',
+        description: `Successfully POST response ${PhysicalAddressDTO.name}`,
         type: PhysicalAddressDTO,
     })
-    async createNewPhysicalAddress(@Body() body: CreateNewPhysicalAddressRequestDTO): Promise<PhysicalAddressDTO> {
-        return await this.physicalAddressesService.createNewPhysicalAddress(body);
+    async updateAsset(@Body() body: UpdatePhysicalAddressRequestDTO): Promise<PhysicalAddressDTO> {
+        return this.physicalAddressesService.updateAsset(body);
     }
 }

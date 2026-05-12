@@ -1,9 +1,10 @@
-import { Injectable, InternalServerErrorException, Logger } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { PhysicalAddress } from "./physicalAddress.entity";
-import { CreateNewPhysicalAddressRequestDTO, PhysicalAddressDTO } from "./physicalAddresses.dtos";
+import { NewPhysicalAddressRequestDTO, PhysicalAddressDTO, UpdatePhysicalAddressRequestDTO } from "./physicalAddresses.dtos";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { DocumentLinkedAssetsService } from "../actorAssets/documentLinkedAssets.service";
+import { CreateNewAssetRequestDTO, UpdateAssetRequestDTO } from "../actorAssets/actorAssets.dtos";
 
 @Injectable()
 export class PhysicalAddressesService extends DocumentLinkedAssetsService<PhysicalAddress, PhysicalAddressDTO> {
@@ -14,26 +15,51 @@ export class PhysicalAddressesService extends DocumentLinkedAssetsService<Physic
         super(physicalAddressesRepository);
     }
 
-    async createNewPhysicalAddress(dto: CreateNewPhysicalAddressRequestDTO): Promise<PhysicalAddressDTO> {
+    async updateAssetDtoToEntity(dto: UpdatePhysicalAddressRequestDTO): Promise<PhysicalAddress> {
+        let entity = await this.validateAssetId(dto.assetId);
+
+        if (dto.addressType)
+            entity.addressType = dto.addressType;
+
+        if (dto.addressLine1)
+            entity.addressLine1 = dto.addressLine1;
+
+        if (dto.addressLine2)
+            entity.addressLine2 = dto.addressLine2;
+
+        if (dto.addressLine3)
+            entity.addressLine3 = dto.addressLine3;
+
+        if (dto.addressLine4)
+            entity.addressLine4 = dto.addressLine4;
+
+        if (dto.addressLine5)
+            entity.addressLine5 = dto.addressLine5;
+
+        return entity;
+    }
+
+    async createNewAssetDtoToEntity(dto: NewPhysicalAddressRequestDTO): Promise<PhysicalAddress> {
         let entity = new PhysicalAddress();
-
-        await this.validateActor(dto.actorId);
         entity.actorId = dto.actorId;
-
-        entity.addressLine1 = dto.addressLine1;
-        entity.addressLine2 = dto.addressLine2;
-        entity.addressLine3 = dto.addressLine3;
-        entity.addressLine4 = dto.addressLine4;
-        entity.addressLine5 = dto.addressLine5;
         entity.addressType = dto.addressType;
 
-        entity = await this.physicalAddressesRepository.save(entity)
-            .catch((error) => {
-                this.logger.error(error);
-                throw new InternalServerErrorException("createNewPhysicaAddress() not available");
-            })
+        if (dto.addressLine1)
+            entity.addressLine1 = dto.addressLine1;
 
-        return this.entityToDTO(entity);
+        if (dto.addressLine2)
+            entity.addressLine2 = dto.addressLine2;
+
+        if (dto.addressLine3)
+            entity.addressLine3 = dto.addressLine3;
+
+        if (dto.addressLine4)
+            entity.addressLine4 = dto.addressLine4;
+
+        if (dto.addressLine5)
+            entity.addressLine5 = dto.addressLine5;
+
+        return entity;
     }
 
     entityToDTO(entity: PhysicalAddress): PhysicalAddressDTO {

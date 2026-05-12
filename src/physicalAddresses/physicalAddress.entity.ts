@@ -10,14 +10,14 @@ export enum PhysicalAddressType {
 @Entity()
 export class PhysicalAddress extends DocumentLinkedAsset {
     @Column({
-        nullable: false,
+        nullable: true,
         type: "varchar",
         length: 255,
     })
     addressLine1: string
 
     @Column({
-        nullable: false,
+        nullable: true,
         type: "varchar",
         length: 255,
     })

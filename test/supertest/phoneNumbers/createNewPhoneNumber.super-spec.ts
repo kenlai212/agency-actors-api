@@ -5,25 +5,29 @@ import { CommonTest } from '../common';
 let actorId = "";
 let assetId = ""
 
-describe(`Create New Email Address Super test`, () => {
+describe(`Create New Phone Number Super test`, () => {
     beforeAll(async () => {
         actorId = await CommonTest.createJaneSmith();
     })
 
     afterAll(async () => {
         await request(CommonTest.API_HOST)
-            .delete(`/email-addresses/${assetId}`)
+            .delete(`/phone-numbers/${assetId}`)
             .expect(200)
 
-        await CommonTest.deleteJaneSmith(actorId);
+        await request(CommonTest.API_HOST)
+            .delete(`/agency-actors/${actorId}`)
+            .expect(200)
     });
 
-    it(`Successfully create a new Email Address`, async () => {
+    it(`Successfully create a new PhoneNumber`, async () => {
         const response = await request(CommonTest.API_HOST)
-            .post("/email-addresses")
+            .post("/phone-numbers")
             .send({
                 "actorId": actorId,
-                "addressString": "jane.smith@test.com"
+                "countryCode": "+852",
+                "numberString": "12345678",
+                "phoneNumberType": "MOBILE"
             })
 
         //console.log(response);
@@ -36,7 +40,8 @@ describe(`Create New Email Address Super test`, () => {
         expect(body.assetId).toBeDefined();
         expect(body.createdAt).toBeDefined();
         expect(body.updatedAt).toBeDefined();
-        expect(body.isDefault).toBeTruthy();
-        expect(body.addressString).toEqual("jane.smith@test.com")
+        expect(body.countryCode).toEqual("+852");
+        expect(body.numberString).toEqual("12345678");
+        expect(body.phoneNumberType).toEqual("MOBILE")
     });
 });

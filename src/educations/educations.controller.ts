@@ -1,9 +1,9 @@
-import { Body, Controller, Post, UseGuards } from "@nestjs/common";
-import { ApiBearerAuth, ApiOkResponse, ApiOperation } from "@nestjs/swagger";
-import { EducationDTO, NewEducationRequestDTO } from "./educations.dtos";
+import { Body, Controller, Post, Put } from "@nestjs/common";
 import { EducationsService } from "./educations.service";
 import { DocumentLinkedAssetsController } from "../actorAssets/documentLinkedAssets.controller";
-import { AuthGuard } from "../auth.guard";
+import { ApiCreatedResponse, ApiOkResponse, ApiOperation } from "@nestjs/swagger";
+import { EducationDTO, NewEducationRequestDTO, UpdateEducationRequestDTO } from "./educations.dtos";
+import { CertificationDTO } from "../certifications/certifications.dtos";
 
 @Controller("educations")
 export class EducationsController extends DocumentLinkedAssetsController {
@@ -13,18 +13,29 @@ export class EducationsController extends DocumentLinkedAssetsController {
         super(educationsService)
     }
 
-    @UseGuards(AuthGuard)
-    @ApiBearerAuth()
     @Post("/")
     @ApiOperation({
         summary: 'Create new Education.',
         description: `New Education must tie to an actor.`
     })
+    @ApiCreatedResponse({
+        description: `Successfully POST response ${EducationDTO.name}.`,
+        type: NewEducationRequestDTO
+    })
+    async newAsset(@Body() dto: NewEducationRequestDTO) {
+        return this.assetsService.createAsset(dto);
+    }
+
+    @Put("/")
+    @ApiOperation({
+        summary: 'Update Education.',
+        description: `Update Education`
+    })
     @ApiOkResponse({
-        description: 'Successfully POST response EducationDTO.',
+        description: `Successfully POST response ${EducationDTO.name}`,
         type: EducationDTO,
     })
-    async createNewEducation(@Body() body: NewEducationRequestDTO): Promise<EducationDTO> {
-        return await this.educationsService.createNewEducation(body);
+    async updateAsset(@Body() body: UpdateEducationRequestDTO): Promise<EducationDTO> {
+        return this.educationsService.updateAsset(body);
     }
 }

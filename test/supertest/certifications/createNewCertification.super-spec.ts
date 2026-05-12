@@ -1,36 +1,25 @@
 import { describe, it, expect, beforeAll, afterAll } from '@jest/globals';
 import request from 'supertest';
+import { CommonTest } from '../common';
 
-const API_URL = "localhost:8080";
 let actorId = "";
 let assetId = ""
 
 describe(`Create New Certification Super test`, () => {
     beforeAll(async () => {
-        await request(API_URL)
-            .post("/agency-actors")
-            .send({
-                "agencyActorType": "CANDIDATE",
-                "fullName": "Jane Smith"
-            })
-            .expect(201)
-            .expect((res) => {
-                actorId = res.body.actorId;
-            })
+        actorId = await CommonTest.createJaneSmith();
     })
 
     afterAll(async () => {
-        await request(API_URL)
+        await request(CommonTest.API_HOST)
             .delete(`/certifications/${assetId}`)
             .expect(200)
 
-        await request(API_URL)
-            .delete(`/agency-actors/${actorId}`)
-            .expect(200)
+        await CommonTest.deleteJaneSmith(actorId);
     });
 
     it(`Successfully create a new Certification`, () => {
-        return request(API_URL)
+        return request(CommonTest.API_HOST)
             .post("/certifications")
             .send({
                 "actorId": actorId,

@@ -1,9 +1,8 @@
-import { Body, Controller, Post, UseGuards } from "@nestjs/common";
-import { EmploymentDTO, NewEmploymentRequestDTO } from "./employments.dtos";
+import { Body, Controller, Post, Put } from "@nestjs/common";
 import { EmploymentsService } from "./employments.service";
-import { ApiBearerAuth, ApiOkResponse, ApiOperation } from "@nestjs/swagger";
 import { DocumentLinkedAssetsController } from "../actorAssets/documentLinkedAssets.controller";
-import { AuthGuard } from "../auth.guard";
+import { ApiCreatedResponse, ApiOkResponse, ApiOperation } from "@nestjs/swagger";
+import { EmploymentDTO, NewEmploymentRequestDTO, UpdateEmploymentRequestDTO } from "./employments.dtos";
 
 @Controller("/employments")
 export class EmploymentsController extends DocumentLinkedAssetsController {
@@ -13,17 +12,29 @@ export class EmploymentsController extends DocumentLinkedAssetsController {
         super(employmentsService);
     }
 
-    @UseGuards(AuthGuard)
-    @ApiBearerAuth()
     @Post("/")
     @ApiOperation({
-        summary: 'Create new Employment for an Actor'
+        summary: 'Create new Employment.',
+        description: `New Employment must tie to an actor.`
+    })
+    @ApiCreatedResponse({
+        description: `Successfully POST response ${EmploymentDTO.name}.`,
+        type: NewEmploymentRequestDTO
+    })
+    async newAsset(@Body() dto: NewEmploymentRequestDTO) {
+        return this.assetsService.createAsset(dto);
+    }
+
+    @Put("/")
+    @ApiOperation({
+        summary: 'Update Employment.',
+        description: `Update Employment`
     })
     @ApiOkResponse({
-        description: 'Successfully POST response EmmploymentDTO.',
+        description: `Successfully POST response ${EmploymentDTO.name}`,
         type: EmploymentDTO,
     })
-    async createNewEmployments(@Body() newEmploymentRequestDTO: NewEmploymentRequestDTO): Promise<EmploymentDTO> {
-        return await this.employmentsService.createNewEmployment(newEmploymentRequestDTO);
+    async updateAsset(@Body() body: UpdateEmploymentRequestDTO): Promise<EmploymentDTO> {
+        return this.employmentsService.updateAsset(body);
     }
 }

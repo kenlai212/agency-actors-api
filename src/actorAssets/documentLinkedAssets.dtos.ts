@@ -26,16 +26,7 @@ export class DocumentLinkedAssetDTO extends ActorAssetDTO {
     }
 }
 
-export class UploadDocumentRequestDTO {
-    @ApiProperty({
-        description: 'Actor ID',
-        example: `96e4e28e-2404-4a4f-b69a-6b0709559596`
-    })
-    @IsString()
-    @IsNotEmpty()
-    @MaxLength(36)
-    actorId: string;
-
+export class UpdateDocumentIdRequestDTO {
     @ApiProperty({
         description: 'Asset ID',
         example: `96e4e28e-2404-4a4f-b69a-6b0709559596`
@@ -46,18 +37,11 @@ export class UploadDocumentRequestDTO {
     assetId: string;
 
     @ApiProperty({
-        description: 'The base64-encoded document string',
+        description: 'Uploaded Document ID',
+        example: `96e4e28e-2404-4a4f-b69a-6b0709559596`
     })
+    @IsString()
     @IsNotEmpty()
-    @IsBase64()
-    documentBase64: string;
-
-    @ApiProperty({
-        description: `Uploaded Document Type ${Object.values(UploadedDocumentType)}`,
-        enum: UploadedDocumentType,
-        enumName: "UploadedDocumentType"
-    })
-    @IsEnum(UploadedDocumentType)
-    @IsNotEmpty()
-    uploadedDocumentType: UploadedDocumentType;
+    @MaxLength(36)
+    uploadedDocumentId: string;
 }

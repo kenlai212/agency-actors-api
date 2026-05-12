@@ -1,11 +1,10 @@
-import { Body, Controller, Post, UseGuards } from "@nestjs/common";
-import { CreateResumeRequestDTO, ResumeDTO } from "./resumes.dtos";
+import { Body, Controller, Post } from "@nestjs/common";
 import { ResumesService } from "./resumes.service";
 import { DocumentLinkedAssetsController } from "../actorAssets/documentLinkedAssets.controller";
-import { AuthGuard } from "../auth.guard";
-import { ApiBearerAuth } from "@nestjs/swagger";
+import { ApiCreatedResponse, ApiOperation } from "@nestjs/swagger";
+import { NewResumeRequestDTO, ResumeDTO } from "./resumes.dtos";
 
-@Controller("/resume")
+@Controller("/resumes")
 export class ResumesController extends DocumentLinkedAssetsController {
     constructor(
         private readonly resumesService: ResumesService
@@ -13,10 +12,16 @@ export class ResumesController extends DocumentLinkedAssetsController {
         super(resumesService)
     }
 
-    @UseGuards(AuthGuard)
-    @ApiBearerAuth()
     @Post("/")
-    async uploadResume(@Body() body: CreateResumeRequestDTO): Promise<ResumeDTO> {
-        return new ResumeDTO();
+    @ApiOperation({
+        summary: 'Create new Resume.',
+        description: `New Resume must tie to an actor.`
+    })
+    @ApiCreatedResponse({
+        description: `Successfully POST response ${ResumeDTO.name}.`,
+        type: NewResumeRequestDTO
+    })
+    async newAsset(@Body() dto: NewResumeRequestDTO) {
+        return this.assetsService.createAsset(dto);
     }
 }

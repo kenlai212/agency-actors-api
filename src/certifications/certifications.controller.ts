@@ -1,9 +1,8 @@
-import { Body, Controller, Post, Put, UseGuards } from "@nestjs/common";
+import { Body, Controller, Post, Put } from "@nestjs/common";
 import { CertificationDTO, NewCertificationRequestDTO, UpdateCertificationRequestDTO } from "./certifications.dtos";
 import { CertificationsService } from "./certifications.service";
-import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiOperation } from "@nestjs/swagger";
-import { ActorAssetsController } from "../actorAssets/actorAssets.contorller";
-import { AuthGuard } from "../auth.guard";
+import { ApiCreatedResponse, ApiOkResponse, ApiOperation } from "@nestjs/swagger";
+import { ActorAssetsController } from "../actorAssets/actorAssets.controller";
 
 @Controller("/certifications")
 export class CertificationsController extends ActorAssetsController {
@@ -13,23 +12,19 @@ export class CertificationsController extends ActorAssetsController {
         super(certificationsService)
     }
 
-    @UseGuards(AuthGuard)
-    @ApiBearerAuth()
     @Post("/")
     @ApiOperation({
         summary: 'Create new Certification.',
         description: `New Certification must tie to an actor.`
     })
     @ApiCreatedResponse({
-        description: 'Successfully POST response CertificationDTO.',
-        type: CertificationDTO,
+        description: `Successfully POST response ${CertificationDTO.name}.`,
+        type: NewCertificationRequestDTO
     })
-    async newCertification(@Body() body: NewCertificationRequestDTO): Promise<CertificationDTO> {
-        return this.certificationsService.createCertification(body);
+    async newAsset(@Body() dto: NewCertificationRequestDTO) {
+        return this.assetsService.createAsset(dto);
     }
 
-    @UseGuards(AuthGuard)
-    @ApiBearerAuth()
     @Put("/")
     @ApiOperation({
         summary: 'Update Certification.',
@@ -39,7 +34,7 @@ export class CertificationsController extends ActorAssetsController {
         description: 'Successfully POST response CertificationDTO.',
         type: CertificationDTO,
     })
-    async updateCertification(@Body() body: UpdateCertificationRequestDTO): Promise<CertificationDTO> {
-        return this.certificationsService.updateCertification(body);
+    async updateAsset(@Body() body: UpdateCertificationRequestDTO): Promise<CertificationDTO> {
+        return this.certificationsService.updateAsset(body);
     }
 }

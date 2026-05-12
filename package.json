@@ -1,6 +1,6 @@
 {
   "name": "agency-actors-api",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Agency Actors API",
   "author": "Ken Lai - Mandarin Robotics",
   "private": true,

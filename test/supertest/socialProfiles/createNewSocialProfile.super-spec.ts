@@ -5,25 +5,24 @@ import { CommonTest } from '../common';
 let actorId = "";
 let assetId = ""
 
-describe(`Create New Email Address Super test`, () => {
+describe(`Create New Social Profile Super test`, () => {
     beforeAll(async () => {
         actorId = await CommonTest.createJaneSmith();
     })
 
     afterAll(async () => {
         await request(CommonTest.API_HOST)
-            .delete(`/email-addresses/${assetId}`)
+            .delete(`/social-profiles/${assetId}`)
             .expect(200)
 
         await CommonTest.deleteJaneSmith(actorId);
     });
 
-    it(`Successfully create a new Email Address`, async () => {
+    it(`Successfully create a new Social`, async () => {
         const response = await request(CommonTest.API_HOST)
-            .post("/email-addresses")
+            .post("/social-profiles")
             .send({
-                "actorId": actorId,
-                "addressString": "jane.smith@test.com"
+                "actorId": actorId
             })
 
         //console.log(response);
@@ -36,7 +35,5 @@ describe(`Create New Email Address Super test`, () => {
         expect(body.assetId).toBeDefined();
         expect(body.createdAt).toBeDefined();
         expect(body.updatedAt).toBeDefined();
-        expect(body.isDefault).toBeTruthy();
-        expect(body.addressString).toEqual("jane.smith@test.com")
     });
 });
