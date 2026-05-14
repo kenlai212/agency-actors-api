@@ -3,6 +3,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { AgencyActorType, AgencyActor } from "./agencyActor.entity";
 import { Repository } from "typeorm";
 import { AgencyActorDTO, NewAgencyActorRequestDTO, UpdateAgencyActorDTO } from "./agencyActors.dto";
+import { HttpService } from "@nestjs/axios";
 
 @Injectable()
 export class AgencyActorsService {
@@ -11,6 +12,7 @@ export class AgencyActorsService {
     constructor(
         @InjectRepository(AgencyActor)
         private readonly entityRepository: Repository<AgencyActor>,
+        private readonly httpService: HttpService
     ) { }
 
     async createAgencyActor(dto: NewAgencyActorRequestDTO): Promise<AgencyActorDTO> {
@@ -24,11 +26,33 @@ export class AgencyActorsService {
         agencyActor.agencyActorType = dto.agencyActorType;
         agencyActor.residencyStatus = dto.residencyStatus;
 
-        await this.entityRepository.save(agencyActor)
+        const emailAddressURL = `http://localhost:8080/email-addresses`;
+        const checkExistingResponse = await this.httpService.axiosRef.post(`${emailAddressURL}/check-existing`, {
+            addressString: dto.emailAddress
+        })
+            .catch(error => {
+                this.logger.error(error);
+                throw new InternalServerErrorException("Check existing email address not available");
+            })
+
+        if (checkExistingResponse.data === false)
+            throw new BadRequestException(`Existing Email Address : ${dto.emailAddress}`)
+
+        agencyActor = await this.entityRepository.save(agencyActor)
             .catch((error) => {
                 this.logger.error(error);
                 throw new InternalServerErrorException("createCandidate() not available");
             });
+
+        const createEmailAddressResponse = await this.httpService.axiosRef.post(emailAddressURL, {
+            actorId: agencyActor.actorId,
+            addressString: dto.emailAddress
+        })
+            .catch(error => {
+                this.logger.error(error);
+                throw new InternalServerErrorException(`Saving Email Address ${dto.emailAddress} fialed`);
+            })
+        dto.emailAddress = createEmailAddressResponse.data.addressString;
 
         return this.entityToDTO(agencyActor);
     }

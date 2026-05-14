@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
-import { IsNotEmpty, IsString, MaxLength, IsEmail, IsOptional, IsDate, IsDateString } from 'class-validator';
+import { IsNotEmpty, IsString, MaxLength, IsEmail, IsOptional, IsDate, IsDateString, IsEnum, IsUUID } from 'class-validator';
 import { AgencyActorType, Country, Gender, ResidencyStatus } from "./agencyActor.entity";
 
 export class AgencyActorDTO {
@@ -30,10 +30,16 @@ export class AgencyActorDTO {
     gender!: Gender;
 
     @ApiPropertyOptional({
-        description: `Actor's Date of Birth, `,
+        description: `Actor's Date of Birth`,
         example: "2005-11-30"
     })
     dob!: Date;
+
+    @ApiPropertyOptional({
+        description: `Actors's Email Address`,
+        example: "jane.smith@test.com"
+    })
+    emailAddress: string;
 
     @ApiProperty({
         description: 'Record creation datetime',
@@ -72,12 +78,16 @@ export class FindAgencyActorRequestDTO {
         enum: AgencyActorType,
         enumName: "AgencyActorType"
     })
+    @IsEnum(AgencyActorType)
+    @IsNotEmpty()
     agencyActorType: AgencyActorType;
 
     @ApiProperty({
         description: 'Target Agency Actor ID',
         example: "96e4e28e-2404-4a4f-b69a-6b0709559596"
     })
+    @IsNotEmpty()
+    @IsUUID()
     actorId: string;
 }
 
@@ -87,6 +97,7 @@ export class NewAgencyActorRequestDTO {
         example: AgencyActorType.CANDIDATE
     })
     @IsNotEmpty()
+    @IsEnum(AgencyActorType)
     agencyActorType: AgencyActorType;
 
     @ApiProperty({
@@ -98,12 +109,21 @@ export class NewAgencyActorRequestDTO {
     @MaxLength(36)
     fullName: string;
 
+    @ApiProperty({
+        description: `Actor's Email Address`,
+        example: "jane.smith@test.com"
+    })
+    @IsNotEmpty()
+    @IsEmail()
+    emailAddress: string;
+
     @ApiPropertyOptional({
         description: `Actor's gender : ${Object.keys(Gender)}`,
         example: `${Gender.FEMALE}`,
         enum: Gender
     })
     @IsOptional()
+    @IsEnum(Gender)
     gender: Gender;
 
     @ApiPropertyOptional({
@@ -120,6 +140,7 @@ export class NewAgencyActorRequestDTO {
         enum: Country
     })
     @IsOptional()
+    @IsEnum(Country)
     countryOfResidence: Country;
 
     @ApiPropertyOptional({
@@ -136,6 +157,7 @@ export class NewAgencyActorRequestDTO {
         enum: ResidencyStatus
     })
     @IsOptional()
+    @IsEnum(ResidencyStatus)
     residencyStatus: ResidencyStatus;
 }
 

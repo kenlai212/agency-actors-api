@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Post, Put, Query, UseGuards } from "@nestjs/common";
-import { CreateNewEmailAddressRequestDTO, EmailAddressDTO, FindEmailAddressRequestDTO, SetDefaultEmailAddressRequestDTO } from "./emailAddresses.dtos";
+import { CheckExistingEmailAddressRequestDTO, CreateNewEmailAddressRequestDTO, EmailAddressDTO, FindEmailAddressRequestDTO, SetDefaultEmailAddressRequestDTO } from "./emailAddresses.dtos";
 import { ApiBearerAuth, ApiOkResponse, ApiOperation } from "@nestjs/swagger";
 import { EmailAdddressesService } from "./emailAddresses.service";
 import { ActorAssetsController } from "../actorAssets/actorAssets.contorller";
@@ -55,5 +55,20 @@ export class EmailAddressesController extends ActorAssetsController {
     })
     async searchAssets(@Query() query: FindEmailAddressRequestDTO): Promise<EmailAddressDTO> {
         return await this.emailAddressesService.findEmailAddress(query);
+    }
+
+    @UseGuards(AuthGuard)
+    @ApiBearerAuth()
+    @ApiOperation({
+        summary: 'Check if email address is existing',
+        description: `Return Ture or false`
+    })
+    @ApiOkResponse({
+        description: 'Successfully GET response boolen.',
+        type: Boolean,
+    })
+    @Get("/check-existing")
+    async validateUniqueEmailAddress(@Query() query: CheckExistingEmailAddressRequestDTO): Promise<boolean> {
+        return await this.emailAddressesService.checkingExisting(query.addressString)
     }
 }

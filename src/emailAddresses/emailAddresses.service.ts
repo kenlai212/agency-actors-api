@@ -17,7 +17,8 @@ export class EmailAdddressesService extends ActorAssetsService<EmailAddress, Ema
     async createNewEmailAddress(actorId: string, addressString: string): Promise<EmailAddressDTO> {
         let emailAddressEntity = new EmailAddress();
 
-        await this.validateUniqueEmailAddress(addressString);
+        if (await this.checkingExisting(addressString) === true)
+            throw new BadRequestException(`${addressString} already exist.`);
         emailAddressEntity.addressString = addressString;
 
         await this.validateActor(actorId);
@@ -101,7 +102,7 @@ export class EmailAdddressesService extends ActorAssetsService<EmailAddress, Ema
         return emailAddressesDTOs;
     }
 
-    async validateUniqueEmailAddress(addressString: string) {
+    async checkingExisting(addressString: string): Promise<boolean> {
         const existingEmailAddress = await this.entityRepository.findOne({ where: { addressString } })
             .catch((error) => {
                 this.logger.error(error);
@@ -109,7 +110,9 @@ export class EmailAdddressesService extends ActorAssetsService<EmailAddress, Ema
             });
 
         if (existingEmailAddress)
-            throw new BadRequestException("Email address already exists");
+            return true;
+        else
+            return false;
     }
 
     entityToDTO(entity: EmailAddress): EmailAddressDTO {
