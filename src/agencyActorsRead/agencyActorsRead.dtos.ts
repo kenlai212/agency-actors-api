@@ -9,11 +9,22 @@ import { GovIssueDocDTO } from "../govIssueDocs/govIssueDocs.dtos";
 import { NationalityDTO } from "../nationalities/nationalities.dtos";
 
 export class AgencyActorReadDTO extends AgencyActorDTO {
+    @ApiProperty()
     certifications: CertificationDTO[];
+
+    @ApiProperty()
     educations: EducationDTO[];
+
+    @ApiProperty()
     emailAddresses: EmailAddressDTO[];
+
+    @ApiProperty()
     employments: EmploymentDTO[];
+
+    @ApiProperty()
     govIssueDocs: GovIssueDocDTO[];
+
+    @ApiProperty()
     nationalities: NationalityDTO[];
 }
 
