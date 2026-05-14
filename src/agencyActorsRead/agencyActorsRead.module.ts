@@ -11,6 +11,7 @@ import { ResumesModule } from "../resumes/resumes.module";
 import { SocialProfilesModule } from "../socialProfiles/socialProfiles.module";
 import { AgencyActorsReadController } from "./agencyActorsRead.controller";
 import { AgencyActorsReadService } from "./agencyActorsRead.service";
+import { NationalitiesModule } from "../nationalities/nationalities.module";
 
 @Module({
     imports: [
@@ -19,6 +20,7 @@ import { AgencyActorsReadService } from "./agencyActorsRead.service";
         EducationsModule,
         EmailAddressesModule,
         EmploymentsModule,
+        NationalitiesModule,
         GovIssueDocsModule,
         phoneNumbersModule,
         physicalAddressesModule,

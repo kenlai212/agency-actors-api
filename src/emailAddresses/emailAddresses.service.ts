@@ -15,7 +15,6 @@ export class EmailAdddressesService extends ActorAssetsService<EmailAddress, Ema
         super(entityRepository);
     }
 
-<<<<<<< HEAD
     async createNewEmailAddress(actorId: string, addressString: string): Promise<EmailAddressDTO> {
         let emailAddressEntity = new EmailAddress();
 
@@ -45,8 +44,6 @@ export class EmailAdddressesService extends ActorAssetsService<EmailAddress, Ema
         return this.entityToDTO(emailAddressEntity);
     }
 
-=======
->>>>>>> master
     async findEmailAddress(dto: FindEmailAddressRequestDTO): Promise<EmailAddressDTO> {
         if (!dto.assetId && !dto.addressString)
             throw new BadRequestException(`Must provide atleast one of actorId or addressString`);

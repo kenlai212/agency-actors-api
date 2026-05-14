@@ -21,36 +21,32 @@ export class AgencyActorsService {
 
         entity.dob = dto.dob;
         entity.gender = dto.gender;
-        entity.nationality = dto.nationality;
         entity.countryOfResidence = dto.countryOfResidence;
         entity.agencyActorType = dto.agencyActorType;
         entity.residencyStatus = dto.residencyStatus;
 
-<<<<<<< HEAD
+        ///////////////////////////validate if the email address is existing//////////////////////////////
         const emailAddressURL = `http://localhost:8080/email-addresses`;
-        const checkExistingResponse = await this.httpService.axiosRef.post(`${emailAddressURL}/check-existing`, {
-            addressString: dto.emailAddress
-        })
+        const checkExistingResponse = await this.httpService.axiosRef.get(`${emailAddressURL}/check-existing?addressString=${dto.emailAddress}`)
             .catch(error => {
                 this.logger.error(error);
                 throw new InternalServerErrorException("Check existing email address not available");
             })
 
-        if (checkExistingResponse.data === false)
+        if (checkExistingResponse.data)
             throw new BadRequestException(`Existing Email Address : ${dto.emailAddress}`)
 
-        agencyActor = await this.entityRepository.save(agencyActor)
-=======
+
+        ///////////////////////////save AgencyActor record //////////////////////////
         await this.entityRepository.save(entity)
->>>>>>> master
             .catch((error) => {
                 this.logger.error(error);
                 throw new InternalServerErrorException("createCandidate() not available");
             });
 
-<<<<<<< HEAD
+        ////////////////////////////create email address record//////////////////////////////////////
         const createEmailAddressResponse = await this.httpService.axiosRef.post(emailAddressURL, {
-            actorId: agencyActor.actorId,
+            actorId: entity.actorId,
             addressString: dto.emailAddress
         })
             .catch(error => {
@@ -59,12 +55,8 @@ export class AgencyActorsService {
             })
         dto.emailAddress = createEmailAddressResponse.data.addressString;
 
-        return this.entityToDTO(agencyActor);
-=======
         this.logger.log(`Created new Agency Actor ${entity.fullName} ${entity.actorId}`)
-
         return this.entityToDTO(entity);
->>>>>>> master
     }
 
     async findAgencyActor(agencyActorType: AgencyActorType, actorId: string): Promise<AgencyActorDTO> {
@@ -130,9 +122,6 @@ export class AgencyActorsService {
         if (dto.residencyStatus)
             agencyActor.residencyStatus = dto.residencyStatus;
 
-        if (dto.nationality)
-            agencyActor.nationality = dto.nationality;
-
         agencyActor = await this.entityRepository.save(agencyActor)
             .catch((error) => {
                 this.logger.error(error);
@@ -161,7 +150,6 @@ export class AgencyActorsService {
         dto.gender = entity.gender;
         dto.dob = entity.dob;
         dto.countryOfResidence = entity.countryOfResidence;
-        dto.nationality = entity.nationality;
         dto.residencyStatus = entity.residencyStatus;
         dto.createdAt = entity.createdAt;
         dto.updatedAt = entity.updatedAt;

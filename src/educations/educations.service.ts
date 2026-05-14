@@ -4,7 +4,6 @@ import { Education } from "./education.entity";
 import { Repository } from "typeorm";
 import { EducationDTO, NewEducationRequestDTO, UpdateEducationRequestDTO } from "./educations.dtos";
 import { DocumentLinkedAssetsService } from "../actorAssets/documentLinkedAssets.service";
-import { CreateNewAssetRequestDTO, UpdateAssetRequestDTO } from "../actorAssets/actorAssets.dtos";
 
 @Injectable()
 export class EducationsService extends DocumentLinkedAssetsService<Education, EducationDTO> {

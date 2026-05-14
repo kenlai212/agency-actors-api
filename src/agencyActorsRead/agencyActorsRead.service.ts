@@ -7,6 +7,7 @@ import { AgencyActorType } from "../agencyActors/agencyActor.entity";
 import { EmailAdddressesService } from "../emailAddresses/emailAddresses.service";
 import { EmploymentsService } from "../employments/employments.service";
 import { GovIssueDocsService } from "../govIssueDocs/govIssueDocs.service";
+import { NationalitiesService } from "../nationalities/nationalities.service";
 
 @Injectable()
 export class AgencyActorsReadService {
@@ -18,7 +19,8 @@ export class AgencyActorsReadService {
         private readonly educationsService: EducationsService,
         private readonly emailAddressesService: EmailAdddressesService,
         private readonly employmentsService: EmploymentsService,
-        private readonly govIssueDocsService: GovIssueDocsService
+        private readonly govIssueDocsService: GovIssueDocsService,
+        private readonly nationalitiesService: NationalitiesService
     ) { }
 
     async findActor(actorId: string): Promise<AgencyActorReadDTO> {
@@ -29,7 +31,6 @@ export class AgencyActorsReadService {
         dto.agencyActorType = agencyActorDTO.agencyActorType;
         dto.fullName = agencyActorDTO.fullName;
         dto.gender = agencyActorDTO.gender;
-        dto.nationality = agencyActorDTO.nationality;
         dto.residencyStatus = agencyActorDTO.residencyStatus;
         dto.countryOfResidence = agencyActorDTO.countryOfResidence;
         dto.residencyStatus = agencyActorDTO.residencyStatus;
@@ -43,6 +44,8 @@ export class AgencyActorsReadService {
         dto.employments = await this.employmentsService.searchAssetsByActorId(actorId);
 
         dto.govIssueDocs = await this.govIssueDocsService.searchAssetsByActorId(actorId);
+
+        dto.nationalities = await this.nationalitiesService.searchAssetsByActorId(actorId);
 
         return dto;
     }

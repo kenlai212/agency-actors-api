@@ -28,6 +28,8 @@ import { SemanticsData } from './uploadedDocuments/semanticsData.entity';
 import configuration from './app.config';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './auth.guard';
+import { Nationality } from './nationalities/nationality.entity';
+import { NationalitiesModule } from './nationalities/nationalities.module';
 
 @Module({
   providers: [
@@ -62,7 +64,8 @@ import { AuthGuard } from './auth.guard';
           Certification,
           PhysicalAddress,
           UploadedDocument,
-          SemanticsData
+          SemanticsData,
+          Nationality
         ],
         synchronize: true,
         logging: configService.get("database.logging"),
@@ -71,6 +74,7 @@ import { AuthGuard } from './auth.guard';
     }),
     AgencyActorsReadModule,
     AgencyActorsModule,
+    NationalitiesModule,
     EmailAddressesModule,
     phoneNumbersModule,
     physicalAddressesModule,

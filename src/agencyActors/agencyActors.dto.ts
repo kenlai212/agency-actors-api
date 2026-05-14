@@ -60,12 +60,6 @@ export class AgencyActorDTO {
     countryOfResidence: Country;
 
     @ApiPropertyOptional({
-        description: `Actor's Nationality : : ${Object.keys(Country)}`,
-        example: Country.HK
-    })
-    nationality!: Country;
-
-    @ApiPropertyOptional({
         description: `Actor's recidency status : ${Object.keys(ResidencyStatus)}`,
         example: `${ResidencyStatus.EMPLOYMENT_PASS}`
     })
@@ -142,14 +136,6 @@ export class NewAgencyActorRequestDTO {
     @IsOptional()
     @IsEnum(Country)
     countryOfResidence: Country;
-
-    @ApiPropertyOptional({
-        description: `Actor's Nationality : ${Object.keys(Country)}`,
-        example: `${Country.HK}`,
-        enum: Country
-    })
-    @IsOptional()
-    nationality: Country;
 
     @ApiPropertyOptional({
         description: `Actor's recidency status : ${Object.keys(ResidencyStatus)}`,

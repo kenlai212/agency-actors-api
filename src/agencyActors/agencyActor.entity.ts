@@ -81,14 +81,6 @@ export class AgencyActor {
     @Column({
         nullable: true,
         type: "enum",
-        enum: Country,
-        default: null
-    })
-    nationality: Country;
-
-    @Column({
-        nullable: true,
-        type: "enum",
         enum: ResidencyStatus,
         default: null
     })

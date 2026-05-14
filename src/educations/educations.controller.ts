@@ -3,14 +3,13 @@ import { EducationsService } from "./educations.service";
 import { DocumentLinkedAssetsController } from "../actorAssets/documentLinkedAssets.controller";
 import { ApiCreatedResponse, ApiOkResponse, ApiOperation } from "@nestjs/swagger";
 import { EducationDTO, NewEducationRequestDTO, UpdateEducationRequestDTO } from "./educations.dtos";
-import { CertificationDTO } from "../certifications/certifications.dtos";
 
 @Controller("educations")
 export class EducationsController extends DocumentLinkedAssetsController {
     constructor(
-        private readonly educationsService: EducationsService
+        private readonly service: EducationsService
     ) {
-        super(educationsService)
+        super(service)
     }
 
     @Post("/")
@@ -20,7 +19,7 @@ export class EducationsController extends DocumentLinkedAssetsController {
     })
     @ApiCreatedResponse({
         description: `Successfully POST response ${EducationDTO.name}.`,
-        type: NewEducationRequestDTO
+        type: EducationDTO
     })
     async newAsset(@Body() dto: NewEducationRequestDTO) {
         return this.assetsService.createAsset(dto);
@@ -36,6 +35,6 @@ export class EducationsController extends DocumentLinkedAssetsController {
         type: EducationDTO,
     })
     async updateAsset(@Body() body: UpdateEducationRequestDTO): Promise<EducationDTO> {
-        return this.educationsService.updateAsset(body);
+        return this.service.updateAsset(body);
     }
 }
