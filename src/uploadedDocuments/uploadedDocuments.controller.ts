@@ -18,7 +18,7 @@ export class UploadedDocumentsController {
         description: 'Successfully POST response UploadedDocumentDTO',
         type: UploadedDocumentDTO,
     })
-    async uploadDocument(@Body() body: UploadDocumentRequestDTO): Promise<UploadedDocumentDTO> {
-        return await this.uploadedDocumentsService.uploadNewDocument(body.actorId, body.uploadedDocumentType, body.documentBase64);
+    async uploadDocument(@Body() dto: UploadDocumentRequestDTO): Promise<UploadedDocumentDTO> {
+        return await this.uploadedDocumentsService.uploadNewDocument(dto);
     }
 }

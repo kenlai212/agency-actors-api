@@ -16,6 +16,14 @@ export enum StorageFacility {
     ALFRESCO = "ALFRESCO"
 }
 
+export enum UploadDocumentStatus {
+    SUBMITTED = "SUBMITTED",
+    SCANNED = "SCANNED",
+    UPLOADED = "UPLOADED",
+    EXTRACTING = "EXTRACTING",
+    EXTRACTED = "EXTRACTED"
+}
+
 @Entity()
 export class UploadedDocument {
     @PrimaryGeneratedColumn('uuid')
@@ -35,11 +43,11 @@ export class UploadedDocument {
     uploadedDocumentType: UploadedDocumentType;
 
     @Column({
-        nullable: false,
+        nullable: true,
         type: "enum",
         enum: StorageFacility,
     })
-    storageFacility: StorageFacility;
+    storageFacility!: StorageFacility;
 
     @Column({
         nullable: false,
@@ -61,4 +69,24 @@ export class UploadedDocument {
         length: 36
     })
     assetId!: string;
+
+    @Column({
+        nullable: false,
+        type: "varchar"
+    })
+    documentBase64: string;
+
+    @Column({
+        nullable: false,
+        type: "enum",
+        enum: UploadDocumentStatus,
+    })
+    uploadDocumentStatus: UploadDocumentStatus;
+
+    @Column({
+        nullable: true,
+        type: "varchar",
+        length: 36
+    })
+    extractionJobId: string;
 }

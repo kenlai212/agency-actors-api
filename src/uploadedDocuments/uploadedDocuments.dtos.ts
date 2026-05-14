@@ -1,6 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
-import { StorageFacility, UploadedDocumentType } from "./uploadedDocument.entity";
-import { IsDate, IsEnum, IsNotEmpty, IsOptional, IsString, max, MaxLength, maxLength } from "class-validator";
+import { StorageFacility, UploadDocumentStatus, UploadedDocumentType } from "./uploadedDocument.entity";
+import { IsDate, IsEnum, IsNotEmpty, IsOptional, IsString, IsUUID, max, MaxLength, maxLength } from "class-validator";
 
 export class UploadedDocumentDTO {
     @ApiPropertyOptional({
@@ -43,16 +43,34 @@ export class UploadedDocumentDTO {
     @IsDate()
     @IsNotEmpty()
     uploadedAt: Date;
+
+    @ApiProperty({
+        description: `Upload Docuent Status: ${Object.values(UploadDocumentStatus)}`,
+        enum: UploadDocumentStatus,
+        enumName: "UploadDocumentStatus"
+    })
+    documentUploadStatus: UploadDocumentStatus;
+
+    @ApiProperty({
+        description: `Document Base64 string`,
+    })
+    documentBase64: string;
 }
 
 export class UploadDocumentRequestDTO {
     @ApiProperty({
         description: `Uploaded Document belong to this Actor Id`,
     })
-    @IsString()
+    @IsUUID()
     @IsNotEmpty()
-    @MaxLength(36)
     actorId: string;
+
+    @ApiPropertyOptional({
+        description: `Uploaded Document belong to this Asset Id`,
+    })
+    @IsUUID()
+    @IsOptional()
+    assetId: string;
 
     @ApiProperty({
         description: `Uploaded Document Type ${Object.values(UploadedDocumentType)}`,

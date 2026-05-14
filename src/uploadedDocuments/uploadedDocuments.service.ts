@@ -1,9 +1,9 @@
 import { BadRequestException, Injectable, InternalServerErrorException, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { StorageFacility, UploadedDocumentType, UploadedDocument } from "./uploadedDocument.entity";
+import { StorageFacility, UploadedDocumentType, UploadedDocument, UploadDocumentStatus } from "./uploadedDocument.entity";
 import { Repository } from "typeorm";
 import { AgencyActorsService } from "../agencyActors/agencyActors.service";
-import { UploadedDocumentDTO } from "./uploadedDocuments.dtos";
+import { UploadDocumentRequestDTO, UploadedDocumentDTO } from "./uploadedDocuments.dtos";
 
 @Injectable()
 export class UploadedDocumentsService {
@@ -15,22 +15,21 @@ export class UploadedDocumentsService {
         private readonly agencyActorService: AgencyActorsService
     ) { }
 
-    async uploadNewDocument(actorId: string, uploadedDocumentType: UploadedDocumentType, base64String: string, assetId?: string): Promise<UploadedDocumentDTO> {
+    async uploadNewDocument(dto: UploadDocumentRequestDTO): Promise<UploadedDocumentDTO> {
         let entity = new UploadedDocument();
 
-        await this.agencyActorService.validateActorId(actorId);
+        await this.agencyActorService.validateActorId(dto.actorId);
         entity.actorId;
 
-        entity.uploadedDocumentType = uploadedDocumentType;
+        entity.uploadedDocumentType = dto.uploadedDocumentType;
 
         //TODO validate asset ID
-        if (assetId)
-            entity.assetId = assetId;
+        if (dto.assetId)
+            entity.assetId = dto.assetId;
 
-        //todo make this configurable
-        entity.storageFacility = StorageFacility.ALFRESCO;
+        entity.uploadDocumentStatus = UploadDocumentStatus.SUBMITTED;
 
-        entity.storageRecordId = await this.callExternalStorageService(base64String, actorId);
+        entity.documentBase64 = dto.documentBase64;
 
         entity = await this.entityRepository.save(entity)
             .catch((error) => {
@@ -41,8 +40,72 @@ export class UploadedDocumentsService {
         return this.entityToDTO(entity);
     }
 
-    async callExternalStorageService(documentBase64: string, identifier: string): Promise<string> {
-        return "https://example.com/document/12345";
+    async callexternalFileScanService(uploadedDocumentId: string): Promise<UploadedDocumentDTO> {
+        let entity = await this.entityRepository.findOne({ where: { uploadedDocumentId } })
+            .catch((error) => {
+                this.logger.error(error);
+                throw new InternalServerErrorException("callExternalStorageService() not available");
+            });
+
+        if (!entity)
+            throw new BadRequestException(`Invalid uploadedDocumentId: ${uploadedDocumentId}`);
+
+        //todo call file scan api
+
+        entity.uploadDocumentStatus = UploadDocumentStatus.SCANNED;
+
+        return this.entityToDTO(entity);
+    }
+
+    async callExternalStorageService(uploadedDocumentId: string): Promise<UploadedDocumentDTO> {
+        let entity = await this.entityRepository.findOne({ where: { uploadedDocumentId } })
+            .catch((error) => {
+                this.logger.error(error);
+                throw new InternalServerErrorException("callExternalStorageService() not available");
+            });
+
+        if (!entity)
+            throw new BadRequestException(`Invalid uploadedDocumentId: ${uploadedDocumentId}`);
+
+        //todo make this configurable
+        entity.storageFacility = StorageFacility.ALFRESCO;
+
+        //todo call doc store api and set storageRecordId;
+        entity.storageRecordId = "ALFRESCO1234"
+
+        entity.uploadDocumentStatus = UploadDocumentStatus.UPLOADED;
+
+        entity = await this.entityRepository.save(entity)
+            .catch((error) => {
+                this.logger.error(error);
+                throw new InternalServerErrorException("callExternalStorageService() not available");
+            });
+
+        return this.entityToDTO(entity);
+    }
+
+    async callExternalSemanticDataExtraction(uploadedDocumentId: string): Promise<UploadedDocumentDTO> {
+        let entity = await this.entityRepository.findOne({ where: { uploadedDocumentId } })
+            .catch((error) => {
+                this.logger.error(error);
+                throw new InternalServerErrorException("callExternalStorageService() not available");
+            });
+
+        if (!entity)
+            throw new BadRequestException(`Invalid uploadedDocumentId: ${uploadedDocumentId}`);
+
+        //todo call IDP
+        entity.extractionJobId = "IDP1234"
+
+        entity.uploadDocumentStatus = UploadDocumentStatus.EXTRACTING;
+
+        entity = await this.entityRepository.save(entity)
+            .catch((error) => {
+                this.logger.error(error);
+                throw new InternalServerErrorException("callExternalStorageService() not available");
+            });
+
+        return this.entityToDTO(entity);
     }
 
     async validateUploadedDocumentId(uploadedDocumentId: string) {
@@ -65,6 +128,8 @@ export class UploadedDocumentsService {
         dto.storageFacility = entity.storageFacility;
         dto.storageRecordId = entity.storageRecordId;
         dto.uploadedAt = entity.createdAt;
+        dto.documentUploadStatus = entity.uploadDocumentStatus;
+        dto.documentBase64 = entity.documentBase64;
 
         return dto;
     }
