@@ -16,16 +16,17 @@ export class AgencyActorsService {
     ) { }
 
     async createAgencyActor(dto: NewAgencyActorRequestDTO): Promise<AgencyActorDTO> {
-        let agencyActor = new AgencyActor();
-        agencyActor.fullName = dto.fullName;
+        let entity = new AgencyActor();
+        entity.fullName = dto.fullName;
 
-        agencyActor.dob = dto.dob;
-        agencyActor.gender = dto.gender;
-        agencyActor.nationality = dto.nationality;
-        agencyActor.countryOfResidence = dto.countryOfResidence;
-        agencyActor.agencyActorType = dto.agencyActorType;
-        agencyActor.residencyStatus = dto.residencyStatus;
+        entity.dob = dto.dob;
+        entity.gender = dto.gender;
+        entity.nationality = dto.nationality;
+        entity.countryOfResidence = dto.countryOfResidence;
+        entity.agencyActorType = dto.agencyActorType;
+        entity.residencyStatus = dto.residencyStatus;
 
+<<<<<<< HEAD
         const emailAddressURL = `http://localhost:8080/email-addresses`;
         const checkExistingResponse = await this.httpService.axiosRef.post(`${emailAddressURL}/check-existing`, {
             addressString: dto.emailAddress
@@ -39,11 +40,15 @@ export class AgencyActorsService {
             throw new BadRequestException(`Existing Email Address : ${dto.emailAddress}`)
 
         agencyActor = await this.entityRepository.save(agencyActor)
+=======
+        await this.entityRepository.save(entity)
+>>>>>>> master
             .catch((error) => {
                 this.logger.error(error);
                 throw new InternalServerErrorException("createCandidate() not available");
             });
 
+<<<<<<< HEAD
         const createEmailAddressResponse = await this.httpService.axiosRef.post(emailAddressURL, {
             actorId: agencyActor.actorId,
             addressString: dto.emailAddress
@@ -55,6 +60,11 @@ export class AgencyActorsService {
         dto.emailAddress = createEmailAddressResponse.data.addressString;
 
         return this.entityToDTO(agencyActor);
+=======
+        this.logger.log(`Created new Agency Actor ${entity.fullName} ${entity.actorId}`)
+
+        return this.entityToDTO(entity);
+>>>>>>> master
     }
 
     async findAgencyActor(agencyActorType: AgencyActorType, actorId: string): Promise<AgencyActorDTO> {
@@ -81,15 +91,16 @@ export class AgencyActorsService {
         if (!actor) {
             throw new NotFoundException("Actor not found");
         }
+
+        const actorName = actor.fullName;
+
         await this.entityRepository.remove(actor)
             .catch((error) => {
                 this.logger.error(error);
                 throw new InternalServerErrorException("deleteActor() not available");
             });
 
-        //delete assets
-
-        const msg = `Successfully deleted ${actorId}`
+        const msg = `Successfully deleted ${this.entityRepository.metadata.name} ${actorName}`
         this.logger.log(msg);
         return msg;
     }

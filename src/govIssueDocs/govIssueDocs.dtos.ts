@@ -1,8 +1,8 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { IsNotEmpty, IsString } from 'class-validator';
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
+import { IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { IssueDocType, IssuerGoverment } from "./govIssueDoc.entity";
 import { DocumentLinkedAssetDTO } from "../actorAssets/documentLinkedAssets.dtos";
-import { CreateNewAssetRequestDTO } from "../actorAssets/actorAssets.dtos";
+import { CreateNewAssetRequestDTO, UpdateAssetRequestDTO } from "../actorAssets/actorAssets.dtos";
 
 export class GovIssueDocDTO extends DocumentLinkedAssetDTO {
     @ApiProperty({
@@ -27,20 +27,46 @@ export class NewGovIssueDocRequestDTO extends CreateNewAssetRequestDTO {
         example: IssuerGoverment.HK
     })
     @IsNotEmpty()
+    @IsEnum(IssuerGoverment)
     issuerGoverment: IssuerGoverment;
 
-    @ApiProperty({
+    @ApiPropertyOptional({
         description: `Issue Document Type : ${Object.keys(IssueDocType)}`,
         example: IssueDocType.IDENTITY_CARD
     })
-    @IsNotEmpty()
+    @IsOptional()
     issueDocType: IssueDocType;
 
-    @ApiProperty({
+    @ApiPropertyOptional({
         description: 'doc unique identifier',
         example: "HK12345"
     })
-    @IsNotEmpty()
+    @IsOptional()
+    @IsString()
+    issueDocNumber: string;
+}
+
+export class UpdateGovIssueDocRequestDTO extends UpdateAssetRequestDTO {
+    @ApiPropertyOptional({
+        description: `Issuer Goverment : ${Object.keys(IssuerGoverment)}`,
+        example: IssuerGoverment.HK
+    })
+    @IsOptional()
+    @IsEnum(IssuerGoverment)
+    issuerGoverment: IssuerGoverment;
+
+    @ApiPropertyOptional({
+        description: `Issue Document Type : ${Object.keys(IssueDocType)}`,
+        example: IssueDocType.IDENTITY_CARD
+    })
+    @IsOptional()
+    issueDocType: IssueDocType;
+
+    @ApiPropertyOptional({
+        description: 'doc unique identifier',
+        example: "HK12345"
+    })
+    @IsOptional()
     @IsString()
     issueDocNumber: string;
 }

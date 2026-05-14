@@ -1,9 +1,8 @@
-import { Body, Controller, Get, Post, Query, UseGuards } from "@nestjs/common";
-import { CreatePhoneNumberRequestDTO, FindPhoneNumberRequestDTO, PhoneNumberDTO } from "./phoneNumbers.dtos";
-import { ApiBearerAuth, ApiOkResponse, ApiOperation } from "@nestjs/swagger";
+import { Body, Controller, Get, Post, Query } from "@nestjs/common";
+import { FindPhoneNumberRequestDTO, NewPhoneNumberRequestDTO, PhoneNumberDTO } from "./phoneNumbers.dtos";
+import { ApiCreatedResponse, ApiOkResponse, ApiOperation } from "@nestjs/swagger";
 import { PhoneNumbersService } from "./phoneNumber.service";
-import { ActorAssetsController } from "../actorAssets/actorAssets.contorller";
-import { AuthGuard } from "../auth.guard";
+import { ActorAssetsController } from "../actorAssets/actorAssets.controller";
 
 @Controller("/phone-numbers")
 export class PhoneNumbersController extends ActorAssetsController {
@@ -13,23 +12,19 @@ export class PhoneNumbersController extends ActorAssetsController {
         super(phoneNumbersService);
     }
 
-    @UseGuards(AuthGuard)
-    @ApiBearerAuth()
     @Post("/")
     @ApiOperation({
-        summary: 'Create new Phone Number for an Actor',
-        description: `Actor can have multiple phone numbers`
+        summary: 'Create new Phone Number.',
+        description: `New Phone Number must tie to an actor.`
     })
-    @ApiOkResponse({
-        description: 'Successfully POST response PhoneNumberDTO.',
-        type: PhoneNumberDTO,
+    @ApiCreatedResponse({
+        description: `Successfully POST response ${PhoneNumberDTO.name}.`,
+        type: NewPhoneNumberRequestDTO
     })
-    async createPhoneNumber(@Body() body: CreatePhoneNumberRequestDTO): Promise<PhoneNumberDTO> {
-        return await this.phoneNumbersService.createNewPhoneNumber(body.actorId, body.countryCode, body.numberString, body.phoneNumberType)
+    async newAsset(@Body() dto: NewPhoneNumberRequestDTO) {
+        return this.assetsService.createAsset(dto);
     }
 
-    @UseGuards(AuthGuard)
-    @ApiBearerAuth()
     @Get("/")
     @ApiOperation({
         summary: 'Find Asset.',

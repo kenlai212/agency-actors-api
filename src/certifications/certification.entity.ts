@@ -19,21 +19,21 @@ export class Certification extends DocumentLinkedAsset {
     certificationAuthority: CertificationAuthority;
 
     @Column({
-        nullable: false,
+        nullable: true,
         type: "varchar",
         length: 255
     })
     certificateName: string;
 
     @Column({
-        nullable: false,
+        nullable: true,
         type: "varchar",
         length: 255
     })
     certificateNumber: string;
 
     @Column({
-        nullable: false,
+        nullable: true,
         type: "timestamp"
     })
     issueDate!: Date;

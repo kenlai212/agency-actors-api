@@ -1,7 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { IsBoolean, IsDateString, IsNotEmpty, IsOptional, IsString, MaxLength } from "class-validator";
 import { DocumentLinkedAssetDTO } from "../actorAssets/documentLinkedAssets.dtos";
-import { CreateNewAssetRequestDTO } from "../actorAssets/actorAssets.dtos";
+import { CreateNewAssetRequestDTO, UpdateAssetRequestDTO } from "../actorAssets/actorAssets.dtos";
 
 export class EmploymentDTO extends DocumentLinkedAssetDTO {
     @ApiProperty({
@@ -51,29 +51,82 @@ export class NewEmploymentRequestDTO extends CreateNewAssetRequestDTO {
     @MaxLength(128)
     companyName: string;
 
-    @ApiProperty({
+    @ApiPropertyOptional({
         description: 'Job Title',
         example: 'Software Engineer'
     })
-    @IsNotEmpty()
+    @IsOptional()
     @IsString()
     @MaxLength(128)
     jobTitle: string;
 
-    @ApiProperty({
+    @ApiPropertyOptional({
         description: 'Office location',
         example: '123 Main Street, New York, USA'
     })
-    @IsNotEmpty()
+    @IsOptional()
     @IsString()
     @MaxLength(255)
     location: string;
 
-    @ApiProperty({
+    @ApiPropertyOptional({
         description: 'Start date of employment',
         example: 'YYYY-MM-DD'
     })
-    @IsNotEmpty()
+    @IsOptional()
+    @IsDateString()
+    startDate: Date;
+
+    @ApiPropertyOptional({
+        description: 'End date of employment',
+        example: 'YYYY-MM-DD'
+    })
+    @IsOptional()
+    @IsDateString()
+    endDate!: Date;
+
+    @ApiPropertyOptional({
+        description: 'Is this current job? TRUE or FALSE',
+        example: 'TRUE'
+    })
+    @IsOptional()
+    @IsBoolean()
+    isCurrent!: boolean;
+}
+
+export class UpdateEmploymentRequestDTO extends UpdateAssetRequestDTO {
+    @ApiPropertyOptional({
+        description: 'Employment Company name',
+        example: 'Manulife'
+    })
+    @IsOptional()
+    @IsString()
+    @MaxLength(128)
+    companyName: string;
+
+    @ApiPropertyOptional({
+        description: 'Job Title',
+        example: 'Software Engineer'
+    })
+    @IsOptional()
+    @IsString()
+    @MaxLength(128)
+    jobTitle: string;
+
+    @ApiPropertyOptional({
+        description: 'Office location',
+        example: '123 Main Street, New York, USA'
+    })
+    @IsOptional()
+    @IsString()
+    @MaxLength(255)
+    location: string;
+
+    @ApiPropertyOptional({
+        description: 'Start date of employment',
+        example: 'YYYY-MM-DD'
+    })
+    @IsOptional()
     @IsDateString()
     startDate: Date;
 

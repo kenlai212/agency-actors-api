@@ -17,7 +17,7 @@ export enum IssueDocType {
 @Entity()
 export class GovIssueDoc extends DocumentLinkedAsset {
     @Column({
-        nullable: true,
+        nullable: false,
         type: "enum",
         enum: IssuerGoverment
     })

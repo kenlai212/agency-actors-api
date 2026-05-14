@@ -1,10 +1,6 @@
-import { IsStrongPassword } from "class-validator";
-
 export default () => ({
-    appTitle: process.env.APP_TITLE || "",
-    appVersion: process.env.APP_VERSION || "0.0.0",
     nodeEnv: process.env.NODE_ENV || "PRODUCTION",
-    useAuthGuard: process.env.AUTH_GUARD || true,
+    useAuthGuard: process.env.USE_AUTH_GUARD || true,
     authApiUrl: process.env.AUTH_API_URL,
     port: parseInt(process.env.APP_PORT, 10) || 8080,
     database: {

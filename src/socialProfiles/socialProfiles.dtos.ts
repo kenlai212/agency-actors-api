@@ -10,7 +10,7 @@ export class SocialProfileDTO extends ActorAssetDTO {
     providerHandle: string
 }
 
-export class PostSocialProfileRequestDTO extends CreateNewAssetRequestDTO {
+export class NewSocialProfileRequestDTO extends CreateNewAssetRequestDTO {
     @ApiProperty({
         description: 'provider of the social profile, e.g. LinkedIn, GitHub, etc.',
         enum: SocialProvider,

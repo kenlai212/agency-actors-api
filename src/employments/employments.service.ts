@@ -1,9 +1,10 @@
-import { Injectable, InternalServerErrorException, Logger } from "@nestjs/common";
+import { Injectable, InternalServerErrorException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Employment } from "./employment.entity";
 import { Repository } from "typeorm";
-import { EmploymentDTO, NewEmploymentRequestDTO } from "./employments.dtos";
+import { EmploymentDTO, NewEmploymentRequestDTO, UpdateEmploymentRequestDTO } from "./employments.dtos";
 import { DocumentLinkedAssetsService } from "../actorAssets/documentLinkedAssets.service";
+import { CreateNewAssetRequestDTO, UpdateAssetRequestDTO } from "../actorAssets/actorAssets.dtos";
 
 @Injectable()
 export class EmploymentsService extends DocumentLinkedAssetsService<Employment, EmploymentDTO> {
@@ -14,16 +15,20 @@ export class EmploymentsService extends DocumentLinkedAssetsService<Employment, 
         super(entityRepository);
     }
 
-    async createNewEmployment(dto: NewEmploymentRequestDTO): Promise<EmploymentDTO> {
-        let entity = new Employment();
+    async updateAssetDtoToEntity(dto: UpdateEmploymentRequestDTO): Promise<Employment> {
+        let entity = await this.validateAssetId(dto.assetId);
 
-        await this.validateActor(dto.actorId);
-        entity.actorId = dto.actorId;
+        if (dto.companyName)
+            entity.companyName = dto.companyName;
 
-        entity.companyName = dto.companyName;
-        entity.jobTitle = dto.jobTitle;
-        entity.location = dto.location;
-        entity.startDate = dto.startDate;
+        if (dto.jobTitle)
+            entity.jobTitle = dto.jobTitle;
+
+        if (dto.location)
+            entity.location = dto.location;
+
+        if (dto.startDate)
+            entity.startDate = dto.startDate;
 
         if (dto.endDate) {
             entity.endDate = dto.endDate;
@@ -32,13 +37,34 @@ export class EmploymentsService extends DocumentLinkedAssetsService<Employment, 
             entity.isCurrent = true;
         }
 
-        entity = await this.entityRepository.save(entity)
-            .catch((error) => {
-                this.logger.error(error);
-                throw new InternalServerErrorException("createNewEmployment() not available");
-            })
+        return entity;
+    }
 
-        return this.entityToDTO(entity);
+    async createNewAssetDtoToEntity(dto: NewEmploymentRequestDTO): Promise<Employment> {
+        let entity = new Employment();
+
+        await this.validateActor(dto.actorId);
+        entity.actorId = dto.actorId;
+
+        entity.companyName = dto.companyName;
+
+        if (dto.jobTitle)
+            entity.jobTitle = dto.jobTitle;
+
+        if (dto.location)
+            entity.location = dto.location;
+
+        if (dto.startDate)
+            entity.startDate = dto.startDate;
+
+        if (dto.endDate) {
+            entity.endDate = dto.endDate;
+            entity.isCurrent = false;
+        } else {
+            entity.isCurrent = true;
+        }
+
+        return entity;
     }
 
     entityToDTO(entity: Employment) {

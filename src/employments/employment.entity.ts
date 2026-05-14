@@ -11,21 +11,21 @@ export class Employment extends DocumentLinkedAsset {
     companyName: string;
 
     @Column({
-        nullable: false,
+        nullable: true,
         type: "varchar",
         length: 255
     })
     jobTitle: string;
 
     @Column({
-        nullable: false,
+        nullable: true,
         type: "varchar",
         length: 255
     })
     location: string;
 
     @Column({
-        nullable: false,
+        nullable: true,
         type: "timestamp"
     })
     startDate: Date;

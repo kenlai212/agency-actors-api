@@ -16,7 +16,7 @@ export class AuthGuard implements CanActivate {
     }
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
-        if (this.configService.get('useAuthGuard')) {
+        if (this.configService.get('useAuthGuard') === true) {
             const request = context.switchToHttp().getRequest();
             const token = this.extractTokenFromHeader(request);
             this.logger.debug(`Extracted token: ${token}`);
@@ -36,8 +36,9 @@ export class AuthGuard implements CanActivate {
 
             this.logger.debug(`Token validation response: ${JSON.stringify(response?.data)}`);
             return true;
+        } else {
+            return true;
         }
-
     }
 
     private extractTokenFromHeader(request: Request): string | undefined {

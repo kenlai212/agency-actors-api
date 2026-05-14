@@ -1,9 +1,10 @@
-import { BadRequestException, Injectable, InternalServerErrorException, Logger } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { ResumeDTO } from "./resumes.dtos";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Resume } from "./resume.entity";
 import { Repository } from "typeorm";
 import { DocumentLinkedAssetsService } from "../actorAssets/documentLinkedAssets.service";
+import { CreateNewAssetRequestDTO, UpdateAssetRequestDTO } from "../actorAssets/actorAssets.dtos";
 
 @Injectable()
 export class ResumesService extends DocumentLinkedAssetsService<Resume, ResumeDTO> {
@@ -14,19 +15,19 @@ export class ResumesService extends DocumentLinkedAssetsService<Resume, ResumeDT
         super(resumeRepository);
     }
 
-    async findResumes(actorId: string): Promise<Array<ResumeDTO>> {
-        const resumes = await this.resumeRepository.find({ where: { actorId } })
-            .catch((error) => {
-                this.logger.error(error);
-                throw new InternalServerErrorException("findResumes() not available");
-            });
+    async createNewAssetDtoToEntity(dto: CreateNewAssetRequestDTO): Promise<Resume> {
+        let resume = new Resume();
 
-        let resumeDTOs: Array<ResumeDTO> = [];
-        for (const resume of resumes) {
-            resumeDTOs.push(this.entityToDTO(resume));
-        }
+        await this.validateActor(dto.actorId);
+        resume.actorId = dto.actorId;
 
-        return resumeDTOs;
+        return resume;
+    }
+
+    async updateAssetDtoToEntity(dto: UpdateAssetRequestDTO): Promise<Resume> {
+        let entity = await this.validateAssetId(dto.assetId);
+
+        return await this.updateAsset(entity);
     }
 
     entityToDTO(entity: Resume) {

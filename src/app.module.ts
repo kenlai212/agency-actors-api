@@ -25,9 +25,17 @@ import { UploadedDocument } from './uploadedDocuments/uploadedDocument.entity';
 import { UploadedDocumentsModule } from './uploadedDocuments/uploadedDocuments.module';
 import { AgencyActorsReadModule } from './agencyActorsRead/agencyActorsRead.module';
 import { SemanticsData } from './uploadedDocuments/semanticsData.entity';
-import configuration from './configuration';
+import configuration from './app.config';
+import { APP_GUARD } from '@nestjs/core';
+import { AuthGuard } from './auth.guard';
 
 @Module({
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard
+    }
+  ],
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
