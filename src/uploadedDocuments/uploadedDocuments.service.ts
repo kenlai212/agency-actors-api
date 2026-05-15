@@ -12,7 +12,7 @@ export class UploadedDocumentsService {
     constructor(
         @InjectRepository(UploadedDocument)
         private readonly entityRepository: Repository<UploadedDocument>,
-        private readonly agencyActorService: AgencyActorsService
+        private readonly agencyActorService: AgencyActorsService,
     ) { }
 
     async uploadNewDocument(dto: UploadDocumentRequestDTO): Promise<UploadedDocumentDTO> {

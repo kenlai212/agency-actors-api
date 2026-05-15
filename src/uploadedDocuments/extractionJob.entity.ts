@@ -1,9 +1,9 @@
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity()
-export class SemanticsData {
+export class ExtractionJob {
     @PrimaryGeneratedColumn('uuid')
-    semanticsDataId: string;
+    extractionJobId: string;
 
     @CreateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP(6)" })
     createdAt: Date;
@@ -12,15 +12,23 @@ export class SemanticsData {
     updatedAt: Date;
 
     @Column({
-        nullable: true,
+        nullable: false,
         type: "varchar",
         length: 36
     })
     uploadedDocumentId: string;
 
     @Column({
+        nullable: false,
+        type: "varchar",
+        length: 36,
+        unique: true
+    })
+    externalExtractionJobIdentifier: string;
+
+    @Column({
         nullable: true,
         type: "json"
     })
-    abstractedResult: JSON;
+    extractededResult: JSON;
 }
