@@ -28,7 +28,14 @@ export class ExtractionJob {
 
     @Column({
         nullable: true,
+        type: "varchar",
+        length: 36
+    })
+    externalExtractionJobTemplateId: string;
+
+    @Column({
+        nullable: true,
         type: "json"
     })
-    extractededResult: JSON;
+    extractionResult: JSON;
 }

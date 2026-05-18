@@ -20,8 +20,8 @@ export enum UploadDocumentStatus {
     SUBMITTED = "SUBMITTED",
     SCANNED = "SCANNED",
     UPLOADED = "UPLOADED",
-    CLASSIFIED = "CLASSIFIED",
-    VALIDATED = "VALIDATED",
+    CLASSIFYING = "CLASSIFYING",
+    VALIDATING = "VALIDATING",
     EXTRACTING = "EXTRACTING",
     EXTRACTED = "EXTRACTED"
 }
@@ -84,11 +84,4 @@ export class UploadedDocument {
         enum: UploadDocumentStatus,
     })
     uploadDocumentStatus: UploadDocumentStatus;
-
-    @Column({
-        nullable: true,
-        type: "varchar",
-        length: 36
-    })
-    extractionJobId: string;
 }

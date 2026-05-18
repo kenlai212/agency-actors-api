@@ -24,12 +24,12 @@ import { physicalAddressesModule } from './physicalAddresses/physicalAddresses.m
 import { UploadedDocument } from './uploadedDocuments/uploadedDocument.entity';
 import { UploadedDocumentsModule } from './uploadedDocuments/uploadedDocuments.module';
 import { AgencyActorsReadModule } from './agencyActorsRead/agencyActorsRead.module';
-import { SemanticsData } from './uploadedDocuments/semanticsData.entity';
 import configuration from './app.config';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './auth.guard';
 import { Nationality } from './nationalities/nationality.entity';
 import { NationalitiesModule } from './nationalities/nationalities.module';
+import { ExtractionJob } from './uploadedDocuments/extractionJob.entity';
 
 @Module({
   providers: [
@@ -64,7 +64,7 @@ import { NationalitiesModule } from './nationalities/nationalities.module';
           Certification,
           PhysicalAddress,
           UploadedDocument,
-          SemanticsData,
+          ExtractionJob,
           Nationality
         ],
         synchronize: true,

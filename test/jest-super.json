@@ -4,7 +4,7 @@
     "json",
     "ts"
   ],
-  "rootDir": "./supertest",
+  "rootDir": "./super",
   "testEnvironment": "node",
   "testRegex": ".super-spec.ts$",
   "transform": {

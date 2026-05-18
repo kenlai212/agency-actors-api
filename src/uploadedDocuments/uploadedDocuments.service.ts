@@ -4,6 +4,7 @@ import { StorageFacility, UploadedDocumentType, UploadedDocument, UploadDocument
 import { Repository } from "typeorm";
 import { AgencyActorsService } from "../agencyActors/agencyActors.service";
 import { UploadDocumentRequestDTO, UploadedDocumentDTO } from "./uploadedDocuments.dtos";
+import { ExtractionJobsService, ExtractionJobType } from "./extractionJobs.service";
 
 @Injectable()
 export class UploadedDocumentsService {
@@ -13,6 +14,7 @@ export class UploadedDocumentsService {
         @InjectRepository(UploadedDocument)
         private readonly entityRepository: Repository<UploadedDocument>,
         private readonly agencyActorService: AgencyActorsService,
+        private readonly extractionJobsService: ExtractionJobsService
     ) { }
 
     async uploadNewDocument(dto: UploadDocumentRequestDTO): Promise<UploadedDocumentDTO> {
@@ -64,48 +66,31 @@ export class UploadedDocumentsService {
         return this.saveUploadedDocument(entity);
     }
 
-    async callExternalDocumentClassification(uploadedDocumentId): Promise<UploadedDocumentDTO> {
+    async callExternalDocumentClassification(uploadedDocumentId: string): Promise<UploadedDocumentDTO> {
         let entity = await this.getUploadedDocument(uploadedDocumentId);
 
-        //todo call IDP classification
-        entity.uploadDocumentStatus = UploadDocumentStatus.CLASSIFIED;
+        await this.extractionJobsService.createNewExtractionJob(uploadedDocumentId, entity.documentBase64, entity.uploadedDocumentType, ExtractionJobType.CLASSIFICATION);
+        entity.uploadDocumentStatus = UploadDocumentStatus.CLASSIFYING;
 
         return this.saveUploadedDocument(entity);
     }
 
-    async classExternalSemanticDataValidation(uploadedDocumentId: string): Promise<UploadedDocumentDTO> {
+    async callExternalQuickValidation(uploadedDocumentId: string): Promise<UploadedDocumentDTO> {
         let entity = await this.getUploadedDocument(uploadedDocumentId);
 
-        //todo call IDP extraction
-        //todo get validation templateId
-
-        entity.extractionJobId = "IDP0000";
-        entity.uploadDocumentStatus = UploadDocumentStatus.VALIDATED;
+        await this.extractionJobsService.createNewExtractionJob(uploadedDocumentId, entity.documentBase64, entity.uploadedDocumentType, ExtractionJobType.QUICK_VALIDATION);
+        entity.uploadDocumentStatus = UploadDocumentStatus.VALIDATING;
 
         return this.saveUploadedDocument(entity);
     }
 
-    async callExternalSemanticDataExtraction(uploadedDocumentId: string): Promise<UploadedDocumentDTO> {
+    async callExternalDetailExtraction(uploadedDocumentId: string): Promise<UploadedDocumentDTO> {
         let entity = await this.getUploadedDocument(uploadedDocumentId);
 
-        //todo call IDP extration
-        //todo get extraction templateId
-
-        entity.extractionJobId = "IDP1234"
+        await this.extractionJobsService.createNewExtractionJob(uploadedDocumentId, entity.documentBase64, entity.uploadedDocumentType, ExtractionJobType.DETAIL_EXTRACTION)
         entity.uploadDocumentStatus = UploadDocumentStatus.EXTRACTING;
 
         return this.saveUploadedDocument(entity);
-    }
-
-    async validateUploadedDocumentId(uploadedDocumentId: string) {
-        const uploadedDocument = await this.entityRepository.findOne({ where: { uploadedDocumentId } })
-            .catch((error) => {
-                console.error(error);
-                throw new InternalServerErrorException("validateUploadedDocumentId() not available");
-            });
-
-        if (!uploadedDocument)
-            throw new BadRequestException(`Invalid uploadedDocumentId : ${uploadedDocumentId}`);
     }
 
     private async getUploadedDocument(uploadedDocumentId: string): Promise<UploadedDocument> {
