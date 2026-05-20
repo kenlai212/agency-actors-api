@@ -4,6 +4,7 @@ import { Repository } from "typeorm";
 import { ExtractionJob } from "./extractionJob.entity";
 import { UploadedDocumentType } from "./uploadedDocument.entity";
 import { randomUUID } from 'crypto';
+import { SearchExtractionJobsRequestDTO } from "./extractionJobs.dtos";
 
 export enum ExtractionJobType {
     CLASSIFICATION = "CLASSIFICATION",
@@ -46,7 +47,7 @@ export class ExtractionJobsService {
         let entity = await this.entityRepository.findOne({ where: { externalExtractionJobIdentifier } })
             .catch((error) => {
                 this.logger.error(error.stack);
-                throw new InternalServerErrorException("updateSymanticsData not available");
+                throw new InternalServerErrorException("updateSymanticsData() not available");
             });
 
         if (!entity)
@@ -62,6 +63,16 @@ export class ExtractionJobsService {
 
         //todo validation of extraction result
         //todo populate actor asset
+    }
+
+    async searchExtractionJobs(dto: SearchExtractionJobsRequestDTO): Promise<ExtractionJob[]> {
+        let entities = await this.entityRepository.find({ where: { uploadedDocumentId: dto.uploadedDocumentId } })
+            .catch((error) => {
+                this.logger.error(error.stack);
+                throw new InternalServerErrorException("searchExtractionJobs() not available");
+            });
+
+        return entities;
     }
 
     private async lookupTemplateId(uploadedDocumentType: UploadedDocumentType, extractionJobType: ExtractionJobType): Promise<string> {

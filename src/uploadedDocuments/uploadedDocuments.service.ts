@@ -18,10 +18,9 @@ export class UploadedDocumentsService {
     ) { }
 
     async uploadNewDocument(dto: UploadDocumentRequestDTO): Promise<UploadedDocumentDTO> {
-        validate(dto).then(errors => {
-            if (errors.length > 0)
-                throw new BadRequestException(errors.toString());
-        });
+        const validationErrors = await validate(dto);
+        if (validationErrors.length > 0)
+            throw new BadRequestException(validationErrors.toString());
 
         let entity = new UploadedDocument();
 
@@ -48,17 +47,26 @@ export class UploadedDocumentsService {
     }
 
     async searchUploadedDocuments(dto: SearchUploadedDocumentsRequestDTO): Promise<SearchUploadedDocumentsResponseDTO> {
-        if (!dto.searchRangeEnd)
-            dto.searchRangeEnd = new Date();
+        let whereClause: any = {}
+
+        whereClause.actorId = dto.actorId;
+
+        if (dto.searchRangeStart) {
+            if (!dto.searchRangeEnd)
+                dto.searchRangeEnd = new Date();
+
+            whereClause.createdAt = Between(dto.searchRangeStart, dto.searchRangeEnd)
+        }
+
+
 
         const documents = await this.entityRepository.find({
-            where: {
-                createdAt: Between(
-                    dto.searchRangeStart,
-                    dto.searchRangeEnd
-                )
-            }
+            where: whereClause
         })
+            .catch((error) => {
+                this.logger.error(error.stack);
+                throw new InternalServerErrorException("searchUploadedDocuments() not available");
+            });
 
         let respone = new SearchUploadedDocumentsResponseDTO();
         respone.documents = [];

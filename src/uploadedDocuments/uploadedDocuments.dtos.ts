@@ -91,11 +91,18 @@ export class UploadDocumentRequestDTO {
 
 export class SearchUploadedDocumentsRequestDTO {
     @ApiProperty({
+        description: `Actor Id`,
+    })
+    @IsUUID()
+    @IsNotEmpty()
+    actorId: string;
+
+    @ApiPropertyOptional({
         description: `Uploaded Date search range start`,
         example: `2026-05-01`
     })
     @IsDateString()
-    @IsNotEmpty()
+    @IsOptional()
     searchRangeStart: Date;
 
     @ApiPropertyOptional({
