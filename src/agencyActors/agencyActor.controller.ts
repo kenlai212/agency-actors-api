@@ -1,7 +1,7 @@
-import { Body, Controller, Delete, Get, Logger, Post, Put, Query, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Logger, Param, Post, Put, Query, UseGuards } from "@nestjs/common";
 import { AgencyActorsService } from "./agencyActors.service";
 import { ApiBearerAuth, ApiOkResponse, ApiOperation } from "@nestjs/swagger";
-import { AgencyActorDTO, FindAgencyActorRequestDTO, NewAgencyActorRequestDTO, UpdateAgencyActorDTO } from "./agencyActors.dto";
+import { AgencyActorDTO, FindAgencyActorRequestDTO, NewAgencyActorRequestDTO, SearchAgencyActorsRequestDTO, SearchAgencyActorsResponseDTO, UpdateAgencyActorDTO } from "./agencyActors.dto";
 import { AuthGuard } from "../auth.guard";
 
 @Controller("/agency-actors")
@@ -54,7 +54,28 @@ export class AgencyActorsController {
     }
 
     @Put("/")
+    @ApiOperation({
+        summary: 'Update Agency Actor',
+        description: `Update Agency Actors attributes`
+    })
+    @ApiOkResponse({
+        description: `Successfully PUT response a ${AgencyActorDTO.name}`,
+        type: AgencyActorDTO,
+    })
     async updateAgencyActor(@Body() body: UpdateAgencyActorDTO): Promise<AgencyActorDTO> {
         return await this.agencyActorsService.updateAgencyActor(body);
+    }
+
+    @Get("/full-name")
+    @ApiOperation({
+        summary: 'Search Agency Actors',
+        description: `Search Agency Actors by fullName`
+    })
+    @ApiOkResponse({
+        description: `Successfully PUT response a ${AgencyActorDTO.name}`,
+        type: AgencyActorDTO,
+    })
+    async searchAgencyActors(@Query() query: SearchAgencyActorsRequestDTO): Promise<SearchAgencyActorsResponseDTO> {
+        return await this.agencyActorsService.searchAgencyActor(query);
     }
 }

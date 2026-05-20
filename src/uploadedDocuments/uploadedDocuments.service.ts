@@ -1,10 +1,11 @@
 import { BadRequestException, Injectable, InternalServerErrorException, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { StorageFacility, UploadedDocumentType, UploadedDocument, UploadDocumentStatus } from "./uploadedDocument.entity";
-import { Repository } from "typeorm";
+import { Between, FormattedConsoleLogger, Repository } from "typeorm";
 import { AgencyActorsService } from "../agencyActors/agencyActors.service";
-import { UploadDocumentRequestDTO, UploadedDocumentDTO } from "./uploadedDocuments.dtos";
+import { SearchUploadedDocumentsRequestDTO, SearchUploadedDocumentsResponseDTO, UploadDocumentRequestDTO, UploadedDocumentDTO } from "./uploadedDocuments.dtos";
 import { ExtractionJobsService, ExtractionJobType } from "./extractionJobs.service";
+import { validate } from "class-validator";
 
 @Injectable()
 export class UploadedDocumentsService {
@@ -13,15 +14,19 @@ export class UploadedDocumentsService {
     constructor(
         @InjectRepository(UploadedDocument)
         private readonly entityRepository: Repository<UploadedDocument>,
-        private readonly agencyActorService: AgencyActorsService,
         private readonly extractionJobsService: ExtractionJobsService
     ) { }
 
     async uploadNewDocument(dto: UploadDocumentRequestDTO): Promise<UploadedDocumentDTO> {
+        validate(dto).then(errors => {
+            if (errors.length > 0)
+                throw new BadRequestException(errors.toString());
+        });
+
         let entity = new UploadedDocument();
 
-        await this.agencyActorService.validateActorId(dto.actorId);
-        entity.actorId;
+        await this.validateActorId(dto.actorId);
+        entity.actorId = dto.actorId;
 
         entity.uploadedDocumentType = dto.uploadedDocumentType;
 
@@ -35,11 +40,33 @@ export class UploadedDocumentsService {
 
         entity = await this.entityRepository.save(entity)
             .catch((error) => {
-                console.error(error);
+                this.logger.error(error.stack);
                 throw new InternalServerErrorException("uploadNewDocument() not available");
             });
 
         return this.entityToDTO(entity);
+    }
+
+    async searchUploadedDocuments(dto: SearchUploadedDocumentsRequestDTO): Promise<SearchUploadedDocumentsResponseDTO> {
+        if (!dto.searchRangeEnd)
+            dto.searchRangeEnd = new Date();
+
+        const documents = await this.entityRepository.find({
+            where: {
+                createdAt: Between(
+                    dto.searchRangeStart,
+                    dto.searchRangeEnd
+                )
+            }
+        })
+
+        let respone = new SearchUploadedDocumentsResponseDTO();
+        respone.documents = [];
+        documents.forEach(document => {
+            respone.documents.push(this.entityToDTO(document));
+        });
+
+        return respone;
     }
 
     async callexternalFileScanService(uploadedDocumentId: string): Promise<UploadedDocumentDTO> {
@@ -93,10 +120,14 @@ export class UploadedDocumentsService {
         return this.saveUploadedDocument(entity);
     }
 
+    private async validateActorId(actorId: string) {
+        return true
+    }
+
     private async getUploadedDocument(uploadedDocumentId: string): Promise<UploadedDocument> {
         let entity = await this.entityRepository.findOne({ where: { uploadedDocumentId } })
             .catch((error) => {
-                this.logger.error(error);
+                this.logger.error(error.stack);
                 throw new InternalServerErrorException("getUploadedDocument() not available");
             });
 
@@ -109,7 +140,7 @@ export class UploadedDocumentsService {
     private async saveUploadedDocument(entity: UploadedDocument): Promise<UploadedDocumentDTO> {
         entity = await this.entityRepository.save(entity)
             .catch((error) => {
-                this.logger.error(error);
+                this.logger.error(error.stack);
                 throw new InternalServerErrorException("saveUploadedDocument() not available");
             });
 

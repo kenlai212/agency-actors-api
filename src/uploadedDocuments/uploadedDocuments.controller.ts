@@ -1,6 +1,6 @@
-import { Body, Controller, Post } from "@nestjs/common";
+import { Body, Controller, Get, Post, Query } from "@nestjs/common";
 import { ApiOkResponse, ApiOperation } from "@nestjs/swagger";
-import { UploadDocumentRequestDTO, UploadedDocumentDTO } from "./uploadedDocuments.dtos";
+import { SearchUploadedDocumentsRequestDTO, SearchUploadedDocumentsResponseDTO, UploadDocumentRequestDTO, UploadedDocumentDTO } from "./uploadedDocuments.dtos";
 import { UploadedDocumentsService } from "./uploadedDocuments.service";
 
 @Controller("/upload-documents")
@@ -20,5 +20,18 @@ export class UploadedDocumentsController {
     })
     async uploadDocument(@Body() dto: UploadDocumentRequestDTO): Promise<UploadedDocumentDTO> {
         return await this.uploadedDocumentsService.uploadNewDocument(dto);
+    }
+
+    @Get("/")
+    @ApiOperation({
+        summary: 'Search Upload Documents',
+        description: `List of Documents`
+    })
+    @ApiOkResponse({
+        description: `Successfully GET response ${SearchUploadedDocumentsResponseDTO.name}`,
+        type: SearchUploadedDocumentsResponseDTO,
+    })
+    async searchUploadedDocuments(@Query() dto: SearchUploadedDocumentsRequestDTO): Promise<SearchUploadedDocumentsResponseDTO> {
+        return await this.uploadedDocumentsService.searchUploadedDocuments(dto);
     }
 }

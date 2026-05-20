@@ -1,6 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { StorageFacility, UploadDocumentStatus, UploadedDocumentType } from "./uploadedDocument.entity";
-import { IsDate, IsEnum, IsNotEmpty, IsOptional, IsString, IsUUID, max, MaxLength, maxLength } from "class-validator";
+import { IsDate, IsDateString, IsEnum, IsNotEmpty, IsOptional, IsString, IsUUID } from "class-validator";
 
 export class UploadedDocumentDTO {
     @ApiPropertyOptional({
@@ -87,4 +87,29 @@ export class UploadDocumentRequestDTO {
     @IsString()
     @IsNotEmpty()
     documentBase64: string;
+}
+
+export class SearchUploadedDocumentsRequestDTO {
+    @ApiProperty({
+        description: `Uploaded Date search range start`,
+        example: `2026-05-01`
+    })
+    @IsDateString()
+    @IsNotEmpty()
+    searchRangeStart: Date;
+
+    @ApiPropertyOptional({
+        description: `Uploaded Date search range end`,
+        example: `2026-05-01`
+    })
+    @IsDateString()
+    @IsOptional()
+    searchRangeEnd!: Date;
+}
+
+export class SearchUploadedDocumentsResponseDTO {
+    @ApiProperty({
+        description: `List of Uploaded Documents fitting the search date range`
+    })
+    documents: UploadedDocumentDTO[]
 }

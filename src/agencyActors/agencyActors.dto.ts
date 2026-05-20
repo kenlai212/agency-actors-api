@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
-import { IsNotEmpty, IsString, MaxLength, IsEmail, IsOptional, IsDate, IsDateString, IsEnum, IsUUID } from 'class-validator';
+import { IsNotEmpty, IsString, MaxLength, IsEmail, IsOptional, IsDate, IsDateString, IsEnum, IsUUID, IsArray } from 'class-validator';
 import { AgencyActorType, Country, Gender, ResidencyStatus } from "./agencyActor.entity";
 
 export class AgencyActorDTO {
@@ -100,7 +100,7 @@ export class NewAgencyActorRequestDTO {
     })
     @IsNotEmpty()
     @IsString()
-    @MaxLength(36)
+    @MaxLength(255)
     fullName: string;
 
     @ApiProperty({
@@ -153,8 +153,7 @@ export class UpdateAgencyActorDTO extends NewAgencyActorRequestDTO {
         example: "96e4e28e-2404-4a4f-b69a-6b0709559596"
     })
     @IsNotEmpty()
-    @IsString()
-    @MaxLength(36)
+    @IsUUID()
     actorId: string;
 
     @ApiPropertyOptional({
@@ -170,6 +169,26 @@ export class UpdateAgencyActorDTO extends NewAgencyActorRequestDTO {
     })
     @IsOptional()
     @IsString()
-    @MaxLength(36)
+    @MaxLength(255)
     declare fullName: string;
+}
+
+export class SearchAgencyActorsRequestDTO {
+    @ApiProperty({
+        description: `Actor's Full Name`,
+        example: "Jane Smith"
+    })
+    @IsNotEmpty()
+    @IsString()
+    @MaxLength(255)
+    fullName: string;
+}
+
+export class SearchAgencyActorsResponseDTO {
+    @ApiProperty({
+        description: `List of Actors`
+    })
+    @IsNotEmpty()
+    @IsArray()
+    agencyActors: AgencyActorDTO[];
 }

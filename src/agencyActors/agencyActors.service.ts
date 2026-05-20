@@ -1,8 +1,8 @@
-import { BadRequestException, Injectable, InternalServerErrorException, Logger, NotFoundException } from "@nestjs/common";
+import { BadRequestException, Injectable, InternalServerErrorException, Logger, NotFoundException, Search } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { AgencyActorType, AgencyActor } from "./agencyActor.entity";
 import { Repository } from "typeorm";
-import { AgencyActorDTO, NewAgencyActorRequestDTO, UpdateAgencyActorDTO } from "./agencyActors.dto";
+import { AgencyActorDTO, NewAgencyActorRequestDTO, SearchAgencyActorsRequestDTO, SearchAgencyActorsResponseDTO, UpdateAgencyActorDTO } from "./agencyActors.dto";
 import { HttpService } from "@nestjs/axios";
 
 @Injectable()
@@ -29,7 +29,7 @@ export class AgencyActorsService {
         const emailAddressURL = `http://localhost:8080/email-addresses`;
         const checkExistingResponse = await this.httpService.axiosRef.get(`${emailAddressURL}/check-existing?addressString=${dto.emailAddress}`)
             .catch(error => {
-                this.logger.error(error);
+                this.logger.error(error.stack);
                 throw new InternalServerErrorException("Check existing email address not available");
             })
 
@@ -40,7 +40,7 @@ export class AgencyActorsService {
         ///////////////////////////save AgencyActor record //////////////////////////
         await this.entityRepository.save(entity)
             .catch((error) => {
-                this.logger.error(error);
+                this.logger.error(error.stack);
                 throw new InternalServerErrorException("createCandidate() not available");
             });
 
@@ -50,7 +50,7 @@ export class AgencyActorsService {
             addressString: dto.emailAddress
         })
             .catch(error => {
-                this.logger.error(error);
+                this.logger.error(error.stack);
                 throw new InternalServerErrorException(`Saving Email Address ${dto.emailAddress} fialed`);
             })
         dto.emailAddress = createEmailAddressResponse.data.addressString;
@@ -62,7 +62,7 @@ export class AgencyActorsService {
     async findAgencyActor(agencyActorType: AgencyActorType, actorId: string): Promise<AgencyActorDTO> {
         let agencyActor = await this.entityRepository.findOne({ where: { actorId, agencyActorType } })
             .catch((error) => {
-                this.logger.error(error);
+                this.logger.error(error.stack);
                 throw new InternalServerErrorException("getCandidateById() not available");
             });
 
@@ -76,7 +76,7 @@ export class AgencyActorsService {
     async deleteActor(actorId: string): Promise<string> {
         let actor = await this.entityRepository.findOne({ where: { actorId } })
             .catch((error) => {
-                this.logger.error(error);
+                this.logger.error(error.stack);
                 throw new InternalServerErrorException("deleteActor() not available");
             });
 
@@ -88,7 +88,7 @@ export class AgencyActorsService {
 
         await this.entityRepository.remove(actor)
             .catch((error) => {
-                this.logger.error(error);
+                this.logger.error(error.stack);
                 throw new InternalServerErrorException("deleteActor() not available");
             });
 
@@ -100,7 +100,7 @@ export class AgencyActorsService {
     async updateAgencyActor(dto: UpdateAgencyActorDTO): Promise<AgencyActorDTO> {
         let agencyActor = await this.entityRepository.findOne({ where: { actorId: dto.actorId } })
             .catch((error) => {
-                this.logger.error(error);
+                this.logger.error(error.stack);
                 throw new InternalServerErrorException("updateAgencyActor() not available");
             });
 
@@ -124,17 +124,33 @@ export class AgencyActorsService {
 
         agencyActor = await this.entityRepository.save(agencyActor)
             .catch((error) => {
-                this.logger.error(error);
+                this.logger.error(error.stack);
                 throw new InternalServerErrorException("updateAgencyActor() not available");
             });
 
         return this.entityToDTO(agencyActor);
     }
 
+    async searchAgencyActor(dto: SearchAgencyActorsRequestDTO): Promise<SearchAgencyActorsResponseDTO> {
+        const agencyActors = await this.entityRepository.find({ where: { fullName: dto.fullName } })
+            .catch((error) => {
+                this.logger.error(error.stack);
+                throw new InternalServerErrorException("getCandidateById() not available");
+            });
+
+        let responseDTO = new SearchAgencyActorsResponseDTO();
+        responseDTO.agencyActors = [];
+        agencyActors.forEach(actor => {
+            responseDTO.agencyActors.push(this.entityToDTO(actor))
+        });
+
+        return responseDTO;
+    }
+
     async validateActorId(actorId: string) {
         const candidate = await this.entityRepository.findOne({ where: { actorId } })
             .catch((error) => {
-                this.logger.error(error);
+                this.logger.error(error.stack);
                 throw new InternalServerErrorException("validateActorId() not available");
             });
 

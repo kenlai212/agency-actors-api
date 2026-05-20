@@ -52,7 +52,7 @@ export class UploadedDocument {
     storageFacility!: StorageFacility;
 
     @Column({
-        nullable: false,
+        nullable: true,
         type: "varchar",
         length: 255
     })
