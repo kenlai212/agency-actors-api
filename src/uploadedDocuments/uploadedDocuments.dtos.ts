@@ -70,7 +70,7 @@ export class UploadDocumentRequestDTO {
     })
     @IsUUID()
     @IsOptional()
-    assetId: string;
+    assetId!: string;
 
     @ApiProperty({
         description: `Uploaded Document Type ${Object.values(UploadedDocumentType)}`,

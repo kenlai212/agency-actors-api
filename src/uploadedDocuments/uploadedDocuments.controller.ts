@@ -3,7 +3,7 @@ import { ApiOkResponse, ApiOperation } from "@nestjs/swagger";
 import { SearchUploadedDocumentsRequestDTO, SearchUploadedDocumentsResponseDTO, UploadDocumentRequestDTO, UploadedDocumentDTO } from "./uploadedDocuments.dtos";
 import { UploadedDocumentsService } from "./uploadedDocuments.service";
 
-@Controller("/upload-documents")
+@Controller("/uploaded-documents")
 export class UploadedDocumentsController {
     constructor(
         private readonly uploadedDocumentsService: UploadedDocumentsService

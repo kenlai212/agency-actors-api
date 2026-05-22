@@ -1,15 +1,16 @@
-import { BadRequestException, Injectable, InternalServerErrorException, Logger } from "@nestjs/common";
+import { BadRequestException, Inject, Injectable, InternalServerErrorException, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { StorageFacility, UploadedDocumentType, UploadedDocument, UploadDocumentStatus } from "./uploadedDocument.entity";
-import { Between, FormattedConsoleLogger, Repository } from "typeorm";
-import { AgencyActorsService } from "../agencyActors/agencyActors.service";
+import { StorageFacility, UploadedDocument, UploadDocumentStatus } from "./uploadedDocument.entity";
+import { Between, Repository } from "typeorm";
 import { SearchUploadedDocumentsRequestDTO, SearchUploadedDocumentsResponseDTO, UploadDocumentRequestDTO, UploadedDocumentDTO } from "./uploadedDocuments.dtos";
 import { ExtractionJobsService, ExtractionJobType } from "./extractionJobs.service";
 import { validate } from "class-validator";
+import { ClientKafka } from "@nestjs/microservices";
 
 @Injectable()
 export class UploadedDocumentsService {
     readonly logger: Logger = new Logger(this.constructor.name)
+    @Inject('KAFKA_SERVICE') private readonly kafkaClient: ClientKafka
 
     constructor(
         @InjectRepository(UploadedDocument)
@@ -18,9 +19,11 @@ export class UploadedDocumentsService {
     ) { }
 
     async uploadNewDocument(dto: UploadDocumentRequestDTO): Promise<UploadedDocumentDTO> {
-        const validationErrors = await validate(dto);
-        if (validationErrors.length > 0)
+        /*const validationErrors = await validate(dto);
+        if (validationErrors.length > 0) {
+            this.logger.warn(validationErrors);
             throw new BadRequestException(validationErrors.toString());
+        }*/
 
         let entity = new UploadedDocument();
 
@@ -42,6 +45,10 @@ export class UploadedDocumentsService {
                 this.logger.error(error.stack);
                 throw new InternalServerErrorException("uploadNewDocument() not available");
             });
+
+        this.kafkaClient.emit('uploadedDocument.submitted', {
+            uploadedDocumentId: entity.uploadedDocumentId,
+        });
 
         return this.entityToDTO(entity);
     }
