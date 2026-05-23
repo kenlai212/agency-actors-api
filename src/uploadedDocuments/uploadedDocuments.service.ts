@@ -5,17 +5,18 @@ import { Between, Repository } from "typeorm";
 import { SearchUploadedDocumentsRequestDTO, SearchUploadedDocumentsResponseDTO, UploadDocumentRequestDTO, UploadedDocumentDTO } from "./uploadedDocuments.dtos";
 import { ExtractionJobsService, ExtractionJobType } from "./extractionJobs.service";
 import { validate } from "class-validator";
-import { ClientKafka } from "@nestjs/microservices";
+import { KafkaProducerService, KafkaTopics } from "./kafka.producer";
+import { randomUUID } from "crypto";
 
 @Injectable()
 export class UploadedDocumentsService {
     readonly logger: Logger = new Logger(this.constructor.name)
-    @Inject('KAFKA_SERVICE') private readonly kafkaClient: ClientKafka
 
     constructor(
         @InjectRepository(UploadedDocument)
         private readonly entityRepository: Repository<UploadedDocument>,
-        private readonly extractionJobsService: ExtractionJobsService
+        private readonly extractionJobsService: ExtractionJobsService,
+        private readonly kafkaProducerService: KafkaProducerService
     ) { }
 
     async uploadNewDocument(dto: UploadDocumentRequestDTO): Promise<UploadedDocumentDTO> {
@@ -46,8 +47,9 @@ export class UploadedDocumentsService {
                 throw new InternalServerErrorException("uploadNewDocument() not available");
             });
 
-        this.kafkaClient.emit('uploadedDocument.submitted', {
-            uploadedDocumentId: entity.uploadedDocumentId,
+        await this.kafkaProducerService.produce(KafkaTopics.UPLOADED_DOCUMENT_SUBMITTED, {
+            contextId: randomUUID(),
+            uploadedDocumentId: entity.uploadedDocumentId
         });
 
         return this.entityToDTO(entity);

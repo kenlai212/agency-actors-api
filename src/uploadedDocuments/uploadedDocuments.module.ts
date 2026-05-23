@@ -8,6 +8,7 @@ import { ExtractionJob } from "./extractionJob.entity";
 import { ClientsModule, Transport } from "@nestjs/microservices";
 import { UploadedDocumentsConsumerController } from "./uploadedDocument.consumer";
 import { retry } from "rxjs";
+import { KafkaProducerService } from "./kafka.producer";
 
 @Module({
     imports: [
@@ -36,7 +37,7 @@ import { retry } from "rxjs";
         UploadedDocumentsController, UploadedDocumentsConsumerController
     ],
     providers: [
-        UploadedDocumentsService, ExtractionJobsService
+        UploadedDocumentsService, ExtractionJobsService, KafkaProducerService
     ],
     exports: [
         UploadedDocumentsService

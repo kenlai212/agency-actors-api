@@ -30,7 +30,6 @@ import { AuthGuard } from './auth.guard';
 import { Nationality } from './nationalities/nationality.entity';
 import { NationalitiesModule } from './nationalities/nationalities.module';
 import { ExtractionJob } from './uploadedDocuments/extractionJob.entity';
-import { ClientsModule, Transport } from '@nestjs/microservices';
 
 @Module({
   providers: [
