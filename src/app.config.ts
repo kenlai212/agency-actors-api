@@ -11,5 +11,8 @@ export default () => ({
         databaseName: process.env.DB_NAME,
         syncDb: process.env.DB_SYNC || false,
         logging: process.env.DB_LOGGING || false
+    },
+    kafka: {
+        brokers: [process.env.KAFKA_BROKERS || "localhost:9092"]
     }
 });

@@ -13,11 +13,26 @@ export class UploadedDocumentsConsumerController {
     ) { }
 
     @EventPattern(UploadedDocumentKafkaTopics.DOCUMENT_SUBMITTED)
-    async handleEvent(@Payload() message: any, @Ctx() context: KafkaContext) {
-        this.logger.debug(context);
-        this.logger.log(`Recieved event from topic: ${context.getTopic()}`)
-        this.logger.log(message);
+    async handleEvent(@Payload() payload: any, @Ctx() context: KafkaContext) {
+        //this.logger.debug(context);
+        const { offset } = context.getMessage();
+        const topic = context.getTopic();
+        const partition = context.getPartition();
+        this.logger.log(
+            `Received message from topic [${topic}] partition [${partition}] offset [${offset}]`
+        );
 
-        await this.uploadedDocumentsService.callexternalFileScanService(message.uploadedDocumentId);
+        this.logger.log(`Payload: ${JSON.stringify(payload)}`);
+
+        await this.uploadedDocumentsService.callexternalFileScanService(payload.uploadedDocumentId)
+            .catch(error => {
+                this.logger.error(error.stack);
+            });
+
+        await context
+            .getConsumer()
+            .commitOffsets([
+                { topic, partition, offset: (parseInt(offset) + 1).toString() },
+            ]);
     }
 }
