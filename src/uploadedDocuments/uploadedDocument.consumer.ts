@@ -1,14 +1,23 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Logger } from '@nestjs/common';
 import { Ctx, EventPattern, KafkaContext, MessagePattern, Payload } from '@nestjs/microservices';
-import { KafkaTopics } from './kafka.producer';
+import { UploadedDocumentKafkaTopics } from './kafka.producer';
+import { partition } from 'rxjs';
+import { UploadedDocumentsService } from './uploadedDocuments.service';
 
 @Controller()
 export class UploadedDocumentsConsumerController {
+    readonly logger: Logger = new Logger(this.constructor.name)
 
-    @EventPattern(KafkaTopics.UPLOADED_DOCUMENT_SUBMITTED)
+    constructor(
+        private readonly uploadedDocumentsService: UploadedDocumentsService
+    ) { }
+
+    @EventPattern(UploadedDocumentKafkaTopics.DOCUMENT_SUBMITTED)
     async handleEvent(@Payload() message: any, @Ctx() context: KafkaContext) {
-        const originalMessage = context.getMessage();
-        const partition = context.getPartition();
-        console.log(`Received message from partition ${partition}:`, message);
+        this.logger.debug(context);
+        this.logger.log(`Recieved event from topic: ${context.getTopic()}`)
+        this.logger.log(message);
+
+        await this.uploadedDocumentsService.callexternalFileScanService(message.uploadedDocumentId);
     }
 }

@@ -5,8 +5,9 @@ import { Between, Repository } from "typeorm";
 import { SearchUploadedDocumentsRequestDTO, SearchUploadedDocumentsResponseDTO, UploadDocumentRequestDTO, UploadedDocumentDTO } from "./uploadedDocuments.dtos";
 import { ExtractionJobsService, ExtractionJobType } from "./extractionJobs.service";
 import { validate } from "class-validator";
-import { KafkaProducerService, KafkaTopics } from "./kafka.producer";
+import { KafkaProducerService, UploadedDocumentKafkaTopics } from "./kafka.producer";
 import { randomUUID } from "crypto";
+import { DataSource } from "typeorm";
 
 @Injectable()
 export class UploadedDocumentsService {
@@ -16,7 +17,8 @@ export class UploadedDocumentsService {
         @InjectRepository(UploadedDocument)
         private readonly entityRepository: Repository<UploadedDocument>,
         private readonly extractionJobsService: ExtractionJobsService,
-        private readonly kafkaProducerService: KafkaProducerService
+        private readonly kafkaProducerService: KafkaProducerService,
+        private dataSource: DataSource
     ) { }
 
     async uploadNewDocument(dto: UploadDocumentRequestDTO): Promise<UploadedDocumentDTO> {
@@ -41,18 +43,20 @@ export class UploadedDocumentsService {
 
         entity.documentBase64 = dto.documentBase64;
 
-        entity = await this.entityRepository.save(entity)
-            .catch((error) => {
-                this.logger.error(error.stack);
-                throw new InternalServerErrorException("uploadNewDocument() not available");
+        return await this.dataSource.transaction(async (entityManager) => {
+            entity = await this.entityRepository.save(entity)
+                .catch((error) => {
+                    this.logger.error(error.stack);
+                    throw new InternalServerErrorException("uploadNewDocument() not available");
+                });
+
+            await this.kafkaProducerService.produce(UploadedDocumentKafkaTopics.DOCUMENT_SUBMITTED, {
+                uploadedDocumentId: entity.uploadedDocumentId
             });
 
-        await this.kafkaProducerService.produce(KafkaTopics.UPLOADED_DOCUMENT_SUBMITTED, {
-            contextId: randomUUID(),
-            uploadedDocumentId: entity.uploadedDocumentId
+            return this.entityToDTO(entity);
         });
 
-        return this.entityToDTO(entity);
     }
 
     async searchUploadedDocuments(dto: SearchUploadedDocumentsRequestDTO): Promise<SearchUploadedDocumentsResponseDTO> {
@@ -93,6 +97,10 @@ export class UploadedDocumentsService {
 
         entity.uploadDocumentStatus = UploadDocumentStatus.SCANNED;
 
+        await this.kafkaProducerService.produce(UploadedDocumentKafkaTopics.SECURITY_SCAN, {
+            uploadedDocumentId: entity.uploadedDocumentId
+        });
+
         return this.saveUploadedDocument(entity);
     }
 
@@ -107,6 +115,10 @@ export class UploadedDocumentsService {
 
         entity.uploadDocumentStatus = UploadDocumentStatus.UPLOADED;
 
+        await this.kafkaProducerService.produce(UploadedDocumentKafkaTopics.STORAGE_COMPLETE, {
+            uploadedDocumentId: entity.uploadedDocumentId
+        });
+
         return this.saveUploadedDocument(entity);
     }
 
@@ -115,6 +127,10 @@ export class UploadedDocumentsService {
 
         await this.extractionJobsService.createNewExtractionJob(uploadedDocumentId, entity.documentBase64, entity.uploadedDocumentType, ExtractionJobType.CLASSIFICATION);
         entity.uploadDocumentStatus = UploadDocumentStatus.CLASSIFYING;
+
+        await this.kafkaProducerService.produce(UploadedDocumentKafkaTopics.CLASSIFICATION, {
+            uploadedDocumentId: entity.uploadedDocumentId
+        });
 
         return this.saveUploadedDocument(entity);
     }
@@ -125,6 +141,10 @@ export class UploadedDocumentsService {
         await this.extractionJobsService.createNewExtractionJob(uploadedDocumentId, entity.documentBase64, entity.uploadedDocumentType, ExtractionJobType.QUICK_VALIDATION);
         entity.uploadDocumentStatus = UploadDocumentStatus.VALIDATING;
 
+        await this.kafkaProducerService.produce(UploadedDocumentKafkaTopics.QUICK_VALIDATION, {
+            uploadedDocumentId: entity.uploadedDocumentId
+        });
+
         return this.saveUploadedDocument(entity);
     }
 
@@ -133,6 +153,10 @@ export class UploadedDocumentsService {
 
         await this.extractionJobsService.createNewExtractionJob(uploadedDocumentId, entity.documentBase64, entity.uploadedDocumentType, ExtractionJobType.DETAIL_EXTRACTION)
         entity.uploadDocumentStatus = UploadDocumentStatus.EXTRACTING;
+
+        await this.kafkaProducerService.produce(UploadedDocumentKafkaTopics.DATA_EXTRACTION, {
+            uploadedDocumentId: entity.uploadedDocumentId
+        });
 
         return this.saveUploadedDocument(entity);
     }
