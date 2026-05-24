@@ -31,7 +31,6 @@ export class KafkaProducerService implements OnModuleInit, OnModuleDestroy {
         this.kafkaClient.emit(topic, payload)
             .subscribe({
                 next: (response) => {
-                    this.logger.debug(response)
                     this.logger.log(`Message published successfully to topic: ${response[0].topicName}, baseOffset: ${response[0].baseOffset}`)
                 },
                 error: (err) => {
