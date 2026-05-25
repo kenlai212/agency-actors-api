@@ -11,10 +11,10 @@ export enum UploadedDocumentKafkaTopics {
 }
 
 @Injectable()
-export class KafkaProducerService implements OnModuleInit, OnModuleDestroy {
+export class ExtractionJobsProducerService implements OnModuleInit, OnModuleDestroy {
     readonly logger: Logger = new Logger(this.constructor.name)
 
-    @Inject('UPLOADED_DOCUMENTS_PRODUCER_SERVICE') private readonly kafkaClient: ClientKafka
+    @Inject('EXTRACT_JOBS_PRODUCER_SERVICE') private readonly kafkaClient: ClientKafka
 
     async onModuleInit() {
         // Connect the client when the module initializes

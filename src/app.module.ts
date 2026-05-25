@@ -29,7 +29,9 @@ import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './auth.guard';
 import { Nationality } from './nationalities/nationality.entity';
 import { NationalitiesModule } from './nationalities/nationalities.module';
-import { ExtractionJob } from './uploadedDocuments/extractionJob.entity';
+import { ExtractionJob } from './extractionJobs/extractionJob.entity';
+import { ExtractionJobsModule } from './extractionJobs/extractionJobs.module';
+import { KafkaConsumersModule } from './kafkaConsumers/kafka.consumer.module';
 
 @Module({
   providers: [
@@ -84,7 +86,9 @@ import { ExtractionJob } from './uploadedDocuments/extractionJob.entity';
     ResumesModule,
     SocialProfilesModule,
     CertificationsModule,
-    UploadedDocumentsModule
+    UploadedDocumentsModule,
+    ExtractionJobsModule,
+    KafkaConsumersModule
   ]
 })
 export class AppModule { }

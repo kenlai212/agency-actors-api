@@ -1,9 +1,9 @@
 import { Controller, Logger } from '@nestjs/common';
 import { Ctx, EventPattern, KafkaContext, Payload } from '@nestjs/microservices';
-import { UploadedDocumentKafkaTopics } from './kafka.producer';
-import { UploadedDocumentsService } from './uploadedDocuments.service';
-import { ExtractionJobsService } from './extractionJobs.service';
+import { UploadedDocumentKafkaTopics } from '../uploadedDocuments/kafka.producer';
+import { UploadedDocumentsService } from '../uploadedDocuments/uploadedDocuments.service';
 import { KafkaConsumerService } from './kafka.consumer';
+import { ExtractionJobsService } from '../extractionJobs/extractionJobs.service';
 
 @Controller()
 export class UploadedDocumentsConsumer extends KafkaConsumerService {
@@ -11,7 +11,7 @@ export class UploadedDocumentsConsumer extends KafkaConsumerService {
 
     constructor(
         private readonly uploadedDocumentsService: UploadedDocumentsService,
-        private readonly extractionJobsService: ExtractionJobsService
+        //private readonly extractionJobsService: ExtractionJobsService
     ) {
         super();
     }
@@ -29,7 +29,7 @@ export class UploadedDocumentsConsumer extends KafkaConsumerService {
         await this.commitOffset(context);
     }
 
-    @EventPattern(UploadedDocumentKafkaTopics.SECURITY_SCAN)
+    /*@EventPattern(UploadedDocumentKafkaTopics.SECURITY_SCAN)
     async handleSecurityScanEvent(@Payload() payload: any, @Ctx() context: KafkaContext) {
         this.logInboundEvent(payload, context);
 
@@ -40,5 +40,5 @@ export class UploadedDocumentsConsumer extends KafkaConsumerService {
             });
 
         await this.commitOffset(context);
-    }
+    }*/
 }
