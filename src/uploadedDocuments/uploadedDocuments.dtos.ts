@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
-import { StorageFacility, UploadDocumentStatus, UploadedDocumentType } from "./uploadedDocument.entity";
+import { StorageFacility, UploadedDocumentStatus, UploadedDocumentType } from "./uploadedDocument.entity";
 import { IsDate, IsDateString, IsEnum, IsNotEmpty, IsOptional, IsString, IsUUID } from "class-validator";
 
 export class UploadedDocumentDTO {
@@ -23,7 +23,7 @@ export class UploadedDocumentDTO {
         enum: UploadedDocumentType,
         enumName: "UploadedDocumentType"
     })
-    uploadedDocumentType: UploadedDocumentType;
+    documentType: UploadedDocumentType;
 
     @ApiProperty({
         description: `Storage Facility ${Object.values(StorageFacility)}`,
@@ -45,11 +45,11 @@ export class UploadedDocumentDTO {
     uploadedAt: Date;
 
     @ApiProperty({
-        description: `Upload Docuent Status: ${Object.values(UploadDocumentStatus)}`,
-        enum: UploadDocumentStatus,
-        enumName: "UploadDocumentStatus"
+        description: `Upload Docuent Status: ${Object.values(UploadedDocumentStatus)}`,
+        enum: UploadedDocumentStatus,
+        enumName: "UploadedDocumentStatus"
     })
-    documentUploadStatus: UploadDocumentStatus;
+    status: UploadedDocumentStatus;
 
     @ApiProperty({
         description: `Document Base64 string`,

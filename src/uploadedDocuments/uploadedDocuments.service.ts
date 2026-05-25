@@ -1,12 +1,10 @@
-import { BadRequestException, Inject, Injectable, InternalServerErrorException, Logger } from "@nestjs/common";
+import { BadRequestException, Injectable, InternalServerErrorException, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { StorageFacility, UploadedDocument, UploadDocumentStatus } from "./uploadedDocument.entity";
+import { StorageFacility, UploadedDocument, UploadedDocumentStatus } from "./uploadedDocument.entity";
 import { Between, Repository } from "typeorm";
 import { SearchUploadedDocumentsRequestDTO, SearchUploadedDocumentsResponseDTO, UploadDocumentRequestDTO, UploadedDocumentDTO } from "./uploadedDocuments.dtos";
-import { ExtractionJobsService, ExtractionJobType } from "./extractionJobs.service";
 import { validate } from "class-validator";
 import { KafkaProducerService, UploadedDocumentKafkaTopics } from "./kafka.producer";
-import { randomUUID } from "crypto";
 import { DataSource } from "typeorm";
 
 @Injectable()
@@ -16,7 +14,6 @@ export class UploadedDocumentsService {
     constructor(
         @InjectRepository(UploadedDocument)
         private readonly entityRepository: Repository<UploadedDocument>,
-        private readonly extractionJobsService: ExtractionJobsService,
         private readonly kafkaProducerService: KafkaProducerService,
         private dataSource: DataSource
     ) { }
@@ -33,13 +30,13 @@ export class UploadedDocumentsService {
         await this.validateActorId(dto.actorId);
         entity.actorId = dto.actorId;
 
-        entity.uploadedDocumentType = dto.uploadedDocumentType;
+        entity.documentType = dto.uploadedDocumentType;
 
         //TODO validate asset ID
         if (dto.assetId)
             entity.assetId = dto.assetId;
 
-        entity.uploadDocumentStatus = UploadDocumentStatus.SUBMITTED;
+        entity.status = UploadedDocumentStatus.SUBMITTED;
 
         entity.documentBase64 = dto.documentBase64;
 
@@ -71,8 +68,6 @@ export class UploadedDocumentsService {
             whereClause.createdAt = Between(dto.searchRangeStart, dto.searchRangeEnd)
         }
 
-
-
         const documents = await this.entityRepository.find({
             where: whereClause
         })
@@ -91,21 +86,23 @@ export class UploadedDocumentsService {
     }
 
     async callexternalFileScanService(uploadedDocumentId: string): Promise<UploadedDocumentDTO> {
-        let entity = await this.getUploadedDocument(uploadedDocumentId);
+        let entity = await this.findUploadedDocumentEntity(uploadedDocumentId);
 
         //todo call file scan api
 
-        entity.uploadDocumentStatus = UploadDocumentStatus.SCANNED;
+        entity.status = UploadedDocumentStatus.SCANNED;
 
-        await this.kafkaProducerService.produce(UploadedDocumentKafkaTopics.SECURITY_SCAN, {
-            uploadedDocumentId: entity.uploadedDocumentId
+        return await this.dataSource.transaction(async (entityManager) => {
+            await this.kafkaProducerService.produce(UploadedDocumentKafkaTopics.SECURITY_SCAN, {
+                uploadedDocumentId: entity.uploadedDocumentId
+            });
+
+            return this.saveUploadedDocument(entity);
         });
-
-        return this.saveUploadedDocument(entity);
     }
 
     async callExternalStorageService(uploadedDocumentId: string): Promise<UploadedDocumentDTO> {
-        let entity = await this.getUploadedDocument(uploadedDocumentId);
+        let entity = await this.findUploadedDocumentEntity(uploadedDocumentId);
 
         //todo make this configurable
         entity.storageFacility = StorageFacility.ALFRESCO;
@@ -113,50 +110,19 @@ export class UploadedDocumentsService {
         //todo call doc store api and set storageRecordId;
         entity.storageRecordId = "ALFRESCO1234"
 
-        entity.uploadDocumentStatus = UploadDocumentStatus.UPLOADED;
+        entity.status = UploadedDocumentStatus.UPLOADED;
 
-        await this.kafkaProducerService.produce(UploadedDocumentKafkaTopics.STORAGE_COMPLETE, {
+        /*await this.kafkaProducerService.produce(UploadedDocumentKafkaTopics.STORAGE_COMPLETE, {
             uploadedDocumentId: entity.uploadedDocumentId
-        });
+        });*/
 
         return this.saveUploadedDocument(entity);
     }
 
-    async callExternalDocumentClassification(uploadedDocumentId: string): Promise<UploadedDocumentDTO> {
-        let entity = await this.getUploadedDocument(uploadedDocumentId);
+    async updateStatus(uploadedDocumentId: string, status: UploadedDocumentStatus) {
+        let entity = await this.findUploadedDocumentEntity(uploadedDocumentId);
 
-        await this.extractionJobsService.createNewExtractionJob(uploadedDocumentId, entity.documentBase64, entity.uploadedDocumentType, ExtractionJobType.CLASSIFICATION);
-        entity.uploadDocumentStatus = UploadDocumentStatus.CLASSIFYING;
-
-        await this.kafkaProducerService.produce(UploadedDocumentKafkaTopics.CLASSIFICATION, {
-            uploadedDocumentId: entity.uploadedDocumentId
-        });
-
-        return this.saveUploadedDocument(entity);
-    }
-
-    async callExternalQuickValidation(uploadedDocumentId: string): Promise<UploadedDocumentDTO> {
-        let entity = await this.getUploadedDocument(uploadedDocumentId);
-
-        await this.extractionJobsService.createNewExtractionJob(uploadedDocumentId, entity.documentBase64, entity.uploadedDocumentType, ExtractionJobType.QUICK_VALIDATION);
-        entity.uploadDocumentStatus = UploadDocumentStatus.VALIDATING;
-
-        await this.kafkaProducerService.produce(UploadedDocumentKafkaTopics.QUICK_VALIDATION, {
-            uploadedDocumentId: entity.uploadedDocumentId
-        });
-
-        return this.saveUploadedDocument(entity);
-    }
-
-    async callExternalDetailExtraction(uploadedDocumentId: string): Promise<UploadedDocumentDTO> {
-        let entity = await this.getUploadedDocument(uploadedDocumentId);
-
-        await this.extractionJobsService.createNewExtractionJob(uploadedDocumentId, entity.documentBase64, entity.uploadedDocumentType, ExtractionJobType.DETAIL_EXTRACTION)
-        entity.uploadDocumentStatus = UploadDocumentStatus.EXTRACTING;
-
-        await this.kafkaProducerService.produce(UploadedDocumentKafkaTopics.DATA_EXTRACTION, {
-            uploadedDocumentId: entity.uploadedDocumentId
-        });
+        entity.status = status;
 
         return this.saveUploadedDocument(entity);
     }
@@ -165,7 +131,7 @@ export class UploadedDocumentsService {
         return true
     }
 
-    private async getUploadedDocument(uploadedDocumentId: string): Promise<UploadedDocument> {
+    private async findUploadedDocumentEntity(uploadedDocumentId: string): Promise<UploadedDocument> {
         let entity = await this.entityRepository.findOne({ where: { uploadedDocumentId } })
             .catch((error) => {
                 this.logger.error(error.stack);
@@ -176,6 +142,19 @@ export class UploadedDocumentsService {
             throw new BadRequestException(`Invalid uploadedDocumentId: ${uploadedDocumentId}`);
 
         return entity;
+    }
+
+    async getUploadedDocument(uploadedDocumentId: string): Promise<UploadedDocumentDTO> {
+        let entity = await this.entityRepository.findOne({ where: { uploadedDocumentId } })
+            .catch((error) => {
+                this.logger.error(error.stack);
+                throw new InternalServerErrorException("getUploadedDocument() not available");
+            });
+
+        if (!entity)
+            throw new BadRequestException(`Invalid uploadedDocumentId: ${uploadedDocumentId}`);
+
+        return this.entityToDTO(entity);
     }
 
     private async saveUploadedDocument(entity: UploadedDocument): Promise<UploadedDocumentDTO> {
@@ -191,13 +170,13 @@ export class UploadedDocumentsService {
     entityToDTO(entity: UploadedDocument): UploadedDocumentDTO {
         let dto = new UploadedDocumentDTO;
         dto.uploadedDocumentId = entity.uploadedDocumentId;
-        dto.uploadedDocumentType = entity.uploadedDocumentType;
+        dto.documentType = entity.documentType;
         dto.actorId = entity.actorId;
         dto.assetId = entity.assetId;
         dto.storageFacility = entity.storageFacility;
         dto.storageRecordId = entity.storageRecordId;
         dto.uploadedAt = entity.createdAt;
-        dto.documentUploadStatus = entity.uploadDocumentStatus;
+        dto.status = entity.status;
         dto.documentBase64 = entity.documentBase64;
 
         return dto;

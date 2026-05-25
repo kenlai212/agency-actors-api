@@ -16,14 +16,13 @@ export enum StorageFacility {
     ALFRESCO = "ALFRESCO"
 }
 
-export enum UploadDocumentStatus {
+export enum UploadedDocumentStatus {
     SUBMITTED = "SUBMITTED",
     SCANNED = "SCANNED",
     UPLOADED = "UPLOADED",
     CLASSIFYING = "CLASSIFYING",
     VALIDATING = "VALIDATING",
     EXTRACTING = "EXTRACTING",
-    EXTRACTED = "EXTRACTED"
 }
 
 @Entity()
@@ -42,7 +41,7 @@ export class UploadedDocument {
         type: "enum",
         enum: UploadedDocumentType,
     })
-    uploadedDocumentType: UploadedDocumentType;
+    documentType: UploadedDocumentType;
 
     @Column({
         nullable: true,
@@ -81,7 +80,7 @@ export class UploadedDocument {
     @Column({
         nullable: false,
         type: "enum",
-        enum: UploadDocumentStatus,
+        enum: UploadedDocumentStatus,
     })
-    uploadDocumentStatus: UploadDocumentStatus;
+    status: UploadedDocumentStatus;
 }
