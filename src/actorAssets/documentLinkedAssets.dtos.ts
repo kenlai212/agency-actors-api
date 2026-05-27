@@ -1,8 +1,7 @@
-import { IsBase64, IsEnum, IsNotEmpty, IsOptional, IsString, MaxLength } from 'class-validator';
-import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
-import { ActorAssetDTO, CreateNewAssetRequestDTO } from './actorAssets.dtos';
+import { IsNotEmpty, IsString, MaxLength } from 'class-validator';
+import { ApiProperty } from "@nestjs/swagger";
+import { ActorAssetDTO } from './actorAssets.dtos';
 import { DocumentLinkedAsset } from './documentLinkedAsset.entity';
-import { UploadedDocumentType } from '../uploadedDocuments/uploadedDocument.entity';
 
 export class DocumentLinkedAssetDTO extends ActorAssetDTO {
     @ApiProperty({

@@ -21,17 +21,12 @@ import { Education } from './educations/education.entity';
 import { Employment } from './employments/employment.entity';
 import { PhysicalAddress } from './physicalAddresses/physicalAddress.entity';
 import { physicalAddressesModule } from './physicalAddresses/physicalAddresses.module';
-import { UploadedDocument } from './uploadedDocuments/uploadedDocument.entity';
-import { UploadedDocumentsModule } from './uploadedDocuments/uploadedDocuments.module';
 import { AgencyActorsReadModule } from './agencyActorsRead/agencyActorsRead.module';
 import configuration from './app.config';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './auth.guard';
 import { Nationality } from './nationalities/nationality.entity';
 import { NationalitiesModule } from './nationalities/nationalities.module';
-import { ExtractionJob } from './extractionJobs/extractionJob.entity';
-import { ExtractionJobsModule } from './extractionJobs/extractionJobs.module';
-import { KafkaConsumersModule } from './kafkaConsumers/kafka.consumers.module';
 
 @Module({
   providers: [
@@ -65,8 +60,6 @@ import { KafkaConsumersModule } from './kafkaConsumers/kafka.consumers.module';
           SocialProfile,
           Certification,
           PhysicalAddress,
-          UploadedDocument,
-          ExtractionJob,
           Nationality
         ],
         synchronize: true,
@@ -86,9 +79,6 @@ import { KafkaConsumersModule } from './kafkaConsumers/kafka.consumers.module';
     ResumesModule,
     SocialProfilesModule,
     CertificationsModule,
-    UploadedDocumentsModule,
-    ExtractionJobsModule,
-    KafkaConsumersModule
   ]
 })
 export class AppModule { }

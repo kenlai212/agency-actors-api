@@ -3,7 +3,6 @@ import { AppModule } from './app.module';
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppLogger } from './app.logger';
-import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 
 async function bootstrap() {
   const logger = new Logger('bootstrap');
@@ -26,26 +25,6 @@ async function bootstrap() {
     .build();
   const documentFactory = () => SwaggerModule.createDocument(app, swaggerConfig);
   SwaggerModule.setup('', app, documentFactory);
-
-  //start kafka consumer
-  app.connectMicroservice<MicroserviceOptions>({
-    transport: Transport.KAFKA,
-    options: {
-      client: {
-        brokers: ['localhost:9092']
-      },
-      consumer: {
-        groupId: 'uploaded-documents-consumer',
-        sessionTimeout: 30000,
-        rebalanceTimeout: 60000,
-        heartbeatInterval: 5000,
-      },
-      run: {
-        autoCommit: false
-      }
-    }
-  })
-  await app.startAllMicroservices();
 
   ////////////////////start server
   const port = process.env.APP_PORT || 8080;
