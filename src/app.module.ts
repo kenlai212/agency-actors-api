@@ -31,7 +31,7 @@ import { Nationality } from './nationalities/nationality.entity';
 import { NationalitiesModule } from './nationalities/nationalities.module';
 import { ExtractionJob } from './extractionJobs/extractionJob.entity';
 import { ExtractionJobsModule } from './extractionJobs/extractionJobs.module';
-import { KafkaConsumersModule } from './kafkaConsumers/kafka.consumer.module';
+import { KafkaConsumersModule } from './kafkaConsumers/kafka.consumers.module';
 
 @Module({
   providers: [
